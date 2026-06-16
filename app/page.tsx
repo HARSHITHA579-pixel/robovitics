@@ -1,13 +1,13 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
+import Domains from '@/components/Domains'; // <-- Import the new section
 
 export default function Page() {
   return (
-    // FIX: Removed 'overflow-x-hidden' from this line so the Sticky scroll works!
     <main className="relative bg-black text-white flex flex-col font-sans selection:bg-gray-300 selection:text-black">
       
-      {/* Top Section Layout (Hero View) */}
+      {/* Hero View */}
       <div className="relative h-screen flex flex-col justify-between z-20">
         <Navbar />
         <Hero />
@@ -24,8 +24,11 @@ export default function Page() {
         </footer>
       </div>
 
-      {/* The Interactive About Section */}
+      {/* Interactive About Section */}
       <About />
+
+      {/* NEW: Domains Section */}
+      <Domains />
 
     </main>
   );
