@@ -11,154 +11,110 @@ if (typeof window !== 'undefined') {
 const DOMAINS = [
   {
     id: '01',
-    sys: 'ELEC',
     title: 'ELECTRICAL',
-    sub: 'Circuits & Power Systems',
-    color: '#fbbf24',
-    signal: [1, 1, 1, 0.8, 0.5],
-    uptime: '99.9%',
-    icon: (color: string) => (
-      <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-        <polygon
-          points="20,3 8,20 17,20 16,33 28,16 19,16"
-          stroke={color}
-          strokeWidth="1.3"
-          strokeLinejoin="round"
-          fill={color}
-          fillOpacity="0.12"
-        />
+    sub: 'Circuits & Power',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <polygon points="21,2 9,19 17,19 15,34 27,17 19,17"
+          fill="none" stroke="rgba(30,30,30,0.9)" strokeWidth="1.8" strokeLinejoin="round"/>
       </svg>
     ),
   },
   {
     id: '02',
-    sys: 'MECH',
     title: 'MECHANICAL',
     sub: 'Design & Fabrication',
-    color: '#94a3b8',
-    signal: [1, 1, 1, 0.6, 0.3],
-    uptime: '98.4%',
-    icon: (color: string) => (
-      <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-        <circle cx="18" cy="18" r="6" stroke={color} strokeWidth="1.3" />
-        <circle cx="18" cy="18" r="2" fill={color} opacity="0.8" />
-        {[0, 60, 120, 180, 240, 300].map((deg, i) => {
-          const r = (deg * Math.PI) / 180;
-          return (
-            <line
-              key={i}
-              x1={18 + 8 * Math.cos(r)}
-              y1={18 + 8 * Math.sin(r)}
-              x2={18 + 13 * Math.cos(r)}
-              y2={18 + 13 * Math.sin(r)}
-              stroke={color}
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-          );
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <circle cx="18" cy="18" r="6" stroke="rgba(30,30,30,0.9)" strokeWidth="1.8"/>
+        <circle cx="18" cy="18" r="2.5" fill="rgba(30,30,30,0.5)"/>
+        {[0,45,90,135,180,225,270,315].map((deg,i) => {
+          const r = deg*Math.PI/180;
+          const x1 = 18+7*Math.cos(r), y1 = 18+7*Math.sin(r);
+          const x2 = 18+11*Math.cos(r), y2 = 18+11*Math.sin(r);
+          return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(30,30,30,0.9)" strokeWidth="2.4" strokeLinecap="square"/>;
         })}
-        <circle cx="18" cy="18" r="14" stroke={color} strokeWidth="0.8" strokeOpacity="0.3" />
       </svg>
     ),
   },
   {
     id: '03',
-    sys: 'AI_ML',
     title: 'ML & AI',
-    sub: 'Machine Learning & Models',
-    color: '#a78bfa',
-    signal: [1, 1, 1, 0.5, 0.2],
-    uptime: '99.2%',
-    icon: (color: string) => (
-      <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-        <circle cx="18" cy="18" r="7" stroke={color} strokeWidth="1.4" />
-        <circle cx="18" cy="18" r="2.5" fill={color} opacity="0.9" />
-        {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => {
-          const r = (deg * Math.PI) / 180;
-          return (
-            <line
-              key={i}
-              x1={18 + 9 * Math.cos(r)}
-              y1={18 + 9 * Math.sin(r)}
-              x2={18 + 14 * Math.cos(r)}
-              y2={18 + 14 * Math.sin(r)}
-              stroke={color}
-              strokeWidth="1"
-              opacity={i % 2 === 0 ? '0.7' : '0.3'}
-            />
-          );
-        })}
+    sub: 'Machine Learning',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        {[8,18,28].map((y,i)=><circle key={i} cx="8" cy={y} r="2.2" stroke="rgba(30,30,30,0.9)" strokeWidth="1.5"/>)}
+        {[11,21,31].map((y,i)=><circle key={i} cx="18" cy={y} r="2.2" stroke="rgba(30,30,30,0.9)" strokeWidth="1.5"/>)}
+        {[14,26].map((y,i)=><circle key={i} cx="28" cy={y} r="2.2" stroke="rgba(30,30,30,0.9)" strokeWidth="1.5"/>)}
+        {[8,18,28].flatMap((y1)=>[11,21,31].map((y2,j)=>(
+          <line key={`${y1}-${j}`} x1="10" y1={y1} x2="16" y2={y2} stroke="rgba(30,30,30,0.25)" strokeWidth="0.9"/>
+        )))}
+        {[11,21,31].flatMap((y1)=>[14,26].map((y2,j)=>(
+          <line key={`${y1}-${j}`} x1="20" y1={y1} x2="26" y2={y2} stroke="rgba(30,30,30,0.25)" strokeWidth="0.9"/>
+        )))}
       </svg>
     ),
   },
   {
     id: '04',
-    sys: 'CYBER',
     title: 'CYBERSECURITY',
-    sub: 'Systems & Network Defense',
-    color: '#f87171',
-    signal: [1, 1, 0.9, 0.6, 0.3],
-    uptime: '100%',
-    icon: (color: string) => (
-      <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-        <path
-          d="M18 3 L30 8 L30 18 C30 25 24 31 18 33 C12 31 6 25 6 18 L6 8 Z"
-          stroke={color}
-          strokeWidth="1.3"
-          fill={color}
-          fillOpacity="0.1"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M12 18 L16 22 L24 14"
-          stroke={color}
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+    sub: 'Systems & Defense',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <path d="M18 3L30 8L30 18C30 25 24 31 18 33C12 31 6 25 6 18L6 8Z"
+          stroke="rgba(30,30,30,0.9)" strokeWidth="1.8" fill="none" strokeLinejoin="round"/>
+        <path d="M12 18L16 22L24 14" stroke="rgba(30,30,30,0.9)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     ),
   },
   {
     id: '05',
-    sys: 'WEB',
     title: 'WEB DEV',
-    sub: 'Frontend & Backend Systems',
-    color: '#34d399',
-    signal: [1, 1, 0.8, 0.4, 0.1],
-    uptime: '97.8%',
-    icon: (color: string) => (
-      <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-        <circle cx="18" cy="18" r="13" stroke={color} strokeWidth="1.3" />
-        <ellipse cx="18" cy="18" rx="6" ry="13" stroke={color} strokeWidth="1" strokeOpacity="0.6" />
-        <line x1="5" y1="18" x2="31" y2="18" stroke={color} strokeWidth="1" strokeOpacity="0.5" />
-        <line x1="7" y1="12" x2="29" y2="12" stroke={color} strokeWidth="0.8" strokeOpacity="0.35" />
-        <line x1="7" y1="24" x2="29" y2="24" stroke={color} strokeWidth="0.8" strokeOpacity="0.35" />
+    sub: 'Frontend & Backend',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect x="3" y="5" width="30" height="26" rx="2" stroke="rgba(30,30,30,0.9)" strokeWidth="1.8"/>
+        <line x1="3" y1="12" x2="33" y2="12" stroke="rgba(30,30,30,0.6)" strokeWidth="1.2"/>
+        <circle cx="8" cy="8.5" r="1.4" fill="rgba(30,30,30,0.5)"/>
+        <circle cx="13" cy="8.5" r="1.4" fill="rgba(30,30,30,0.5)"/>
+        <line x1="7" y1="18" x2="29" y2="18" stroke="rgba(30,30,30,0.3)" strokeWidth="1.2"/>
+        <line x1="7" y1="22" x2="24" y2="22" stroke="rgba(30,30,30,0.3)" strokeWidth="1.2"/>
+        <line x1="7" y1="26" x2="20" y2="26" stroke="rgba(30,30,30,0.3)" strokeWidth="1.2"/>
+        <rect x="10" y="33" width="16" height="3" rx="1" stroke="rgba(30,30,30,0.5)" strokeWidth="1.2"/>
       </svg>
     ),
   },
   {
     id: '06',
-    sys: 'APP',
     title: 'APP DEV',
     sub: 'Mobile & Cross-Platform',
-    color: '#f472b6',
-    signal: [1, 1, 0.7, 0.3, 0.1],
-    uptime: '98.1%',
-    icon: (color: string) => (
-      <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-        <rect x="11" y="2" width="14" height="32" rx="3" stroke={color} strokeWidth="1.3" />
-        <line x1="11" y1="7" x2="25" y2="7" stroke={color} strokeWidth="0.8" strokeOpacity="0.5" />
-        <line x1="11" y1="29" x2="25" y2="29" stroke={color} strokeWidth="0.8" strokeOpacity="0.5" />
-        <circle cx="18" cy="31.5" r="1" fill={color} opacity="0.6" />
-        <rect x="15" y="4" width="6" height="1.5" rx="0.75" fill={color} opacity="0.5" />
-        <rect x="14" y="13" width="8" height="6" rx="1" stroke={color} strokeWidth="0.9" strokeOpacity="0.7" />
-        <line x1="14" y1="22" x2="22" y2="22" stroke={color} strokeWidth="0.8" strokeOpacity="0.4" />
-        <line x1="14" y1="24.5" x2="20" y2="24.5" stroke={color} strokeWidth="0.8" strokeOpacity="0.4" />
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect x="11" y="2" width="14" height="32" rx="2.5" stroke="rgba(30,30,30,0.9)" strokeWidth="1.8"/>
+        <line x1="11" y1="7" x2="25" y2="7" stroke="rgba(30,30,30,0.45)" strokeWidth="1"/>
+        <line x1="11" y1="29" x2="25" y2="29" stroke="rgba(30,30,30,0.45)" strokeWidth="1"/>
+        <circle cx="18" cy="32" r="1.2" fill="rgba(30,30,30,0.5)"/>
+        <rect x="15" y="4" width="6" height="1.5" rx="0.75" fill="rgba(30,30,30,0.35)"/>
+        <rect x="14" y="12" width="8" height="7" rx="1" stroke="rgba(30,30,30,0.4)" strokeWidth="1"/>
+        <line x1="14" y1="23" x2="22" y2="23" stroke="rgba(30,30,30,0.3)" strokeWidth="1"/>
+        <line x1="14" y1="26" x2="20" y2="26" stroke="rgba(30,30,30,0.3)" strokeWidth="1"/>
       </svg>
     ),
   },
 ];
+
+// Screw SVG — used in all 4 corners
+function Screw() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+      <circle cx="5" cy="5" r="4" fill="#b0a898" stroke="#7a6f62" strokeWidth="0.8"/>
+      <circle cx="5" cy="5" r="2.2" fill="none" stroke="#7a6f62" strokeWidth="0.6"/>
+      {/* Phillips head */}
+      <line x1="5" y1="2.8" x2="5" y2="7.2" stroke="#6a5f53" strokeWidth="0.9" strokeLinecap="round"/>
+      <line x1="2.8" y1="5" x2="7.2" y2="5" stroke="#6a5f53" strokeWidth="0.9" strokeLinecap="round"/>
+    </svg>
+  );
+}
 
 function DomainCard({
   domain,
@@ -167,288 +123,128 @@ function DomainCard({
   domain: (typeof DOMAINS)[0];
   addToRefs: (el: HTMLDivElement | null) => void;
 }) {
-  const { id, sys, title, sub, color, signal, uptime, icon } = domain;
+  const { id, title, sub, icon } = domain;
 
   return (
     <div
       ref={addToRefs}
       className="absolute"
-      style={{ width: '15.5vw', minWidth: '180px', maxWidth: '240px' }}
+      style={{ width: '15vw', minWidth: '170px', maxWidth: '224px' }}
     >
-      <div
-        style={{
-          padding: '1.5px',
-          background: `linear-gradient(145deg, ${color} 0%, ${color}30 40%, ${color}60 100%)`,
-          borderRadius: '8px',
-          boxShadow: `0 0 20px ${color}20, 0 0 50px ${color}08`,
-          position: 'relative',
-        }}
-      >
-        {/* Corner bolts */}
-        {[
-          { top: '-5px', left: '-5px' },
-          { top: '-5px', right: '-5px' },
-          { bottom: '-5px', left: '-5px' },
-          { bottom: '-5px', right: '-5px' },
-        ].map((pos, i) => (
-          <div
-            key={i}
-            className="absolute"
-            style={{
-              ...pos,
-              width: '7px',
-              height: '7px',
-              borderRadius: '50%',
-              background: '#050505',
-              border: `1.5px solid ${color}`,
-              boxShadow: `0 0 5px ${color}80`,
-              zIndex: 10,
-            }}
-          />
-        ))}
+      {/* Drop shadow for depth */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        transform: 'translate(4px, 5px)',
+        background: 'rgba(0,0,0,0.55)',
+        borderRadius: '6px',
+        filter: 'blur(6px)',
+      }}/>
 
-        {/* Card body */}
-        <div
-          style={{
-            background: 'linear-gradient(160deg, #111118 0%, #0a0a0f 60%, #08080d 100%)',
-            borderRadius: '7px',
-            padding: '15px 15px 13px',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Top accent bar */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: '3px',
-              background: `linear-gradient(90deg,transparent,${color},${color}80,transparent)`,
-              borderRadius: '7px 7px 0 0',
-            }}
-          />
+      {/* Metal plate */}
+      <div style={{
+        position: 'relative',
+        borderRadius: '5px',
+        padding: '14px 14px 16px',
+        /* Brushed metal: layered gradients */
+        background: `
+          repeating-linear-gradient(
+            92deg,
+            transparent,
+            transparent 2px,
+            rgba(255,255,255,0.025) 2px,
+            rgba(255,255,255,0.025) 4px
+          ),
+          linear-gradient(
+            175deg,
+            #d4cfc8 0%,
+            #bfb9b0 18%,
+            #cdc8c0 35%,
+            #b8b2a8 52%,
+            #c8c2ba 68%,
+            #b0aaa0 85%,
+            #c2bdb4 100%
+          )
+        `,
+        border: '1.5px solid #8a847a',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.55), inset 0 -1px 0 rgba(0,0,0,0.2)',
+        overflow: 'visible',
+      }}>
 
-          {/* Inner glow */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: `radial-gradient(ellipse 80% 50% at 50% -10%,${color}10 0%,transparent 70%)`,
-              pointerEvents: 'none',
-            }}
-          />
+        {/* Screws — absolute positioned at each corner */}
+        <span style={{ position: 'absolute', top: '5px', left: '6px' }}><Screw/></span>
+        <span style={{ position: 'absolute', top: '5px', right: '6px' }}><Screw/></span>
+        <span style={{ position: 'absolute', bottom: '5px', left: '6px' }}><Screw/></span>
+        <span style={{ position: 'absolute', bottom: '5px', right: '6px' }}><Screw/></span>
 
-          {/* Circuit trace */}
-          <svg
-            style={{
-              position: 'absolute',
-              top: '3px',
-              left: 0,
-              width: '100%',
-              height: '2px',
-              overflow: 'visible',
-              pointerEvents: 'none',
-            }}
-          >
-            <line x1="8%" y1="1" x2="92%" y2="1" stroke={`${color}20`} strokeWidth="1" />
-            <line
-              x1="8%"
-              y1="1"
-              x2="92%"
-              y2="1"
-              stroke={color}
-              strokeWidth="1.5"
-              opacity="0.9"
-              strokeDasharray="25 200"
-            >
-              <animate
-                attributeName="stroke-dashoffset"
-                values="0;-225"
-                dur="2s"
-                repeatCount="indefinite"
-              />
-            </line>
-          </svg>
+        {/* Engraved top label */}
+        <div style={{
+          textAlign: 'center',
+          marginBottom: '10px',
+          marginTop: '4px',
+        }}>
+          <span style={{
+            fontFamily: 'monospace',
+            fontSize: '7px',
+            letterSpacing: '0.22em',
+            textTransform: 'uppercase',
+            /* Engraved: dark shadow above, light below */
+            color: 'rgba(60,54,46,0.5)',
+            textShadow: '-0.5px -0.5px 0 rgba(255,255,255,0.6), 0.5px 0.5px 1px rgba(0,0,0,0.35)',
+          }}>
+            MODULE_{id}
+          </span>
+        </div>
 
-          <div style={{ position: 'relative', zIndex: 2 }}>
-            {/* Top row */}
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                marginBottom: '10px',
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                    marginBottom: '2px',
-                  }}
-                >
-                  <span
-                    style={{
-                      display: 'inline-block',
-                      width: '5px',
-                      height: '5px',
-                      borderRadius: '50%',
-                      background: color,
-                      boxShadow: `0 0 6px ${color}`,
-                      animation: 'pdot 2s ease-in-out infinite',
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontSize: '8px',
-                      letterSpacing: '0.14em',
-                      color: `${color}CC`,
-                      fontFamily: 'monospace',
-                    }}
-                  >
-                    SYS.{sys}
-                  </span>
-                </div>
-                <span
-                  style={{
-                    fontSize: '8px',
-                    color: `${color}40`,
-                    letterSpacing: '0.08em',
-                    fontFamily: 'monospace',
-                  }}
-                >
-                  MODULE_{id}
-                </span>
-              </div>
-              <div
-                style={{
-                  padding: '5px',
-                  border: `1px solid ${color}30`,
-                  borderRadius: '4px',
-                  background: `${color}0D`,
-                }}
-              >
-                {icon(color)}
-              </div>
-            </div>
+        {/* Recessed icon panel */}
+        <div style={{
+          margin: '0 auto 12px',
+          width: '68px',
+          height: '68px',
+          borderRadius: '4px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(145deg, #a8a39a 0%, #c0bbb2 50%, #b0aa9f 100%)',
+          boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 0 rgba(255,255,255,0.3)',
+          border: '1px solid rgba(90,84,76,0.4)',
+        }}>
+          {icon}
+        </div>
 
-            {/* Title */}
-            <div style={{ marginBottom: '10px' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  marginBottom: '3px',
-                }}
-              >
-                <div
-                  style={{
-                    width: '6px',
-                    height: '6px',
-                    borderTop: `2px solid ${color}`,
-                    borderLeft: `2px solid ${color}`,
-                    flexShrink: 0,
-                  }}
-                />
-                <h3
-                  style={{
-                    margin: 0,
-                    fontSize: 'clamp(11px,1vw,15px)',
-                    fontWeight: '700',
-                    color: '#ffffff',
-                    letterSpacing: '0.12em',
-                    fontFamily: 'monospace',
-                  }}
-                >
-                  {title}
-                </h3>
-              </div>
-              <p
-                style={{
-                  margin: 0,
-                  paddingLeft: '11px',
-                  fontSize: '8px',
-                  color: `${color}70`,
-                  letterSpacing: '0.04em',
-                  fontFamily: 'monospace',
-                }}
-              >
-                {sub}
-              </p>
-            </div>
+        {/* Engraved horizontal rule */}
+        <div style={{
+          height: '1px',
+          margin: '0 8px 10px',
+          background: 'linear-gradient(90deg, transparent, rgba(80,70,60,0.35) 30%, rgba(80,70,60,0.35) 70%, transparent)',
+          boxShadow: '0 1px 0 rgba(255,255,255,0.5)',
+        }}/>
 
-            {/* Divider */}
-            <div
-              style={{
-                height: '1px',
-                background: `linear-gradient(90deg,${color}50,${color}10,transparent)`,
-                marginBottom: '9px',
-              }}
-            />
-
-            {/* Stats */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-              <div>
-                <div
-                  style={{
-                    fontSize: '6px',
-                    color: `${color}50`,
-                    letterSpacing: '0.12em',
-                    fontFamily: 'monospace',
-                    marginBottom: '3px',
-                  }}
-                >
-                  SIGNAL
-                </div>
-                <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px' }}>
-                  {signal.map((s, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        width: '3px',
-                        height: `${6 + i * 2.5}px`,
-                        background: color,
-                        opacity: s,
-                        borderRadius: '1px',
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div
-                  style={{
-                    fontSize: '6px',
-                    color: `${color}50`,
-                    letterSpacing: '0.12em',
-                    fontFamily: 'monospace',
-                    marginBottom: '2px',
-                  }}
-                >
-                  UPTIME
-                </div>
-                <div
-                  style={{
-                    fontSize: 'clamp(15px,1.3vw,19px)',
-                    fontWeight: '700',
-                    color: color,
-                    fontFamily: 'monospace',
-                    textShadow: `0 0 12px ${color}70`,
-                  }}
-                >
-                  {uptime}
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Title — engraved */}
+        <div style={{ textAlign: 'center', padding: '0 8px' }}>
+          <h3 style={{
+            margin: '0 0 4px',
+            fontFamily: '"Inter", "Arial Black", sans-serif',
+            fontWeight: '900',
+            fontSize: 'clamp(11px, 1vw, 14px)',
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            color: 'rgba(40,34,28,0.75)',
+            textShadow: '-0.5px -0.5px 0 rgba(255,255,255,0.7), 1px 1px 2px rgba(0,0,0,0.4)',
+            lineHeight: 1.1,
+          }}>
+            {title}
+          </h3>
+          <p style={{
+            margin: 0,
+            fontFamily: 'monospace',
+            fontSize: '7px',
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: 'rgba(60,54,46,0.55)',
+            textShadow: '-0.3px -0.3px 0 rgba(255,255,255,0.55), 0.5px 0.5px 1px rgba(0,0,0,0.3)',
+          }}>
+            {sub}
+          </p>
         </div>
       </div>
     </div>
@@ -470,12 +266,8 @@ export default function Domains() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.set(cardsRef.current, {
-        x: '0vw',
-        y: '0vh',
-        scale: 0.82,
-        rotationY: 0,
-        opacity: 1,
-        transformPerspective: 1000,
+        x: '0vw', y: '0vh', scale: 0.82,
+        rotationY: 0, opacity: 1, transformPerspective: 1000,
       });
 
       const tl = gsap.timeline({
@@ -488,7 +280,6 @@ export default function Domains() {
         },
       });
 
-      // PHASE 1 — deploy with Y-axis flip
       tl.to(cardsRef.current, {
         x: (i) => ['-25vw', '-15vw', '-5vw', '5vw', '15vw', '25vw'][i],
         y: (i) => ['12vh', '-10vh', '8vh', '-8vh', '10vh', '-12vh'][i],
@@ -499,17 +290,14 @@ export default function Domains() {
         ease: 'power2.out',
       });
 
-      // Settle rotationY
       tl.to(cardsRef.current, {
         rotationY: 0,
         duration: 0.4,
         ease: 'power1.out',
       });
 
-      // PHASE 2 — horizontal row
       tl.to(cardsRef.current, {
-        x: (i) =>
-          ['-38.75vw', '-23.25vw', '-7.75vw', '7.75vw', '23.25vw', '38.75vw'][i],
+        x: (i) => ['-38.75vw', '-23.25vw', '-7.75vw', '7.75vw', '23.25vw', '38.75vw'][i],
         y: '0vh',
         rotation: 0,
         scale: 1,
@@ -517,22 +305,14 @@ export default function Domains() {
         ease: 'power2.inOut',
       });
 
-      // PHASE 2.5 — heading fades out
       tl.to(
         [headingRef.current, eyebrowRef.current, sectionLabelRef.current],
-        {
-          opacity: 0,
-          y: -20,
-          duration: 0.4,
-          ease: 'power2.in',
-        },
+        { opacity: 0, y: -20, duration: 0.4, ease: 'power2.in' },
         '<0.3'
       );
 
-      // PHASE 3 — blast off
       tl.to(cardsRef.current, {
-        x: (i) =>
-          ['-160vw', '-96vw', '-32vw', '32vw', '96vw', '160vw'][i],
+        x: (i) => ['-160vw', '-96vw', '-32vw', '32vw', '96vw', '160vw'][i],
         y: (i) => ['-12vh', '8vh', '-6vh', '6vh', '-8vh', '12vh'][i],
         rotationY: (i) => [-40, -24, -8, 8, 24, 40][i],
         scale: 3,
@@ -546,135 +326,63 @@ export default function Domains() {
   }, []);
 
   return (
-    <>
-      <style>{`
-        @keyframes pdot {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.3; transform: scale(0.6); }
-        }
-      `}</style>
+    <section
+      id="domains"
+      ref={sectionRef}
+      className="relative w-full h-screen overflow-hidden flex items-center justify-center"
+      style={{ background: '#050505' }}
+    >
+      {/* Grid */}
+      <div className="absolute inset-0 z-0 pointer-events-none" style={{
+        backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
+        backgroundSize: '60px 60px',
+      }}/>
 
-      <section
-        id="domains"
-        ref={sectionRef}
-        className="relative w-full h-screen overflow-hidden flex items-center justify-center"
-        style={{ background: '#050505' }}
-      >
-        {/* Grid background — matches roboVITics site */}
-        <div
-          className="absolute inset-0 z-0 pointer-events-none"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
-          }}
-        />
+      {/* Section label */}
+      <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
+        <span style={{ fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase' }}>
+          <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02.</span>
+          SYSTEM.LOGS // DOMAINS
+        </span>
+      </div>
 
-        {/* Subtle radial vignette */}
-        <div
-          className="absolute inset-0 z-0 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(ellipse 80% 70% at 50% 50%, transparent 30%, rgba(0,0,0,0.7) 100%)',
-          }}
-        />
+      {/* Heading */}
+      <div className="absolute z-20 flex flex-col items-center pointer-events-none"
+        style={{ top: '18%', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>
+        <span ref={eyebrowRef} style={{
+          fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
+          fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase',
+        }}>
+          ▶ SECTOR_MAP // DOMAINS
+        </span>
+        <h2 ref={headingRef} style={{
+          margin: 0, fontSize: 'clamp(32px,4.5vw,72px)', fontWeight: '900',
+          color: '#ffffff', letterSpacing: '-0.01em',
+          fontFamily: '"Inter", "Arial Black", sans-serif',
+          textTransform: 'uppercase', lineHeight: 1, textAlign: 'center',
+        }}>
+          DOMAINS AT{' '}
+          <span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 900 }}>ROBOVITICS.</span>
+        </h2>
+        <div style={{
+          marginTop: '14px', width: '50%', height: '1px',
+          background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)',
+        }}/>
+      </div>
 
-        {/* Section label — top-left, matches site style */}
-        <div
-          ref={sectionLabelRef}
-          className="absolute z-20 pointer-events-none"
-          style={{ top: '10%', left: '6%' }}
-        >
-          <span
-            style={{
-              fontFamily: 'monospace',
-              fontSize: '11px',
-              letterSpacing: '0.2em',
-              color: 'rgba(255,255,255,0.35)',
-              textTransform: 'uppercase',
-            }}
-          >
-            <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02.</span>
-            SYSTEM.LOGS // DOMAINS
-          </span>
-        </div>
+      {/* Cards */}
+      <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
+        {DOMAINS.map((domain) => (
+          <DomainCard key={domain.id} domain={domain} addToRefs={addToRefs} />
+        ))}
+      </div>
 
-        {/* Main heading — centered upper area */}
-        <div
-          className="absolute z-20 flex flex-col items-center pointer-events-none"
-          style={{
-            top: '18%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <span
-            ref={eyebrowRef}
-            style={{
-              fontSize: '9px',
-              letterSpacing: '0.35em',
-              color: 'rgba(255,255,255,0.2)',
-              fontFamily: 'monospace',
-              marginBottom: '12px',
-              display: 'block',
-              textTransform: 'uppercase',
-            }}
-          >
-            ▶ SECTOR_MAP // DOMAINS
-          </span>
-          <h2
-            ref={headingRef}
-            style={{
-              margin: 0,
-              fontSize: 'clamp(32px,4.5vw,72px)',
-              fontWeight: '900',
-              color: '#ffffff',
-              letterSpacing: '-0.01em',
-              fontFamily: '"Inter", "Arial Black", sans-serif',
-              textTransform: 'uppercase',
-              lineHeight: 1,
-              textAlign: 'center',
-            }}
-          >
-            DOMAINS AT{' '}
-            <span style={{ color: 'rgba(255,255,255,0.45)', fontWeight: 900 }}>
-              ROBOVITICS.
-            </span>
-          </h2>
-          <div
-            style={{
-              marginTop: '14px',
-              width: '50%',
-              height: '1px',
-              background:
-                'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)',
-            }}
-          />
-        </div>
-
-        {/* Cards layer */}
-        <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
-          {DOMAINS.map((domain) => (
-            <DomainCard key={domain.id} domain={domain} addToRefs={addToRefs} />
-          ))}
-        </div>
-
-        {/* Scroll hint */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-20">
-          <span
-            style={{
-              fontSize: '8px',
-              letterSpacing: '0.25em',
-              color: 'rgba(255,255,255,0.12)',
-              fontFamily: 'monospace',
-              textTransform: 'uppercase',
-            }}
-          >
-            SCROLL TO DEPLOY ↓
-          </span>
-        </div>
-      </section>
-    </>
+      {/* Scroll hint */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-20">
+        <span style={{ fontSize: '8px', letterSpacing: '0.25em', color: 'rgba(255,255,255,0.1)', fontFamily: 'monospace', textTransform: 'uppercase' }}>
+          SCROLL TO DEPLOY ↓
+        </span>
+      </div>
+    </section>
   );
 }
