@@ -6,7 +6,9 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
 import Domains from '@/components/Domains';
-import TextBridge from '@/components/TextBridge';
+import Events from "@/components/Events";
+import EventsTerminal from "@/components/EventsTerminal"; // concept 02 — tape
+
 
 export default function Page() {
   const domainsRef = useRef<HTMLDivElement>(null);
@@ -96,6 +98,10 @@ export default function Page() {
       <div ref={domainsRef}>
         <Domains />
       </div>
+      <Events />
+      <EventsTerminal />  {/* or <Events /> */}
+
+
 
     </main>
   );
