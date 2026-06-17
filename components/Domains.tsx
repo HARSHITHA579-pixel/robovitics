@@ -135,28 +135,11 @@ function Screw() {
   );
 }
 
-function DomainCard({
-  domain,
-  index,
-  addToRefs,
-}: {
-  domain: (typeof DOMAINS)[0];
-  index: number;
-  addToRefs: (el: HTMLDivElement | null, index: number) => void;
-}) {
+// Extracted the complex visual layers so they can be reused perfectly in both layouts
+function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
   const { id, title, sub, icon } = domain;
-
   return (
-    <div
-      ref={(el) => addToRefs(el, index)}
-      data-domain-card={id}
-      className="absolute"
-      style={{
-        width: 'clamp(108px, 15vw, 224px)',
-        willChange: 'transform, opacity',
-      }}
-    >
-      {/* Drop shadow */}
+    <>
       <div style={{
         position: 'absolute', inset: 0,
         transform: 'translate(8px, 10px)',
@@ -165,7 +148,6 @@ function DomainCard({
         filter: 'blur(10px)',
       }} />
 
-      {/* Card body */}
       <div style={{
         position: 'relative',
         borderRadius: '4px',
@@ -182,17 +164,14 @@ function DomainCard({
         overflow: 'visible',
         color: '#f1f3f5',
       }}>
-        {/* Screws */}
         <span style={{ position: 'absolute', top: '5px', left: '6px' }}><Screw /></span>
         <span style={{ position: 'absolute', top: '5px', right: '6px' }}><Screw /></span>
         <span style={{ position: 'absolute', bottom: '5px', left: '6px' }}><Screw /></span>
         <span style={{ position: 'absolute', bottom: '5px', right: '6px' }}><Screw /></span>
 
-        {/* Edge accents */}
         <span style={{ position: 'absolute', top: '-1px', left: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.65)' }} />
         <span style={{ position: 'absolute', bottom: '-1px', right: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.45)' }} />
 
-        {/* Module ID */}
         <div style={{ textAlign: 'center', marginBottom: '10px', marginTop: '4px' }}>
           <span style={{
             fontFamily: 'monospace', fontSize: '7px', letterSpacing: '0.22em',
@@ -203,7 +182,6 @@ function DomainCard({
           </span>
         </div>
 
-        {/* Icon */}
         <div style={{
           margin: '0 auto 12px',
           width: 'clamp(46px, 5.4vw, 68px)',
@@ -217,20 +195,18 @@ function DomainCard({
           {icon}
         </div>
 
-        {/* Divider */}
         <div style={{
           height: '1px', margin: '0 8px 10px',
           background: 'linear-gradient(90deg, transparent, rgba(235,238,242,0.42) 30%, rgba(235,238,242,0.42) 70%, transparent)',
           boxShadow: '0 0 10px rgba(180,205,255,0.16)',
         }} />
 
-        {/* Labels */}
         <div style={{ textAlign: 'center', padding: '0 8px' }}>
           <h3 style={{
             margin: '0 0 4px',
             fontFamily: '"Inter", "Arial Black", sans-serif',
             fontWeight: '900',
-            fontSize: 'clamp(9px, 1vw, 14px)',
+            fontSize: 'clamp(11px, 1vw, 14px)',
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
             color: 'rgba(245,247,250,0.9)',
@@ -241,7 +217,7 @@ function DomainCard({
           </h3>
           <p style={{
             margin: 0, fontFamily: 'monospace',
-            fontSize: 'clamp(5px, 0.55vw, 7px)',
+            fontSize: 'clamp(7px, 0.55vw, 7px)',
             letterSpacing: '0.1em', textTransform: 'uppercase',
             color: 'rgba(168,176,188,0.62)',
             textShadow: '0 0 10px rgba(180,205,255,0.12)',
@@ -250,6 +226,40 @@ function DomainCard({
           </p>
         </div>
       </div>
+    </>
+  );
+}
+
+// Wrapper for the GSAP layout
+function DomainCardDesktop({
+  domain,
+  index,
+  addToRefs,
+}: {
+  domain: (typeof DOMAINS)[0];
+  index: number;
+  addToRefs: (el: HTMLDivElement | null, index: number) => void;
+}) {
+  return (
+    <div
+      ref={(el) => addToRefs(el, index)}
+      data-domain-card={domain.id}
+      className="absolute"
+      style={{
+        width: 'clamp(108px, 15vw, 224px)',
+        willChange: 'transform, opacity',
+      }}
+    >
+      <CardInner domain={domain} />
+    </div>
+  );
+}
+
+// Wrapper for the Mobile layout
+function DomainCardMobile({ domain }: { domain: (typeof DOMAINS)[0] }) {
+  return (
+    <div className="relative w-full max-w-[240px] mx-auto mb-8 z-10">
+      <CardInner domain={domain} />
     </div>
   );
 }
@@ -265,153 +275,198 @@ export default function Domains() {
     if (el) cardsRef.current[index] = el;
   };
 
-useEffect(() => {
-  const ctx = gsap.context(() => {
-    const patternX = ['-30vw', '-18vw', '-6vw', '6vw', '18vw', '30vw'];
-    const patternY = ['18vh', '-9vh', '18vh', '-9vh', '18vh', '-9vh'];
-    const lineXValues = [-38, -22.8, -7.6, 7.6, 22.8, 38];
-    const lineX = lineXValues.map(v => `${v}vw`);
-    const lineScale = 0.82;
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Create a matchMedia instance to restrict GSAP strictly to desktop
+      const mm = gsap.matchMedia();
 
-    gsap.set(cardsRef.current, {
-      x: 0, y: '7vh', scale: 0.58,
-      opacity: 0, rotation: 0,
-      force3D: true, transformOrigin: 'center center',
-    });
+      mm.add("(min-width: 768px)", () => {
+        const patternX = ['-30vw', '-18vw', '-6vw', '6vw', '18vw', '30vw'];
+        const patternY = ['18vh', '-9vh', '18vh', '-9vh', '18vh', '-9vh'];
+        const lineXValues = [-38, -22.8, -7.6, 7.6, 22.8, 38];
+        const lineX = lineXValues.map(v => `${v}vw`);
+        const lineScale = 0.82;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top top',
-        end: '+=3600',
-        scrub: 1.5,
-        pin: true,
-        anticipatePin: 1,
-        fastScrollEnd: true,
-      },
-    });
+        gsap.set(cardsRef.current, {
+          x: 0, y: '7vh', scale: 0.58,
+          opacity: 0, rotation: 0,
+          force3D: true, transformOrigin: 'center center',
+        });
 
-    // Phase 1 — fade in, cluster
-    tl.to(cardsRef.current, {
-      opacity: 1, scale: 0.78, y: '6vh',
-      duration: 0.4, stagger: 0.02,
-      ease: 'power2.out', force3D: true,
-    });
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top top',
+            end: '+=3600',
+            scrub: 1.5,
+            pin: true,
+            anticipatePin: 1,
+            fastScrollEnd: true,
+          },
+        });
 
-    // Phase 2 — scatter into pattern
-    tl.to(cardsRef.current, {
-      x: (i) => patternX[i],
-      y: (i) => patternY[i],
-      scale: 0.95, duration: 0.9,
-      ease: 'power2.inOut', force3D: true,
-    });
+        tl.to(cardsRef.current, {
+          opacity: 1, scale: 0.78, y: '6vh',
+          duration: 0.4, stagger: 0.02,
+          ease: 'power2.out', force3D: true,
+        });
 
-    // Phase 3 — form horizontal line
-    tl.to(cardsRef.current, {
-      x: (i) => lineX[i],
-      y: '12vh', scale: lineScale,
-      duration: 0.9,
-      ease: 'power2.inOut', force3D: true,
-    });
+        tl.to(cardsRef.current, {
+          x: (i) => patternX[i],
+          y: (i) => patternY[i],
+          scale: 0.95, duration: 0.9,
+          ease: 'power2.inOut', force3D: true,
+        });
 
-    // Phase 4a — zoom to peak together
-    const peakScale = 2;
-    const peakX = lineXValues.map(v => `${v * (peakScale / lineScale)}vw`);
+        tl.to(cardsRef.current, {
+          x: (i) => lineX[i],
+          y: '12vh', scale: lineScale,
+          duration: 0.9,
+          ease: 'power2.inOut', force3D: true,
+        });
 
-    tl.to(cardsRef.current, {
-      scale: peakScale,
-      x: (i) => peakX[i],
-      y: '12vh', duration: 0.7,
-      ease: 'power2.out', force3D: true,
-    });
+        const peakScale = 2;
+        const peakX = lineXValues.map(v => `${v * (peakScale / lineScale)}vw`);
 
-    // Title fades at start of 4a
-    tl.to(
-      [headingRef.current, eyebrowRef.current, sectionLabelRef.current],
-      { opacity: 0, y: -20, duration: 0.3, ease: 'power2.in' },
-      '<-0.7',
-    );
+        tl.to(cardsRef.current, {
+          scale: peakScale,
+          x: (i) => peakX[i],
+          y: '12vh', duration: 0.7,
+          ease: 'power2.out', force3D: true,
+        });
 
-    // Phase 4b — zoom + split exit (same as original, just slower so it can't be skipped)
-    tl.to(cardsRef.current, {
-      x: (i) => (i < 3 ? '-160vw' : '160vw'),
-      scale: 8,
-      duration: 1.8,
-      ease: 'power2.inOut',
-      force3D: true,
-    });
+        tl.to(
+          [headingRef.current, eyebrowRef.current, sectionLabelRef.current],
+          { opacity: 0, y: -20, duration: 0.3, ease: 'power2.in' },
+          '<-0.7',
+        );
 
-  }, sectionRef);
+        tl.to(cardsRef.current, {
+          x: (i) => (i < 3 ? '-160vw' : '160vw'),
+          scale: 8,
+          duration: 1.8,
+          ease: 'power2.inOut',
+          force3D: true,
+        });
+      });
+    }, sectionRef);
 
-  return () => ctx.revert();
-}, []);
+    return () => ctx.revert();
+  }, []);
+
   return (
-   <section
-  id="domains"
-  ref={sectionRef}
-  className="relative w-full h-screen overflow-hidden flex items-center justify-center"
-  style={{
-    background: '#050505',
-    backgroundImage: 'url(/hero-bg.png)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-  }}
->
-  
-      
+    <>
+      {/* MOBILE LAYOUT: Standard vertical flow (hidden on md and above) */}
+      <section
+        id="domains-mobile"
+        className="relative w-full min-h-screen py-24 px-6 flex flex-col md:hidden bg-[#050505]"
+        style={{
+          backgroundImage: 'url(/hero-bg.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute top-6 left-6 z-20 pointer-events-none">
+          <span style={{
+            fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
+            color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
+          }}>
+            <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02.</span>
+            SYSTEM.LOGS // DOMAINS
+          </span>
+        </div>
 
-      {/* Section label */}
-      <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
-        <span style={{
-          fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
-          color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
-        }}>
-          <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02.</span>
-          SYSTEM.LOGS // DOMAINS
-        </span>
-      </div>
+        <div className="z-20 flex flex-col items-center pointer-events-none text-center mt-12 mb-16">
+          <span style={{
+            fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
+            fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase',
+          }}>
+            ▶ SECTOR_MAP // DOMAINS
+          </span>
+          <h2 style={{
+            margin: 0, fontSize: 'clamp(32px,10vw,48px)', fontWeight: '900',
+            color: '#ffffff', letterSpacing: '-0.01em',
+            fontFamily: '"Inter", "Arial Black", sans-serif',
+            textTransform: 'uppercase', lineHeight: 1,
+          }}>
+            DOMAINS AT <br/>
+            <span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 900 }}>ROBOVITICS.</span>
+          </h2>
+          <div style={{
+            marginTop: '14px', width: '80%', height: '1px',
+            background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)',
+          }} />
+        </div>
 
-      {/* Heading */}
-      <div className="absolute z-20 flex flex-col items-center pointer-events-none"
-        style={{ top: '18%', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>
-        <span ref={eyebrowRef} style={{
-          fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
-          fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase',
-        }}>
-          ▶ SECTOR_MAP // DOMAINS
-        </span>
-        <h2 ref={headingRef} style={{
-          margin: 0, fontSize: 'clamp(32px,4.5vw,72px)', fontWeight: '900',
-          color: '#ffffff', letterSpacing: '-0.01em',
-          fontFamily: '"Inter", "Arial Black", sans-serif',
-          textTransform: 'uppercase', lineHeight: 1, textAlign: 'center',
-        }}>
-          DOMAINS AT{' '}
-          <span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 900 }}>ROBOVITICS.</span>
-        </h2>
-        <div style={{
-          marginTop: '14px', width: '50%', height: '1px',
-          background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)',
-        }} />
-      </div>
+        <div className="w-full flex flex-col justify-center">
+          {DOMAINS.map((domain) => (
+            <DomainCardMobile key={`mobile-${domain.id}`} domain={domain} />
+          ))}
+        </div>
+      </section>
 
-      {/* Cards */}
-      <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
-        {DOMAINS.map((domain, index) => (
-          <DomainCard key={domain.id} domain={domain} index={index} addToRefs={addToRefs} />
-        ))}
-      </div>
 
-      {/* Scroll hint */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-20">
-        <span style={{
-          fontSize: '8px', letterSpacing: '0.25em',
-          color: 'rgba(255,255,255,0.1)', fontFamily: 'monospace', textTransform: 'uppercase',
-        }}>
-          SCROLL TO DEPLOY ↓
-        </span>
-      </div>
-    </section>
+      {/* DESKTOP LAYOUT: Original GSAP timeline (hidden on mobile) */}
+      <section
+        id="domains"
+        ref={sectionRef}
+        className="relative w-full h-screen overflow-hidden hidden md:flex items-center justify-center bg-[#050505]"
+        style={{
+          backgroundImage: 'url(/hero-bg.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
+          <span style={{
+            fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
+            color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
+          }}>
+            <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02.</span>
+            SYSTEM.LOGS // DOMAINS
+          </span>
+        </div>
+
+        <div className="absolute z-20 flex flex-col items-center pointer-events-none"
+          style={{ top: '18%', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>
+          <span ref={eyebrowRef} style={{
+            fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
+            fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase',
+          }}>
+            ▶ SECTOR_MAP // DOMAINS
+          </span>
+          <h2 ref={headingRef} style={{
+            margin: 0, fontSize: 'clamp(32px,4.5vw,72px)', fontWeight: '900',
+            color: '#ffffff', letterSpacing: '-0.01em',
+            fontFamily: '"Inter", "Arial Black", sans-serif',
+            textTransform: 'uppercase', lineHeight: 1, textAlign: 'center',
+          }}>
+            DOMAINS AT{' '}
+            <span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 900 }}>ROBOVITICS.</span>
+          </h2>
+          <div style={{
+            marginTop: '14px', width: '50%', height: '1px',
+            background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)',
+          }} />
+        </div>
+
+        <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
+          {DOMAINS.map((domain, index) => (
+            <DomainCardDesktop key={`desktop-${domain.id}`} domain={domain} index={index} addToRefs={addToRefs} />
+          ))}
+        </div>
+
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-20">
+          <span style={{
+            fontSize: '8px', letterSpacing: '0.25em',
+            color: 'rgba(255,255,255,0.1)', fontFamily: 'monospace', textTransform: 'uppercase',
+          }}>
+            SCROLL TO DEPLOY ↓
+          </span>
+        </div>
+      </section>
+    </>
   );
 }
