@@ -10,15 +10,10 @@ if (typeof window !== 'undefined') {
 
 // --- MORPHIC DOT GRID BACKGROUND ---
 const ICONS = [
-  // Chunky Plus
   <svg key="plus" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
-  // Chunky Cross
   <svg key="cross" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>,
-  // Cartoony Microchip Box
   <svg key="chip" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="4" ry="4"></rect></svg>,
-  // Chunky Bracket
   <svg key="bracket" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>,
-  // Node Circle
   <svg key="node" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"></circle></svg>
 ];
 
@@ -26,9 +21,7 @@ function MorphicBackground() {
   const [nodes, setNodes] = useState<Array<{ id: number; x: number; y: number; icon: React.ReactNode; delay: number; duration: number }>>([]);
 
   useEffect(() => {
-    // Generate random nodes only on the client to avoid hydration mismatches
     const generatedNodes = Array.from({ length: 35 }).map((_, i) => {
-      // Snap to a 40px grid (matching the background-size below)
       const x = Math.floor(Math.random() * 100) * 40;
       const y = Math.floor(Math.random() * 100) * 40;
       return {
@@ -37,7 +30,7 @@ function MorphicBackground() {
         y,
         icon: ICONS[Math.floor(Math.random() * ICONS.length)],
         delay: Math.random() * 5,
-        duration: 3 + Math.random() * 4, // 3 to 7 seconds per cycle
+        duration: 3 + Math.random() * 4,
       };
     });
     setNodes(generatedNodes);
@@ -45,7 +38,6 @@ function MorphicBackground() {
 
   return (
     <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-      {/* 1. Static Dot Grid Base */}
       <div 
         className="absolute inset-0 opacity-[0.15]"
         style={{
@@ -54,8 +46,6 @@ function MorphicBackground() {
           backgroundPosition: '0 0'
         }}
       />
-      
-      {/* 2. Dynamic Morphing Symbols */}
       <div className="absolute inset-0 text-[rgba(255,255,255,0.25)]">
         {nodes.map((node) => (
           <div
@@ -66,7 +56,7 @@ function MorphicBackground() {
               top: `${node.y}px`,
               width: '40px',
               height: '40px',
-              transform: 'translate(-50%, -50%)', // Centered exactly on the dot intersection
+              transform: 'translate(-50%, -50%)',
               animation: `morphicPulse ${node.duration}s ease-in-out ${node.delay}s infinite`,
               opacity: 0,
             }}
@@ -75,10 +65,7 @@ function MorphicBackground() {
           </div>
         ))}
       </div>
-
-      {/* 3. Subtle Vignette so the edges fade to black naturally without hard-blocking transparency */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,5,5,0.8)_100%)]" />
-
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes morphicPulse {
           0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
@@ -92,7 +79,6 @@ function MorphicBackground() {
     </div>
   );
 }
-// ---------------------------------------------
 
 const DOMAINS = [
   {
@@ -221,7 +207,6 @@ function Screw() {
   );
 }
 
-// Extracted the complex visual layers so they can be reused perfectly in both layouts
 function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
   const { id, title, sub, icon } = domain;
   return (
@@ -233,7 +218,6 @@ function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
         borderRadius: '4px',
         filter: 'blur(10px)',
       }} />
-
       <div style={{
         position: 'relative',
         borderRadius: '4px',
@@ -241,7 +225,7 @@ function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
         background: `
           linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-          linear-gradient(165deg, rgba(255,255,255,0.09), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.28)),
+          linear-gradient(165deg, rgba(255,255,255,0.09), rgba(255,255,255,0.012) 38%, rgba(0,0,0,0.28)),
           rgba(6,8,10,0.88)
         `,
         backgroundSize: '18px 18px, 18px 18px, auto, auto',
@@ -254,10 +238,8 @@ function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
         <span style={{ position: 'absolute', top: '5px', right: '6px' }}><Screw /></span>
         <span style={{ position: 'absolute', bottom: '5px', left: '6px' }}><Screw /></span>
         <span style={{ position: 'absolute', bottom: '5px', right: '6px' }}><Screw /></span>
-
         <span style={{ position: 'absolute', top: '-1px', left: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.65)' }} />
         <span style={{ position: 'absolute', bottom: '-1px', right: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.45)' }} />
-
         <div style={{ textAlign: 'center', marginBottom: '10px', marginTop: '4px' }}>
           <span style={{
             fontFamily: 'monospace', fontSize: '7px', letterSpacing: '0.22em',
@@ -267,7 +249,6 @@ function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
             MODULE_{id}
           </span>
         </div>
-
         <div style={{
           margin: '0 auto 12px',
           width: 'clamp(46px, 5.4vw, 68px)',
@@ -280,13 +261,11 @@ function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
         }}>
           {icon}
         </div>
-
         <div style={{
           height: '1px', margin: '0 8px 10px',
           background: 'linear-gradient(90deg, transparent, rgba(235,238,242,0.42) 30%, rgba(235,238,242,0.42) 70%, transparent)',
           boxShadow: '0 0 10px rgba(180,205,255,0.16)',
         }} />
-
         <div style={{ textAlign: 'center', padding: '0 8px' }}>
           <h3 style={{
             margin: '0 0 4px',
@@ -316,7 +295,6 @@ function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
   );
 }
 
-// Wrapper for the GSAP layout
 function DomainCardDesktop({
   domain,
   index,
@@ -341,7 +319,6 @@ function DomainCardDesktop({
   );
 }
 
-// Wrapper for the Mobile layout
 function DomainCardMobile({ domain }: { domain: (typeof DOMAINS)[0] }) {
   return (
     <div className="relative w-full max-w-[240px] mx-auto mb-8 z-10">
@@ -350,7 +327,6 @@ function DomainCardMobile({ domain }: { domain: (typeof DOMAINS)[0] }) {
   );
 }
 
-// --- HUD TEXT BRIDGE SUBCOMPONENT ---
 const BRIDGE_TEXT = "WE DON'T JUST STUDY THESE DOMAINS. WE SOLDER THE CIRCUITS, WRITE THE ALGORITHMS, AND MACHINE THE PARTS. AWAITING EVENT DEPLOYMENT...";
 
 function HUDTextBridge() {
@@ -358,13 +334,9 @@ function HUDTextBridge() {
   return (
     <div className="absolute inset-0 z-30 pointer-events-none flex flex-col items-center justify-center p-6 md:p-12 hidden md:flex" style={{ perspective: '1200px' }}>
       <div className="max-w-4xl mx-auto text-center">
-        
-        {/* Terminal Header */}
         <span className="bridge-terminal-header block mb-6 font-mono text-[10px] tracking-[0.35em] text-[rgba(255,255,255,0.3)] uppercase opacity-0">
           &gt; SYSTEM_LOGS // PROTOCOL_OVERRIDE
         </span>
-
-        {/* The 3D Assembling Text */}
         <p style={{ transformStyle: 'preserve-3d' }} className="flex flex-wrap justify-center gap-x-3 gap-y-2 md:gap-x-4 md:gap-y-3">
           {words.map((word, i) => (
             <span
@@ -378,7 +350,7 @@ function HUDTextBridge() {
                 color: '#ffffff',
                 textShadow: '0 0 15px rgba(255,255,255,0.2)',
                 willChange: 'transform, opacity',
-                opacity: 0 // Start hidden
+                opacity: 0,
               }}
             >
               {word}
@@ -390,7 +362,6 @@ function HUDTextBridge() {
   );
 }
 
-// --- MAIN DOMAINS COMPONENT ---
 export default function Domains() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
@@ -404,7 +375,6 @@ export default function Domains() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Create a matchMedia instance to restrict GSAP strictly to desktop
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 768px)", () => {
@@ -414,16 +384,27 @@ export default function Domains() {
         const lineX = lineXValues.map(v => `${v}vw`);
         const lineScale = 0.82;
 
-        // 1. Initial GSAP state for the 3D Text Bridge elements
-        const wordElements = gsap.utils.toArray('.bridge-word');
+        const wordElements = gsap.utils.toArray<Element>('.bridge-word');
+
+        // FIX: Pre-compute all random values into static arrays ONCE.
+        // Using () => gsap.utils.random() as function values causes GSAP to
+        // re-invoke the randomizer on every scrub tick, making elements jump.
+        const wordCount = wordElements.length;
+        const randZ         = Array.from({ length: wordCount }, () => gsap.utils.random(-800, 1000));
+        const randX         = Array.from({ length: wordCount }, () => gsap.utils.random(-400, 400));
+        const randY         = Array.from({ length: wordCount }, () => gsap.utils.random(-400, 400));
+        const randRotX      = Array.from({ length: wordCount }, () => gsap.utils.random(-90, 90));
+        const randRotY      = Array.from({ length: wordCount }, () => gsap.utils.random(-90, 90));
+        const randRotZ      = Array.from({ length: wordCount }, () => gsap.utils.random(-45, 45));
+
         gsap.set(wordElements, {
           opacity: 0,
-          z: () => gsap.utils.random(-800, 1000), 
-          x: () => gsap.utils.random(-400, 400),
-          y: () => gsap.utils.random(-400, 400),
-          rotationX: () => gsap.utils.random(-90, 90),
-          rotationY: () => gsap.utils.random(-90, 90),
-          rotationZ: () => gsap.utils.random(-45, 45),
+          z: (i) => randZ[i],
+          x: (i) => randX[i],
+          y: (i) => randY[i],
+          rotationX: (i) => randRotX[i],
+          rotationY: (i) => randRotY[i],
+          rotationZ: (i) => randRotZ[i],
         });
 
         gsap.set(cardsRef.current, {
@@ -436,7 +417,7 @@ export default function Domains() {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top top',
-            end: '+=5000', // <-- INCREASED distance to fit the text animation
+            end: '+=5000',
             scrub: 1.5,
             pin: true,
             anticipatePin: 1,
@@ -464,8 +445,7 @@ export default function Domains() {
           ease: 'power2.inOut', force3D: true,
         });
 
-        // 1. Cards pop to peak scale (The initial zoom)
-        const peakScale = 1.2; 
+        const peakScale = 1.2;
         const peakX = lineXValues.map(v => `${v * (peakScale / lineScale)}vw`);
 
         tl.to(cardsRef.current, {
@@ -475,40 +455,33 @@ export default function Domains() {
           ease: 'power2.out', force3D: true,
         });
 
-        // 2. Text fades out NOW, starting exactly when the zoom begins
         tl.to(
           [headingRef.current, eyebrowRef.current, sectionLabelRef.current],
           { opacity: 0, y: -30, duration: 0.6, ease: 'power2.inOut' },
-          '<' 
+          '<'
         );
 
-        // 3. Exit animation for the cards sliding out
         tl.to(cardsRef.current, {
           x: (i) => {
-            if (i < 3) return `${-120 - ((2 - i) * 60)}vw`; 
+            if (i < 3) return `${-120 - ((2 - i) * 60)}vw`;
             else return `${120 + ((i - 3) * 60)}vw`;
           },
-          scale: 5, 
+          scale: 5,
           duration: 1.8,
           ease: 'power2.inOut',
           force3D: true,
         });
 
-        // 4. THE HUD TEXT BRIDGE SNAPS IN
-        // Starts fading in the little terminal text slightly before the cards are totally gone
         tl.to('.bridge-terminal-header', { opacity: 1, duration: 0.5, ease: 'power2.out' }, '-=1.2');
-        
-        // Snaps the chaotic scattered 3D words into place perfectly
+
         tl.to(wordElements, {
           opacity: 1, z: 0, x: 0, y: 0, rotationX: 0, rotationY: 0, rotationZ: 0,
           duration: 2.0,
-          stagger: { each: 0.04, from: 'random' }, 
+          stagger: { each: 0.04, from: 'random' },
           ease: 'power3.out', force3D: true
-        }, '<'); // Triggers at the same time as the terminal header
+        }, '<');
 
-        // 5. Final pause so the user can read the assembled paragraph before unpinning and scrolling down to Events
         tl.to({}, { duration: 1.0 });
-
       });
     }, sectionRef);
 
@@ -520,11 +493,9 @@ export default function Domains() {
       {/* MOBILE LAYOUT */}
       <section
         id="domains-mobile"
-        className="relative w-full min-h-screen py-24 px-6 flex flex-col md:hidden bg-transparent" 
+        className="relative w-full min-h-screen py-24 px-6 flex flex-col md:hidden bg-transparent"
       >
-        {/* ADDED: Morphic Background Component */}
         <MorphicBackground />
-
         <div className="absolute top-6 left-6 z-20 pointer-events-none">
           <span style={{
             fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
@@ -534,7 +505,6 @@ export default function Domains() {
             SYSTEM.LOGS // DOMAINS
           </span>
         </div>
-
         <div className="z-20 flex flex-col items-center pointer-events-none text-center mt-12 mb-16">
           <span style={{
             fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
@@ -556,7 +526,6 @@ export default function Domains() {
             background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)',
           }} />
         </div>
-
         <div className="w-full flex flex-col justify-center">
           {DOMAINS.map((domain) => (
             <DomainCardMobile key={`mobile-${domain.id}`} domain={domain} />
@@ -571,10 +540,7 @@ export default function Domains() {
         className="relative w-full h-screen overflow-hidden hidden md:flex items-center justify-center bg-transparent"
       >
         <MorphicBackground />
-
-        {/* --- ADDED: HUD TEXT BRIDGE LAYER --- */}
         <HUDTextBridge />
-
         <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
           <span style={{
             fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
@@ -584,7 +550,6 @@ export default function Domains() {
             SYSTEM.LOGS // DOMAINS
           </span>
         </div>
-
         <div className="absolute z-20 flex flex-col items-center pointer-events-none"
           style={{ top: '18%', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>
           <span ref={eyebrowRef} style={{
@@ -607,13 +572,11 @@ export default function Domains() {
             background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)',
           }} />
         </div>
-
         <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
           {DOMAINS.map((domain, index) => (
             <DomainCardDesktop key={`desktop-${domain.id}`} domain={domain} index={index} addToRefs={addToRefs} />
           ))}
         </div>
-
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-20">
           <span style={{
             fontSize: '8px', letterSpacing: '0.25em',

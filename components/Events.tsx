@@ -47,7 +47,6 @@ export default function Events() {
   const titleRef = useRef<HTMLDivElement>(null);
   const deckRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  // Store our own ST instances so we only kill ours
   const stRef = useRef<ScrollTrigger | null>(null);
 
   useEffect(() => {
@@ -60,27 +59,22 @@ export default function Events() {
     const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
     if (cards.length !== 4) return;
 
-    // ── Viewport-relative grid positions ─────────────────────────────
-    // Cards fan out to a 2×2 grid. Use vw/vh percentages of the viewport
-    // so it looks right on any screen size.
     const getGridPositions = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const gx = vw * 0.22;  // horizontal spread from center
-      const gy = vh * 0.22;  // vertical spread from center
+      const gx = vw * 0.22;
+      const gy = vh * 0.22;
       return [
-        { x: -gx, y: -gy }, // top-left
-        { x:  gx, y: -gy }, // top-right
-        { x: -gx, y:  gy }, // bottom-left
-        { x:  gx, y:  gy }, // bottom-right
+        { x: -gx, y: -gy },
+        { x:  gx, y: -gy },
+        { x: -gx, y:  gy },
+        { x:  gx, y:  gy },
       ];
     };
 
     // ── Initial stacked state ─────────────────────────────────────────
-    // Card 3 is on top (visible), card 0 is deepest.
-    // Each layer peeks out slightly below the one above it.
     cards.forEach((card, i) => {
-      const depth = cards.length - 1 - i; // 0 = top card, 3 = bottom card
+      const depth = cards.length - 1 - i;
       gsap.set(card, {
         x: 0,
         y: depth * 12,
@@ -90,28 +84,42 @@ export default function Events() {
         opacity: 1,
         transformOrigin: "center bottom",
       });
+      // Hide inner text content — card shows as clean opaque block
+      const inner = card.querySelector<HTMLElement>(".ev-inner");
+      if (inner) gsap.set(inner, { opacity: 0 });
     });
+
+    // Title sits above the stack at rest
+    gsap.set(title, { zIndex: 10, opacity: 1, y: 0 });
 
     // ── Timeline ──────────────────────────────────────────────────────
     const tl = gsap.timeline({ paused: true });
 
-    // Phase 0 (0→0.2): title fades out before first card peels
+    // Hold title fully visible until 0.12, then fade it out.
+    // Cards start peeling at 0.2, so the title is gone before they fly.
     tl.to(title, {
       opacity: 0,
-      y: -24,
-      duration: 0.2,
+      y: -28,
+      duration: 0.08,
       ease: "power2.in",
-    }, 0);
+    }, 0.12);
 
-    // Phase 1 (0.2→1.0): peel cards top-to-bottom (index 3 first → 0 last)
-    // Each card gets 0.2 units of timeline; they overlap slightly for fluidity.
-    const peelOrder = [3, 2, 1, 0]; // top card first
+    // At 0.19 — just before first peel — raise cards above where title was
+    // by bumping their zIndex via onStart / onReverseComplete
+    tl.call(() => {
+      cards.forEach((card, i) => { card.style.zIndex = String(20 + i); });
+    }, [], 0.19);
+    tl.call(() => {
+      cards.forEach((card, i) => { card.style.zIndex = String(i + 1); });
+    }, [], 0.18); // reverse: lower back when scrolling back up
+
+    // ── Peel cards ────────────────────────────────────────────────────
+    const peelOrder = [3, 2, 1, 0];
     peelOrder.forEach((cardIdx, peelStep) => {
       const card = cards[cardIdx];
       const pos = getGridPositions()[cardIdx];
-      const t = 0.2 + peelStep * 0.2; // stagger start times
+      const t = 0.2 + peelStep * 0.2;
 
-      // Step A: tilt up (lift off the stack)
       tl.to(card, {
         rotateX: 18,
         y: "-=60",
@@ -119,7 +127,6 @@ export default function Events() {
         ease: "power2.in",
       }, t);
 
-      // Step B: fly to grid position
       tl.to(card, {
         x: pos.x,
         y: pos.y,
@@ -129,11 +136,15 @@ export default function Events() {
         ease: "power3.out",
       }, t + 0.07);
 
-      // Step C: micro-bounce on land
       tl.to(card, { y: pos.y + 8, duration: 0.03, ease: "power1.out" }, t + 0.18);
       tl.to(card, { y: pos.y,     duration: 0.03, ease: "power1.in"  }, t + 0.21);
 
-      // Step D: border flash on land — only the flash overlay
+      // Reveal inner content after landing
+      const inner = card.querySelector(".ev-inner") as HTMLElement | null;
+      if (inner) {
+        tl.to(inner, { opacity: 1, duration: 0.08, ease: "power1.out" }, t + 0.22);
+      }
+
       const flash = card.querySelector<HTMLElement>(".ev-flash");
       if (flash) {
         tl.fromTo(flash,
@@ -144,24 +155,20 @@ export default function Events() {
       }
     });
 
-    // ── ScrollTrigger (scrub the timeline) ───────────────────────────
+    // ── ScrollTrigger ─────────────────────────────────────────────────
     stRef.current = ScrollTrigger.create({
       trigger: section,
       start: "top top",
-      // 5× viewport height of scroll room — feels deliberate, not rushed
       end: `+=${window.innerHeight * 5}`,
       scrub: 1.2,
       pin: pin,
       anticipatePin: 1,
       animation: tl,
-      // Refresh grid positions on resize
       onRefresh: () => {
-        // Re-read positions after resize — only update cards already in landed state
         const pos = getGridPositions();
         peelOrder.forEach((cardIdx) => {
           const card = cards[cardIdx];
           const currentX = gsap.getProperty(card, "x") as number;
-          // Only reposition if card has already been flung (x !== 0)
           if (Math.abs(currentX) > 10) {
             gsap.set(card, { x: pos[cardIdx].x, y: pos[cardIdx].y });
           }
@@ -170,7 +177,6 @@ export default function Events() {
     });
 
     return () => {
-      // Only kill our own ScrollTrigger — not Domains' or anyone else's
       stRef.current?.kill();
       stRef.current = null;
       tl.kill();
@@ -179,7 +185,6 @@ export default function Events() {
 
   return (
     <section ref={sectionRef} className="bg-[#0d0d0d]">
-      {/* ── Pinned viewport ── */}
       <div
         ref={pinRef}
         className="relative flex h-screen w-full items-center justify-center overflow-hidden"
@@ -207,7 +212,7 @@ export default function Events() {
           />
         ))}
 
-        {/* Constellation lines SVG */}
+        {/* Constellation lines */}
         <svg
           className="pointer-events-none absolute inset-0 h-full w-full"
           xmlns="http://www.w3.org/2000/svg"
@@ -217,36 +222,60 @@ export default function Events() {
           <line x1="15%" y1="58%" x2="44%" y2="78%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
         </svg>
 
-        {/* Section label — top-left, matches your page.tsx pattern */}
-        <p
-          className="absolute left-12 top-10 font-mono text-[11px] uppercase tracking-[0.12em] text-white/30"
-        >
+        {/* Section label */}
+        <p className="absolute left-12 top-10 font-mono text-[11px] uppercase tracking-[0.12em] text-white/30">
           03.&nbsp; SYSTEM.LOGS // EVENTS
         </p>
 
-        {/* ── Title (fades out on scroll) ── */}
+        {/*
+          ── KEY STRUCTURAL FIX ──────────────────────────────────────────
+          The title and the card deck are now SIBLINGS inside one shared
+          stacking context (the perspective wrapper). This means z-index
+          comparisons between them actually work — no more broken stacking
+          contexts caused by perspective on a parent.
+          
+          Title: position absolute, fills the perspective wrapper, zIndex 10
+          Cards: zIndex 1–4 at rest → bumped to 20+ just before first peel
+        */}
         <div
-          ref={titleRef}
-          className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center"
-          style={{ zIndex: 20 }}
+          style={{
+            perspective: "1100px",
+            perspectiveOrigin: "50% 50%",
+            position: "relative",
+            // Match the viewport so the absolute title can fill it
+            width: "100vw",
+            height: "100vh",
+          }}
         >
-          <h2
-            className="font-sans text-[clamp(32px,5.5vw,68px)] font-black uppercase leading-none tracking-[0.04em] text-white"
+          {/* ── Title lives INSIDE the perspective wrapper ── */}
+          <div
+            ref={titleRef}
+            className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center"
+            style={{ zIndex: 10 }}
           >
-            EVENTS AT{" "}
-            <span className="text-white/25">ROBOVITICS.</span>
-          </h2>
-          <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.1em] text-white/30">
-            &gt; SCROLL TO DEPLOY
-          </p>
-        </div>
+            <h2
+              className="font-sans text-[clamp(32px,5.5vw,68px)] font-black uppercase leading-none tracking-[0.04em] text-white"
+            >
+              EVENTS AT{" "}
+              <span className="text-white/25">ROBOVITICS.</span>
+            </h2>
+            <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.1em] text-white/30">
+              &gt; SCROLL TO DEPLOY
+            </p>
+          </div>
 
-        {/* ── Deck wrapper — perspective lives HERE, not on the deck ── */}
-        <div style={{ perspective: "1100px", perspectiveOrigin: "50% 50%" }}>
+          {/* ── Card deck — centered via absolute positioning ── */}
           <div
             ref={deckRef}
-            className="relative"
-            style={{ width: 300, height: 210 }}
+            className="absolute"
+            style={{
+              width: 300,
+              height: 210,
+              // Center in the perspective wrapper
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
           >
             {events.map((ev, i) => (
               <div
@@ -279,33 +308,26 @@ export default function Events() {
                   />
                 ))}
 
-                {/* Flash border — triggered by GSAP on land */}
+                {/* Flash border */}
                 <div
                   className="ev-flash pointer-events-none absolute inset-0 opacity-0"
                   style={{ border: "1px solid rgba(255,255,255,0.85)" }}
                 />
 
-                {/* Module ID */}
+                <div className="ev-inner">
                 <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.13em] text-white/25">
                   {ev.id}
                 </p>
-
-                {/* Event name */}
                 <p className="font-sans text-[21px] font-black uppercase leading-none tracking-[0.05em] text-white">
                   {ev.name}
                 </p>
-
-                {/* Type */}
                 <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.1em] text-white/40">
                   {ev.type}
                 </p>
-
-                {/* Desc */}
                 <p className="mt-2.5 font-mono text-[10px] leading-[1.75] text-white/50">
                   {ev.desc}
                 </p>
 
-                {/* Footer row */}
                 <div
                   className="mt-3 flex items-center justify-between"
                   style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: 9 }}
@@ -331,13 +353,13 @@ export default function Events() {
                     </span>
                   )}
                 </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Blink keyframe — scoped so it doesn't pollute globals */}
       <style>{`
         .ev-blink { animation: ev-blink-kf 1.1s step-start infinite; }
         @keyframes ev-blink-kf { 0%,100%{opacity:1} 50%{opacity:0} }
