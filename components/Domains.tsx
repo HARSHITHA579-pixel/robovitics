@@ -441,6 +441,12 @@ export default function Domains() {
           ease: 'power2.inOut', force3D: true,
         });
 
+        // Fade the title as soon as the cards start forming the circle.
+        tl.to(
+          [titleGroupRef.current, sectionLabelRef.current],
+          { opacity: 0, y: -30, duration: 0.65, ease: 'power2.inOut' }
+        );
+
         tl.to(cardsRef.current, {
           x: (i) => circleX[i],
           y: (i) => circleY[i],
@@ -448,7 +454,7 @@ export default function Domains() {
           duration: 1.9,
           ease: 'none',
           force3D: true,
-        });
+        }, '<');
 
         tl.to(cardsRef.current, {
           x: (i) => expandedCircleX[i],
@@ -458,13 +464,6 @@ export default function Domains() {
           ease: 'power2.inOut',
           force3D: true,
         });
-
-        // Fade out the title and section label as the cards expand out of the circle.
-        tl.to(
-          [titleGroupRef.current, sectionLabelRef.current],
-          { opacity: 0, y: -30, duration: 0.75, ease: 'power2.inOut' },
-          '<+=0.1'
-        );
 
         tl.to(cardsRef.current, {
           x: (i) => zoomX[i],
