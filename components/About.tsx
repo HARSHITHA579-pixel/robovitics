@@ -89,7 +89,7 @@ export default function About() {
                     className="absolute inset-0 flex flex-col justify-center"
                   >
                     <h2 className="text-6xl lg:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
-                      WE ARE <br/> <span style={{ color: 'rgba(34,211,238,0.45)' }}>ROBOVITICS.</span>
+                      WE ARE <br/> <span style={{ color: '#4FAEF3' }}>ROBOVITICS.</span>
                     </h2>
                     <p className="text-gray-400 font-mono text-lg max-w-2xl leading-relaxed drop-shadow-md">
                       The official robotics club of VIT Vellore. We are a collective of engineers, designers, and innovators dedicated to pushing the boundaries of autonomous systems. We don&apos;t just study robotics; we solder the circuits, write the algorithms, and machine the parts that bring machines to life.
@@ -107,7 +107,7 @@ export default function About() {
                     className="absolute inset-0 flex flex-col justify-center"
                   >
                     <h2 className="text-6xl lg:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
-                      POWERED BY <br/> <span style={{ color: 'rgba(34,211,238,0.45)' }}>VIT VELLORE.</span>
+                      POWERED BY <br/> <span style={{ color: '#4FAEF3' }}>VIT VELLORE.</span>
                     </h2>
                     <p className="text-gray-400 font-mono text-lg max-w-2xl leading-relaxed drop-shadow-md">
                       Vellore Institute of Technology provides the launchpad for our ambitions. Backed by world-class infrastructure and a culture that champions disruptive tech, we leverage the university&apos;s cutting-edge manufacturing labs and research facilities to turn theoretical blueprints into heavy-duty reality.

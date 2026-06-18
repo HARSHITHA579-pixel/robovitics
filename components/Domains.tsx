@@ -569,7 +569,7 @@ export default function Domains() {
             textTransform: 'uppercase', lineHeight: 1, textAlign: 'center',
           }}>
             DOMAINS AT{' '}
-<span style={{ color: 'rgba(34,211,238,0.45)', fontWeight: 900 }}>ROBOVITICS.</span>
+<span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
           </h2>
           <div style={{
             marginTop: '14px', width: '30%', height: '1px',

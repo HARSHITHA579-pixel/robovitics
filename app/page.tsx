@@ -85,7 +85,7 @@ export default function Page() {
         <Hero />
         <footer className="relative z-10 flex w-full flex-col items-start justify-between gap-3 px-4 py-4 font-mono text-[11px] text-gray-500 sm:px-6 sm:text-xs md:flex-row md:items-end md:px-12 md:py-8 md:text-sm lg:py-10">
           <div>
-            <p>Established in <span className="text-gray-300">2009</span>.</p>
+            <p>Established in <span className="text-gray-300">2010</span>.</p>
             <p>Evolving ever since.</p>
           </div>
           <div className="text-left md:text-right">
