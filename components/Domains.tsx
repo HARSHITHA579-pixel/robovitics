@@ -344,9 +344,15 @@ export default function Domains() {
       mm.add("(min-width: 768px)", () => {
         const patternX = ['-30vw', '-18vw', '-6vw', '6vw', '18vw', '30vw'];
         const patternY = ['18vh', '-9vh', '18vh', '-9vh', '18vh', '-9vh'];
-        const lineXValues = [-38, -22.8, -7.6, 7.6, 22.8, 38];
-        const lineX = lineXValues.map(v => `${v}vw`);
-        const lineScale = 0.82;
+        const circleAngles = [150, 210, 90, -90, 30, -30];
+        const circleRadiusX = 23;
+        const circleRadiusY = 22;
+        const circleX = circleAngles.map((angle) => `${Math.cos((angle * Math.PI) / 180) * circleRadiusX}vw`);
+        const circleY = circleAngles.map((angle) => `${Math.sin((angle * Math.PI) / 180) * circleRadiusY + 4}vh`);
+        const expandedCircleX = circleAngles.map((angle) => `${Math.cos((angle * Math.PI) / 180) * 38}vw`);
+        const expandedCircleY = circleAngles.map((angle) => `${Math.sin((angle * Math.PI) / 180) * 34 + 4}vh`);
+        const zoomX = circleAngles.map((angle) => `${Math.cos((angle * Math.PI) / 180) * 150}vw`);
+        const zoomY = circleAngles.map((angle) => `${Math.sin((angle * Math.PI) / 180) * 130 + 4}vh`);
 
         const wordElements = gsap.utils.toArray<Element>('.bridge-word');
 
@@ -436,37 +442,36 @@ export default function Domains() {
         });
 
         tl.to(cardsRef.current, {
-          x: (i) => lineX[i],
-          y: '12vh', scale: lineScale,
-          duration: 0.9,
-          ease: 'power2.inOut', force3D: true,
+          x: (i) => circleX[i],
+          y: (i) => circleY[i],
+          scale: 0.84,
+          duration: 1.45,
+          ease: 'sine.inOut',
+          force3D: true,
         });
-
-        const peakScale = 1.2;
-        const peakX = lineXValues.map(v => `${v * (peakScale / lineScale)}vw`);
 
         tl.to(cardsRef.current, {
-          scale: peakScale,
-          x: (i) => peakX[i],
-          y: '12vh', duration: 0.7,
-          ease: 'power2.out', force3D: true,
+          x: (i) => expandedCircleX[i],
+          y: (i) => expandedCircleY[i],
+          scale: 1.18,
+          duration: 1.05,
+          ease: 'power2.inOut',
+          force3D: true,
         });
 
-        // Fade out the title and section label when cards explode out
+        // Fade out the title and section label as the cards expand out of the circle.
         tl.to(
           [titleGroupRef.current, sectionLabelRef.current],
-          { opacity: 0, y: -30, duration: 0.6, ease: 'power2.inOut' },
-          '<'
+          { opacity: 0, y: -30, duration: 0.75, ease: 'power2.inOut' },
+          '<+=0.1'
         );
 
         tl.to(cardsRef.current, {
-          x: (i) => {
-            if (i < 3) return `${-120 - ((2 - i) * 60)}vw`;
-            else return `${120 + ((i - 3) * 60)}vw`;
-          },
-          scale: 5,
-          duration: 1.8,
-          ease: 'power2.inOut',
+          x: (i) => zoomX[i],
+          y: (i) => zoomY[i],
+          scale: 5.2,
+          duration: 1.75,
+          ease: 'power3.inOut',
           force3D: true,
         });
 
