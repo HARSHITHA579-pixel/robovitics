@@ -67,34 +67,96 @@ export default function Events() {
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const stRef = useRef<ScrollTrigger | null>(null);
 
+  // Modal & Carousel States
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [isClosing, setIsClosing] = useState(false);
+  const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
   
-  // Track which cards have already completed their one-time hint flip
+  // Refs for tracking animation state
   const flippedRef = useRef([false, false, false, false]);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const prevEventId = useRef<string | null>(null);
+  const isSlideAnimating = useRef(false);
 
+  // Close modal logic
   const handleCloseModal = () => {
     setIsClosing(true);
     setTimeout(() => {
       setSelectedEvent(null);
       setIsClosing(false);
+      prevEventId.current = null;
     }, 300);
   };
 
+  // Carousel Next/Prev Logic
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (isSlideAnimating.current) return; 
+    setSlideDir('next');
     const currentIndex = events.findIndex(ev => ev.id === selectedEvent.id);
-    const nextIndex = (currentIndex + 1) % events.length;
-    setSelectedEvent(events[nextIndex]);
+    setSelectedEvent(events[(currentIndex + 1) % events.length]);
   };
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (isSlideAnimating.current) return; 
+    setSlideDir('prev');
     const currentIndex = events.findIndex(ev => ev.id === selectedEvent.id);
-    const prevIndex = (currentIndex - 1 + events.length) % events.length;
-    setSelectedEvent(events[prevIndex]);
+    setSelectedEvent(events[(currentIndex - 1 + events.length) % events.length]);
   };
 
+  // ── GSAP Slide Transition Effect ─────────────────────────────────────────
+  useEffect(() => {
+    if (!selectedEvent || !carouselRef.current) return;
+
+    const incomingId = selectedEvent.id;
+    const outgoingId = prevEventId.current;
+    
+    const slides = Array.from(carouselRef.current.querySelectorAll('.ev-slide-item')) as HTMLElement[];
+    const incomingNode = slides.find(el => el.dataset.id === incomingId);
+    const outgoingNode = slides.find(el => el.dataset.id === outgoingId);
+
+    if (!outgoingId || outgoingId === incomingId) {
+      slides.forEach(slide => {
+        if (slide.dataset.id === incomingId) {
+          gsap.set(slide, { x: "0%", autoAlpha: 1 }); 
+        } else {
+          gsap.set(slide, { autoAlpha: 0 });
+        }
+      });
+      prevEventId.current = incomingId;
+      return;
+    }
+
+    if (incomingNode && outgoingNode) {
+      isSlideAnimating.current = true;
+      
+      const xInStart = slideDir === 'next' ? "100%" : "-100%";
+      const xOutEnd = slideDir === 'next' ? "-100%" : "100%";
+
+      gsap.set(incomingNode, { x: xInStart, autoAlpha: 1 });
+
+      gsap.to(outgoingNode, {
+        x: xOutEnd,
+        duration: 0.6,
+        ease: "power3.inOut",
+        onComplete: () => gsap.set(outgoingNode, { autoAlpha: 0 })
+      });
+
+      gsap.to(incomingNode, {
+        x: "0%",
+        duration: 0.6,
+        ease: "power3.inOut",
+        onComplete: () => {
+          isSlideAnimating.current = false;
+        }
+      });
+    }
+
+    prevEventId.current = incomingId;
+  }, [selectedEvent, slideDir]);
+
+  // ── Main Background Animations ─────────────────────────────────────────
   useEffect(() => {
     const section = sectionRef.current;
     const pin = pinRef.current;
@@ -121,24 +183,12 @@ export default function Events() {
     const baseShadow = "inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.75), 0 0 0 1px rgba(0,0,0,0.75), 8px 10px 20px rgba(0,0,0,0.55)";
     const glowShadow = `${baseShadow}, 0 0 40px rgba(255,255,255,0.12), 0 0 90px rgba(255,255,255,0.07), 0 0 160px rgba(200,220,255,0.05)`;
 
-    // ── Initial stacked state ─────────────────────────────────────────
     cards.forEach((card, i) => {
       const depth = cards.length - 1 - i;
-      
-      gsap.set(card, {
-        x: 0,
-        y: depth * 12,
-        scale: 1 - depth * 0.04,
-        rotateX: 0,
-        zIndex: i + 1,
-        opacity: 1,
-        transformOrigin: "center bottom",
-      });
-
+      gsap.set(card, { x: 0, y: depth * 12, scale: 1 - depth * 0.04, rotateX: 0, zIndex: i + 1, opacity: 1, transformOrigin: "center bottom" });
       const styledBg = card.querySelector<HTMLElement>(".ev-styled-bg");
       const highlights = card.querySelector<HTMLElement>(".ev-highlights");
       const inner = card.querySelector<HTMLElement>(".ev-inner");
-      
       if (styledBg) gsap.set(styledBg, { opacity: 0, boxShadow: baseShadow });
       if (highlights) gsap.set(highlights, { opacity: 0 });
       if (inner) gsap.set(inner, { opacity: 0 });
@@ -146,19 +196,11 @@ export default function Events() {
 
     gsap.set(title, { zIndex: 10, opacity: 1, y: 0 });
 
-    // ── Timeline ──────────────────────────────────────────────────────
     const tl = gsap.timeline({ paused: true });
-
     tl.to(title, { opacity: 0, y: -28, duration: 0.08, ease: "power2.in" }, 0.12);
+    tl.call(() => { cards.forEach((card, i) => { card.style.zIndex = String(20 + i); }); }, [], 0.19);
+    tl.call(() => { cards.forEach((card, i) => { card.style.zIndex = String(i + 1); }); }, [], 0.18); 
 
-    tl.call(() => {
-      cards.forEach((card, i) => { card.style.zIndex = String(20 + i); });
-    }, [], 0.19);
-    tl.call(() => {
-      cards.forEach((card, i) => { card.style.zIndex = String(i + 1); });
-    }, [], 0.18); 
-
-    // ── Peel cards ────────────────────────────────────────────────────
     const peelOrder = [3, 2, 1, 0];
     peelOrder.forEach((cardIdx, peelStep) => {
       const card = cards[cardIdx];
@@ -185,7 +227,6 @@ export default function Events() {
       if (flash) tl.fromTo(flash, { opacity: 0.9 }, { opacity: 0, duration: 0.12, ease: "power2.out" }, t + 0.18);
     });
 
-    // ── ScrollTrigger ─────────────────────────────────────────────────
     stRef.current = ScrollTrigger.create({
       trigger: section,
       start: "top top",
@@ -195,20 +236,18 @@ export default function Events() {
       anticipatePin: 1,
       animation: tl,
       onUpdate: () => {
-        // Evaluate timeline progress to independently fire the hint flip once per card
         peelOrder.forEach((cardIdx, peelStep) => {
           const t = 0.2 + peelStep * 0.2;
-          const landTime = t + 0.35; // Trigger slightly after it fully lands in place
-          
+          const landTime = t + 0.35; 
           if (tl.time() >= landTime && !flippedRef.current[cardIdx]) {
-            flippedRef.current[cardIdx] = true; // Mark as flipped so it doesn't happen again on scroll-back
-            const hintFlipper = cardsRef.current[cardIdx]?.querySelector(".ev-hint-flipper");
-            
-            if (hintFlipper) {
-              // Independent un-scrubbed tween
-              gsap.timeline()
-                .to(hintFlipper, { rotateY: 180, duration: 0.4, ease: "power2.out" })
-                .to(hintFlipper, { rotateY: 0, duration: 0.4, ease: "power2.inOut", delay: 0.15 });
+            flippedRef.current[cardIdx] = true; 
+            if (events[cardIdx].id === "MODULE_01") {
+              const hintFlipper = cardsRef.current[cardIdx]?.querySelector(".ev-hint-flipper");
+              if (hintFlipper) {
+                gsap.timeline()
+                  .to(hintFlipper, { rotateY: 180, duration: 0.4, ease: "power2.out" })
+                  .to(hintFlipper, { rotateY: 0, duration: 0.4, ease: "power2.inOut", delay: 0.15 });
+              }
             }
           }
         });
@@ -254,7 +293,6 @@ export default function Events() {
         </div>
 
         <div style={{ perspective: "1100px", perspectiveOrigin: "50% 50%", position: "relative", width: "100vw", height: "100vh" }}>
-          
           <div ref={titleRef} className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center" style={{ zIndex: 10, top: '-6%' }}>
             <span style={{ fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase' }}>
               ▶ SECTOR_MAP // EVENTS
@@ -271,17 +309,10 @@ export default function Events() {
                 key={ev.id}
                 ref={(el) => { cardsRef.current[i] = el; }}
                 className="absolute inset-0 select-none overflow-visible rounded-[4px] group cursor-pointer"
-                style={{
-                  willChange: "transform, box-shadow",
-                  color: "#f1f3f5",
-                  perspective: "1000px" 
-                }}
+                style={{ willChange: "transform, box-shadow", color: "#f1f3f5", perspective: "1000px" }}
                 onClick={() => setSelectedEvent(ev)}
               >
-                {/* Outer wrapper controlled by GSAP for the independent hint animation */}
                 <div className="ev-hint-flipper relative w-full h-full [transform-style:preserve-3d]">
-                  
-                  {/* Inner wrapper controlled by Tailwind group-hover for user interaction */}
                   <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
                     
                     {/* Front Face */}
@@ -290,7 +321,6 @@ export default function Events() {
                       style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.08)", padding: "16px 20px 18px" }}
                     >
                       <div className="ev-styled-bg absolute rounded-[4px] pointer-events-none" style={{ top: -1, right: -1, bottom: -1, left: -1, background: `linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(165deg, rgba(255,255,255,0.11), rgba(255,255,255,0.02) 38%, rgba(0,0,0,0.35)), rgba(28,30,34,0.95)`, backgroundSize: '18px 18px, 18px 18px, auto, auto', border: '1px solid rgba(235,238,242,0.28)' }} />
-
                       <span className="absolute z-10" style={{ top: '5px', left: '6px' }}><Screw /></span>
                       <span className="absolute z-10" style={{ top: '5px', right: '6px' }}><Screw /></span>
                       <span className="absolute z-10" style={{ bottom: '5px', left: '6px' }}><Screw /></span>
@@ -300,30 +330,16 @@ export default function Events() {
                         <span style={{ position: 'absolute', top: '-1px', left: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.7)' }} />
                         <span style={{ position: 'absolute', bottom: '-1px', right: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.4)' }} />
                       </div>
-
                       <div className="ev-flash pointer-events-none absolute inset-0 opacity-0 rounded-[4px] z-20" style={{ border: "1px solid rgba(255,255,255,0.85)" }} />
 
                       <div className="ev-inner relative z-30 flex h-full flex-col">
                         <div className="mb-2 mt-[-2px] text-center">
-                          <span style={{ fontFamily: 'monospace', fontSize: '8px', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(235,238,242,0.34)', textShadow: '0 0 10px rgba(180,205,255,0.14)' }}>
-                            {ev.id}
-                          </span>
+                          <span style={{ fontFamily: 'monospace', fontSize: '8px', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(235,238,242,0.34)', textShadow: '0 0 10px rgba(180,205,255,0.14)' }}>{ev.id}</span>
                         </div>
-
-                        <h3 className="text-center" style={{ margin: '0 0 4px', fontFamily: '"Inter", "Arial Black", sans-serif', fontWeight: '900', fontSize: '20px', letterSpacing: '0.04em', textTransform: 'uppercase', color: 'rgba(245,247,250,0.9)', textShadow: '0 0 16px rgba(255,255,255,0.18)', lineHeight: 1.1 }}>
-                          {ev.name}
-                        </h3>
-
-                        <p className="text-center" style={{ margin: '0 0 10px', fontFamily: 'monospace', fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(168,176,188,0.62)' }}>
-                          {ev.type}
-                        </p>
-
+                        <h3 className="text-center" style={{ margin: '0 0 4px', fontFamily: '"Inter", "Arial Black", sans-serif', fontWeight: '900', fontSize: '20px', letterSpacing: '0.04em', textTransform: 'uppercase', color: 'rgba(245,247,250,0.9)', textShadow: '0 0 16px rgba(255,255,255,0.18)', lineHeight: 1.1 }}>{ev.name}</h3>
+                        <p className="text-center" style={{ margin: '0 0 10px', fontFamily: 'monospace', fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(168,176,188,0.62)' }}>{ev.type}</p>
                         <div style={{ height: '1px', margin: '0 8px 12px', background: 'linear-gradient(90deg, transparent, rgba(235,238,242,0.42) 30%, rgba(235,238,242,0.42) 70%, transparent)', boxShadow: '0 0 10px rgba(180,205,255,0.16)' }} />
-
-                        <p className="font-mono text-[10px] leading-[1.65]" style={{ color: 'rgba(235,238,242,0.65)' }}>
-                          {ev.desc}
-                        </p>
-
+                        <p className="font-mono text-[10px] leading-[1.65]" style={{ color: 'rgba(235,238,242,0.65)' }}>{ev.desc}</p>
                         <div className="mt-auto flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: 10 }}>
                           <span className="font-mono text-[8.5px] tracking-[0.1em] text-white/30">{ev.date}</span>
                           {["OPEN", "REGISTRATIONS OPEN", "FLAGSHIP"].includes(ev.status) ? (
@@ -354,7 +370,6 @@ export default function Events() {
                         </div>
                       </div>
                     </div>
-                    
                   </div>
                 </div>
               </div>
@@ -366,72 +381,85 @@ export default function Events() {
       {/* Pop-up Modal */}
       {selectedEvent && (
         <div 
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 backdrop-blur-xl p-4"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 backdrop-blur-xl p-4 md:p-8"
           style={{ animation: isClosing ? 'ev-fade-out 0.3s ease-in forwards' : 'ev-fade-in 0.3s ease-out forwards' }}
           onClick={handleCloseModal}
         >
-          {/* Navigation Buttons */}
-          <button 
-            className="absolute left-4 md:left-10 z-[10000] flex h-12 w-12 items-center justify-center rounded-full bg-black/50 text-white/60 hover:bg-black/90 hover:text-white hover:scale-110 transition-all border border-white/10 backdrop-blur-md"
-            onClick={handlePrev}
-          >
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
-          </button>
-
-          <button 
-            className="absolute right-4 md:right-10 z-[10000] flex h-12 w-12 items-center justify-center rounded-full bg-black/50 text-white/60 hover:bg-black/90 hover:text-white hover:scale-110 transition-all border border-white/10 backdrop-blur-md"
-            onClick={handleNext}
-          >
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-          </button>
-
+          {/* Relative wrapper defines the modal boundary. Buttons anchor to this. */}
           <div 
-            className="relative w-full max-w-2xl bg-[#0a0a0a] border border-white/20 rounded-xl shadow-2xl shadow-[#4FAEF3]/10 overflow-hidden"
+            className="relative w-full max-w-2xl h-[85vh] max-h-[600px] md:mx-16"
             onClick={(e) => e.stopPropagation()}
             style={{ animation: isClosing ? 'ev-modal-exit 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards' : 'ev-modal-entry 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
           >
+            {/* Left Prev Arrow */}
             <button 
-              className="absolute top-4 right-4 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/70 hover:bg-black/80 hover:text-white transition-colors border border-white/10 backdrop-blur-md"
-              onClick={handleCloseModal}
+              className="absolute left-2 md:-left-16 top-1/2 -translate-y-1/2 z-[10010] flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-black/60 text-white/70 hover:bg-black/90 hover:text-white hover:scale-110 active:scale-90 transition-all duration-200 ease-out border border-white/20 backdrop-blur-md shadow-lg"
+              onClick={handlePrev}
             >
-              ✕
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
             </button>
 
-            {/* Inner Content wrapper keyed to selectedEvent.id for crossfade animation */}
-            <div key={selectedEvent.id} style={{ animation: 'ev-content-switch 0.3s ease-out forwards' }}>
-              <div className="relative h-64 w-full bg-neutral-900 border-b border-white/10 overflow-hidden">
-                <img src={selectedEvent.img} alt={selectedEvent.name} className="w-full h-full object-cover opacity-90" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
-              </div>
+            {/* Right Next Arrow */}
+            <button 
+              className="absolute right-2 md:-right-16 top-1/2 -translate-y-1/2 z-[10010] flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-black/60 text-white/70 hover:bg-black/90 hover:text-white hover:scale-110 active:scale-90 transition-all duration-200 ease-out border border-white/20 backdrop-blur-md shadow-lg"
+              onClick={handleNext}
+            >
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </button>
 
-              <div className="p-8 relative z-10">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="font-mono text-[10px] tracking-[0.2em] text-[#4FAEF3] uppercase border border-[#4FAEF3]/30 px-2 py-1 rounded bg-[#4FAEF3]/5">
-                    {selectedEvent.id}
-                  </span>
-                  <span className="font-mono text-[10px] tracking-[0.1em] text-white/40 uppercase">
-                    {selectedEvent.status}
-                  </span>
-                </div>
+            {/* Inner Content Wrapper - Clips the sliding animation */}
+            <div className="absolute inset-0 bg-[#0a0a0a] border border-white/20 rounded-xl shadow-2xl shadow-[#4FAEF3]/10 overflow-hidden">
+              <button 
+                className="absolute top-4 right-4 z-50 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/70 hover:bg-black/80 hover:text-white active:scale-90 transition-all duration-200 ease-out border border-white/10 backdrop-blur-md"
+                onClick={handleCloseModal}
+              >
+                ✕
+              </button>
 
-                <h2 className="text-4xl font-black text-white tracking-wide mb-1" style={{ fontFamily: '"Inter", "Arial Black", sans-serif' }}>
-                  {selectedEvent.name}
-                </h2>
-                
-                <h3 className="font-mono text-sm tracking-widest text-white/50 mb-6 uppercase">
-                  {selectedEvent.type} // {selectedEvent.date}
-                </h3>
+              {/* GSAP Managed Carousel Track */}
+              <div className="relative w-full h-full" ref={carouselRef}>
+                {events.map((ev) => (
+                  <div 
+                    key={ev.id} 
+                    data-id={ev.id} 
+                    className="ev-slide-item absolute inset-0 w-full h-full flex flex-col invisible"
+                  >
+                    <div className="relative h-[40%] md:h-[45%] w-full flex-shrink-0 bg-neutral-900 border-b border-white/10 overflow-hidden">
+                      <img src={ev.img} alt={ev.name} className="w-full h-full object-cover opacity-90" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
+                    </div>
 
-                <div className="w-full h-[1px] bg-gradient-to-r from-white/10 via-white/5 to-transparent mb-6" />
+                    <div className="p-6 md:p-8 relative z-10 flex-grow flex flex-col">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="font-mono text-[10px] tracking-[0.2em] text-[#4FAEF3] uppercase border border-[#4FAEF3]/30 px-2 py-1 rounded bg-[#4FAEF3]/5">
+                          {ev.id}
+                        </span>
+                        <span className="font-mono text-[10px] tracking-[0.1em] text-white/40 uppercase">
+                          {ev.status}
+                        </span>
+                      </div>
 
-                <div className="space-y-4">
-                  <p className="font-mono text-sm text-white/80 leading-relaxed">
-                    {selectedEvent.desc}
-                  </p>
-                  <p className="font-mono text-xs text-white/50 leading-relaxed">
-                    {selectedEvent.details}
-                  </p>
-                </div>
+                      <h2 className="text-3xl md:text-4xl font-black text-white tracking-wide mb-1" style={{ fontFamily: '"Inter", "Arial Black", sans-serif' }}>
+                        {ev.name}
+                      </h2>
+                      
+                      <h3 className="font-mono text-xs md:text-sm tracking-widest text-white/50 mb-4 uppercase">
+                        {ev.type} // {ev.date}
+                      </h3>
+
+                      <div className="w-full h-[1px] bg-gradient-to-r from-white/10 via-white/5 to-transparent mb-5" />
+
+                      <div className="space-y-3 md:space-y-4 overflow-y-auto pr-2 custom-scrollbar">
+                        <p className="font-mono text-xs md:text-sm text-white/80 leading-relaxed">
+                          {ev.desc}
+                        </p>
+                        <p className="font-mono text-[10px] md:text-xs text-white/50 leading-relaxed">
+                          {ev.details}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -453,10 +481,11 @@ export default function Events() {
           0% { opacity: 1; transform: scale(1) translateY(0); }
           100% { opacity: 0; transform: scale(0.95) translateY(20px); }
         }
-        @keyframes ev-content-switch {
-          0% { opacity: 0; transform: translateY(5px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
       `}</style>
     </section>
   );
