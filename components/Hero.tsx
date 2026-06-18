@@ -24,7 +24,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <div className="relative z-10 mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col items-center justify-start gap-3 overflow-hidden px-4 pb-2 pt-[6svh] sm:gap-5 sm:px-6 sm:pb-6 sm:pt-[7svh] md:px-12 lg:flex-row lg:justify-between lg:gap-12 lg:px-20 lg:pb-0 lg:pt-0 xl:px-24">
+    <div className="relative z-10 mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col items-center justify-start gap-3 overflow-hidden px-4 pb-2 pt-20 sm:gap-5 sm:px-6 sm:pb-6 sm:pt-24 md:px-12 lg:flex-row lg:justify-between lg:gap-12 lg:px-20 lg:pb-0 lg:pt-16 xl:px-24">
       
       {/* LEFT SIDE: Logo & Text Container */}
       <div className="relative z-20 flex w-full min-w-0 flex-col items-center justify-center text-center pointer-events-auto lg:w-[58%] lg:items-start lg:text-left">
