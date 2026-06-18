@@ -41,6 +41,17 @@ const events = [
   },
 ];
 
+function Screw() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+      <circle cx="5" cy="5" r="3.7" fill="#070809" stroke="rgba(235,238,242,0.34)" strokeWidth="0.8" />
+      <circle cx="5" cy="5" r="1.5" fill="rgba(235,238,242,0.28)" />
+      <line x1="2.7" y1="5" x2="7.3" y2="5"
+        stroke="rgba(235,238,242,0.5)" strokeWidth="0.8" strokeLinecap="square" />
+    </svg>
+  );
+}
+
 export default function Events() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
@@ -72,9 +83,14 @@ export default function Events() {
       ];
     };
 
+    const baseShadow = "inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.75), 0 0 0 1px rgba(0,0,0,0.75), 8px 10px 20px rgba(0,0,0,0.55)";
+    const glowShadow = `${baseShadow}, 0 0 40px rgba(255,255,255,0.12), 0 0 90px rgba(255,255,255,0.07), 0 0 160px rgba(200,220,255,0.05)`;
+
     // ── Initial stacked state ─────────────────────────────────────────
     cards.forEach((card, i) => {
       const depth = cards.length - 1 - i;
+      
+      // Card wrapper stays plain initially
       gsap.set(card, {
         x: 0,
         y: depth * 12,
@@ -84,19 +100,22 @@ export default function Events() {
         opacity: 1,
         transformOrigin: "center bottom",
       });
-      // Hide inner text content — card shows as clean opaque block
+
+      // Hide the complex styles and inner text initially
+      const styledBg = card.querySelector<HTMLElement>(".ev-styled-bg");
+      const highlights = card.querySelector<HTMLElement>(".ev-highlights");
       const inner = card.querySelector<HTMLElement>(".ev-inner");
+      
+      if (styledBg) gsap.set(styledBg, { opacity: 0, boxShadow: baseShadow });
+      if (highlights) gsap.set(highlights, { opacity: 0 });
       if (inner) gsap.set(inner, { opacity: 0 });
     });
 
-    // Title sits above the stack at rest
     gsap.set(title, { zIndex: 10, opacity: 1, y: 0 });
 
     // ── Timeline ──────────────────────────────────────────────────────
     const tl = gsap.timeline({ paused: true });
 
-    // Hold title fully visible until 0.12, then fade it out.
-    // Cards start peeling at 0.2, so the title is gone before they fly.
     tl.to(title, {
       opacity: 0,
       y: -28,
@@ -104,14 +123,12 @@ export default function Events() {
       ease: "power2.in",
     }, 0.12);
 
-    // At 0.19 — just before first peel — raise cards above where title was
-    // by bumping their zIndex via onStart / onReverseComplete
     tl.call(() => {
       cards.forEach((card, i) => { card.style.zIndex = String(20 + i); });
     }, [], 0.19);
     tl.call(() => {
       cards.forEach((card, i) => { card.style.zIndex = String(i + 1); });
-    }, [], 0.18); // reverse: lower back when scrolling back up
+    }, [], 0.18); 
 
     // ── Peel cards ────────────────────────────────────────────────────
     const peelOrder = [3, 2, 1, 0];
@@ -139,8 +156,19 @@ export default function Events() {
       tl.to(card, { y: pos.y + 8, duration: 0.03, ease: "power1.out" }, t + 0.18);
       tl.to(card, { y: pos.y,     duration: 0.03, ease: "power1.in"  }, t + 0.21);
 
-      // Reveal inner content after landing
-      const inner = card.querySelector(".ev-inner") as HTMLElement | null;
+      // Fade in the rich styles, highlights, and content as it lands
+      const styledBg = card.querySelector<HTMLElement>(".ev-styled-bg");
+      const highlights = card.querySelector<HTMLElement>(".ev-highlights");
+      const inner = card.querySelector<HTMLElement>(".ev-inner");
+
+      if (styledBg) {
+        tl.to(styledBg, { opacity: 1, duration: 0.15, ease: "power2.inOut" }, t + 0.05);
+        // Activate ambient radial glow on the styled background
+        tl.to(styledBg, { boxShadow: glowShadow, duration: 0.3, ease: "power2.out" }, t + 0.22);
+      }
+      if (highlights) {
+        tl.to(highlights, { opacity: 1, duration: 0.15 }, t + 0.1);
+      }
       if (inner) {
         tl.to(inner, { opacity: 1, duration: 0.08, ease: "power1.out" }, t + 0.22);
       }
@@ -189,7 +217,7 @@ export default function Events() {
         ref={pinRef}
         className="relative flex h-screen w-full items-center justify-center overflow-hidden"
       >
-        {/* Grid */}
+        {/* Grid Background */}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
@@ -201,18 +229,21 @@ export default function Events() {
           }}
         />
 
-        {/* Constellation dots */}
+        {/* Constellation Dots */}
         {([
           [8, 9], [66, 14], [15, 58], [80, 47], [44, 78],
         ] as [number, number][]).map(([lp, tp], i) => (
           <div
             key={i}
             className="pointer-events-none absolute rounded-full bg-white/25"
-            style={{ left: `${lp}%`, top: `${tp}%`, width: 5, height: 5 }}
+            style={{
+              left: `${lp}%`, top: `${tp}%`, width: 5, height: 5,
+              boxShadow: '0 0 6px rgba(255,255,255,0.15)'
+            }}
           />
         ))}
 
-        {/* Constellation lines */}
+        {/* Constellation Lines */}
         <svg
           className="pointer-events-none absolute inset-0 h-full w-full"
           xmlns="http://www.w3.org/2000/svg"
@@ -222,56 +253,61 @@ export default function Events() {
           <line x1="15%" y1="58%" x2="44%" y2="78%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
         </svg>
 
-        {/* Section label */}
-        <p className="absolute left-12 top-10 font-mono text-[11px] uppercase tracking-[0.12em] text-white/30">
-          03.&nbsp; SYSTEM.LOGS // EVENTS
-        </p>
+        {/* Section Label */}
+        <div className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
+          <span style={{
+            fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
+            color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
+          }}>
+            <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>03.</span>
+            SYSTEM.LOGS // EVENTS
+          </span>
+        </div>
 
-        {/*
-          ── KEY STRUCTURAL FIX ──────────────────────────────────────────
-          The title and the card deck are now SIBLINGS inside one shared
-          stacking context (the perspective wrapper). This means z-index
-          comparisons between them actually work — no more broken stacking
-          contexts caused by perspective on a parent.
-          
-          Title: position absolute, fills the perspective wrapper, zIndex 10
-          Cards: zIndex 1–4 at rest → bumped to 20+ just before first peel
-        */}
+        {/* 3D Context Wrapper */}
         <div
           style={{
             perspective: "1100px",
             perspectiveOrigin: "50% 50%",
             position: "relative",
-            // Match the viewport so the absolute title can fill it
             width: "100vw",
             height: "100vh",
           }}
         >
-          {/* ── Title lives INSIDE the perspective wrapper ── */}
+          {/* Main Title Array */}
           <div
             ref={titleRef}
             className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center"
-            style={{ zIndex: 10 }}
+            style={{ zIndex: 10, top: '-6%' }}
           >
-            <h2
-              className="font-sans text-[clamp(32px,5.5vw,68px)] font-black uppercase leading-none tracking-[0.04em] text-white"
-            >
-              EVENTS AT{" "}
-              <span className="text-white/25">ROBOVITICS.</span>
+            <span style={{
+              fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
+              fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase',
+            }}>
+              ▶ SECTOR_MAP // EVENTS
+            </span>
+            <h2 style={{
+              margin: 0, fontSize: 'clamp(32px,5.5vw,72px)', fontWeight: '900',
+              color: '#ffffff', letterSpacing: '-0.01em',
+              fontFamily: '"Inter", "Arial Black", sans-serif',
+              textTransform: 'uppercase', lineHeight: 1, textAlign: 'center',
+            }}>
+              EVENTS AT{' '}
+              <span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 900 }}>ROBOVITICS.</span>
             </h2>
-            <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.1em] text-white/30">
-              &gt; SCROLL TO DEPLOY
-            </p>
+            <div style={{
+              marginTop: '14px', width: '30%', height: '1px',
+              background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)',
+            }} />
           </div>
 
-          {/* ── Card deck — centered via absolute positioning ── */}
+          {/* Card Deck Wrapper */}
           <div
             ref={deckRef}
             className="absolute"
             style={{
-              width: 300,
-              height: 210,
-              // Center in the perspective wrapper
+              width: 320,
+              height: 230,
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
@@ -281,78 +317,117 @@ export default function Events() {
               <div
                 key={ev.id}
                 ref={(el) => { cardsRef.current[i] = el; }}
-                className="absolute inset-0 select-none"
+                className="absolute inset-0 select-none overflow-visible rounded-[4px]"
                 style={{
-                  background: "#0f0f0f",
-                  border: "1px solid rgba(255,255,255,0.11)",
-                  padding: "18px 20px",
-                  willChange: "transform",
+                  // The plain base state
+                  background: "#0a0a0a",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  willChange: "transform, box-shadow",
+                  padding: "16px 20px 18px",
+                  color: "#f1f3f5",
                 }}
               >
-                {/* Corner brackets */}
-                {(["tl","tr","bl","br"] as const).map((c) => (
-                  <span
-                    key={c}
-                    className="absolute"
-                    style={{
-                      width: 8, height: 8,
-                      top:    c[0] === "t" ? 7 : undefined,
-                      bottom: c[0] === "b" ? 7 : undefined,
-                      left:   c[1] === "l" ? 7 : undefined,
-                      right:  c[1] === "r" ? 7 : undefined,
-                      borderTop:    c[0] === "t" ? "1px solid rgba(255,255,255,0.22)" : undefined,
-                      borderBottom: c[0] === "b" ? "1px solid rgba(255,255,255,0.22)" : undefined,
-                      borderLeft:   c[1] === "l" ? "1px solid rgba(255,255,255,0.22)" : undefined,
-                      borderRight:  c[1] === "r" ? "1px solid rgba(255,255,255,0.22)" : undefined,
-                    }}
-                  />
-                ))}
-
-                {/* Flash border */}
+                {/* Complex Glass Background (Fades in) */}
                 <div
-                  className="ev-flash pointer-events-none absolute inset-0 opacity-0"
+                  className="ev-styled-bg absolute rounded-[4px] pointer-events-none"
+                  style={{
+                    // Cover the 1px plain border seamlessly
+                    top: -1, right: -1, bottom: -1, left: -1,
+                    background: `
+                      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+                      linear-gradient(165deg, rgba(255,255,255,0.11), rgba(255,255,255,0.02) 38%, rgba(0,0,0,0.35)),
+                      rgba(28,30,34,0.95)
+                    `,
+                    backgroundSize: '18px 18px, 18px 18px, auto, auto',
+                    border: '1px solid rgba(235,238,242,0.28)',
+                  }}
+                />
+
+                {/* Structural Screws (Always visible to maintain shape logic) */}
+                <span className="absolute z-10" style={{ top: '5px', left: '6px' }}><Screw /></span>
+                <span className="absolute z-10" style={{ top: '5px', right: '6px' }}><Screw /></span>
+                <span className="absolute z-10" style={{ bottom: '5px', left: '6px' }}><Screw /></span>
+                <span className="absolute z-10" style={{ bottom: '5px', right: '6px' }}><Screw /></span>
+
+                {/* Accent Highlights (Fades in) */}
+                <div className="ev-highlights absolute inset-0 pointer-events-none z-10">
+                  <span style={{ position: 'absolute', top: '-1px', left: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.7)' }} />
+                  <span style={{ position: 'absolute', bottom: '-1px', right: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.4)' }} />
+                </div>
+
+                {/* Peel Flash Highlight */}
+                <div
+                  className="ev-flash pointer-events-none absolute inset-0 opacity-0 rounded-[4px] z-20"
                   style={{ border: "1px solid rgba(255,255,255,0.85)" }}
                 />
 
-                <div className="ev-inner">
-                <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.13em] text-white/25">
-                  {ev.id}
-                </p>
-                <p className="font-sans text-[21px] font-black uppercase leading-none tracking-[0.05em] text-white">
-                  {ev.name}
-                </p>
-                <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.1em] text-white/40">
-                  {ev.type}
-                </p>
-                <p className="mt-2.5 font-mono text-[10px] leading-[1.75] text-white/50">
-                  {ev.desc}
-                </p>
-
-                <div
-                  className="mt-3 flex items-center justify-between"
-                  style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: 9 }}
-                >
-                  <span className="font-mono text-[9px] tracking-[0.1em] text-white/30">
-                    {ev.date}
-                  </span>
-
-                  {ev.status === "REGISTRATIONS OPEN" ? (
-                    <span
-                      className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.08em] text-white/90"
-                      style={{ border: "1px solid rgba(255,255,255,0.45)", padding: "2px 7px" }}
-                    >
-                      <span className="ev-blink inline-block h-[5px] w-[5px] rounded-full bg-white" />
-                      {ev.status}
+                {/* Inner Content (Fades in) */}
+                <div className="ev-inner relative z-30 flex h-full flex-col">
+                  <div className="mb-2 mt-[-2px] text-center">
+                    <span style={{
+                      fontFamily: 'monospace', fontSize: '8px', letterSpacing: '0.22em',
+                      textTransform: 'uppercase', color: 'rgba(235,238,242,0.34)',
+                      textShadow: '0 0 10px rgba(180,205,255,0.14)',
+                    }}>
+                      {ev.id}
                     </span>
-                  ) : (
-                    <span
-                      className="font-mono text-[9px] uppercase tracking-[0.08em] text-white/30"
-                      style={{ border: "1px solid rgba(255,255,255,0.11)", padding: "2px 7px" }}
-                    >
-                      {ev.status}
+                  </div>
+
+                  <h3 className="text-center" style={{
+                    margin: '0 0 4px',
+                    fontFamily: '"Inter", "Arial Black", sans-serif',
+                    fontWeight: '900', fontSize: '20px', letterSpacing: '0.04em',
+                    textTransform: 'uppercase', color: 'rgba(245,247,250,0.9)',
+                    textShadow: '0 0 16px rgba(255,255,255,0.18)', lineHeight: 1.1,
+                  }}>
+                    {ev.name}
+                  </h3>
+
+                  <p className="text-center" style={{
+                    margin: '0 0 10px', fontFamily: 'monospace', fontSize: '9px',
+                    letterSpacing: '0.1em', textTransform: 'uppercase',
+                    color: 'rgba(168,176,188,0.62)',
+                  }}>
+                    {ev.type}
+                  </p>
+
+                  <div style={{
+                    height: '1px', margin: '0 8px 12px',
+                    background: 'linear-gradient(90deg, transparent, rgba(235,238,242,0.42) 30%, rgba(235,238,242,0.42) 70%, transparent)',
+                    boxShadow: '0 0 10px rgba(180,205,255,0.16)',
+                  }} />
+
+                  <p className="font-mono text-[10px] leading-[1.65]" style={{ color: 'rgba(235,238,242,0.65)' }}>
+                    {ev.desc}
+                  </p>
+
+                  {/* Date & Status Footer */}
+                  <div
+                    className="mt-auto flex items-center justify-between"
+                    style={{ borderTop: "1px solid rgba(255,255,255,0.07)", paddingTop: 10 }}
+                  >
+                    <span className="font-mono text-[8.5px] tracking-[0.1em] text-white/30">
+                      {ev.date}
                     </span>
-                  )}
-                </div>
+
+                    {["OPEN", "REGISTRATIONS OPEN", "FLAGSHIP"].includes(ev.status) ? (
+                      <span
+                        className="flex items-center gap-1.5 font-mono text-[8px] uppercase tracking-[0.08em] text-white/90"
+                        style={{ border: "1px solid rgba(255,255,255,0.45)", padding: "2px 7px", borderRadius: "2px" }}
+                      >
+                        <span className="ev-blink inline-block h-[4px] w-[4px] rounded-full bg-white" />
+                        {ev.status}
+                      </span>
+                    ) : (
+                      <span
+                        className="font-mono text-[8px] uppercase tracking-[0.08em] text-white/30"
+                        style={{ border: "1px solid rgba(255,255,255,0.11)", padding: "2px 7px", borderRadius: "2px" }}
+                      >
+                        {ev.status}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

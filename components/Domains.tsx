@@ -8,11 +8,9 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-// --- EVENTS CONSTELLATION BACKGROUND ---
 function EventsBackground() {
   return (
     <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-[#0d0d0d]">
-      {/* Grid */}
       <div
         className="absolute inset-0"
         style={{
@@ -23,23 +21,20 @@ function EventsBackground() {
           backgroundSize: "40px 40px",
         }}
       />
-
-      {/* Constellation dots */}
       {([
         [8, 9], [66, 14], [15, 58], [80, 47], [44, 78],
       ] as [number, number][]).map(([lp, tp], i) => (
         <div
           key={i}
-          className="absolute rounded-full bg-white/25"
-          style={{ left: `${lp}%`, top: `${tp}%`, width: 5, height: 5 }}
+          className="absolute rounded-full"
+          style={{
+            left: `${lp}%`, top: `${tp}%`, width: 5, height: 5,
+            background: 'rgba(255,255,255,0.25)',
+            boxShadow: '0 0 6px rgba(255,255,255,0.15)',
+          }}
         />
       ))}
-
-      {/* Constellation lines */}
-      <svg
-        className="absolute inset-0 h-full w-full"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
         <line x1="8%" y1="9%"  x2="66%" y2="14%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
         <line x1="66%" y1="14%" x2="80%" y2="47%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
         <line x1="15%" y1="58%" x2="44%" y2="78%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
@@ -193,12 +188,12 @@ function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
         background: `
           linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-          linear-gradient(165deg, rgba(255,255,255,0.09), rgba(255,255,255,0.012) 38%, rgba(0,0,0,0.28)),
-          rgba(6,8,10,0.88)
+          linear-gradient(165deg, rgba(255,255,255,0.11), rgba(255,255,255,0.02) 38%, rgba(0,0,0,0.35)),
+          rgba(28,30,34,0.95)
         `,
         backgroundSize: '18px 18px, 18px 18px, auto, auto',
-        border: '1px solid rgba(235,238,242,0.22)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.75), 0 0 0 1px rgba(0,0,0,0.75)',
+        border: '1px solid rgba(235,238,242,0.28)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.75), 0 0 0 1px rgba(0,0,0,0.75)',
         overflow: 'visible',
         color: '#f1f3f5',
       }}>
@@ -206,8 +201,11 @@ function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
         <span style={{ position: 'absolute', top: '5px', right: '6px' }}><Screw /></span>
         <span style={{ position: 'absolute', bottom: '5px', left: '6px' }}><Screw /></span>
         <span style={{ position: 'absolute', bottom: '5px', right: '6px' }}><Screw /></span>
-        <span style={{ position: 'absolute', top: '-1px', left: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.65)' }} />
-        <span style={{ position: 'absolute', bottom: '-1px', right: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.45)' }} />
+        
+        {/* Top/bottom highlight lines */}
+        <span style={{ position: 'absolute', top: '-1px', left: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.7)' }} />
+        <span style={{ position: 'absolute', bottom: '-1px', right: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.4)' }} />
+        
         <div style={{ textAlign: 'center', marginBottom: '10px', marginTop: '4px' }}>
           <span style={{
             fontFamily: 'monospace', fontSize: '7px', letterSpacing: '0.22em',
@@ -253,7 +251,6 @@ function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
             fontSize: 'clamp(7px, 0.55vw, 7px)',
             letterSpacing: '0.1em', textTransform: 'uppercase',
             color: 'rgba(168,176,188,0.62)',
-            textShadow: '0 0 10px rgba(180,205,255,0.12)',
           }}>
             {sub}
           </p>
@@ -333,8 +330,7 @@ function HUDTextBridge() {
 export default function Domains() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const eyebrowRef = useRef<HTMLSpanElement>(null);
+  const titleGroupRef = useRef<HTMLDivElement>(null);
   const sectionLabelRef = useRef<HTMLDivElement>(null);
 
   const addToRefs = (el: HTMLDivElement | null, index: number) => {
@@ -354,16 +350,13 @@ export default function Domains() {
 
         const wordElements = gsap.utils.toArray<Element>('.bridge-word');
 
-        // FIX: Pre-compute all random values into static arrays ONCE.
-        // Using () => gsap.utils.random() as function values causes GSAP to
-        // re-invoke the randomizer on every scrub tick, making elements jump.
         const wordCount = wordElements.length;
-        const randZ         = Array.from({ length: wordCount }, () => gsap.utils.random(-800, 1000));
-        const randX         = Array.from({ length: wordCount }, () => gsap.utils.random(-400, 400));
-        const randY         = Array.from({ length: wordCount }, () => gsap.utils.random(-400, 400));
-        const randRotX      = Array.from({ length: wordCount }, () => gsap.utils.random(-90, 90));
-        const randRotY      = Array.from({ length: wordCount }, () => gsap.utils.random(-90, 90));
-        const randRotZ      = Array.from({ length: wordCount }, () => gsap.utils.random(-45, 45));
+        const randZ    = Array.from({ length: wordCount }, () => gsap.utils.random(-800, 1000));
+        const randX    = Array.from({ length: wordCount }, () => gsap.utils.random(-400, 400));
+        const randY    = Array.from({ length: wordCount }, () => gsap.utils.random(-400, 400));
+        const randRotX = Array.from({ length: wordCount }, () => gsap.utils.random(-90, 90));
+        const randRotY = Array.from({ length: wordCount }, () => gsap.utils.random(-90, 90));
+        const randRotZ = Array.from({ length: wordCount }, () => gsap.utils.random(-45, 45));
 
         gsap.set(wordElements, {
           opacity: 0,
@@ -375,10 +368,19 @@ export default function Domains() {
           rotationZ: (i) => randRotZ[i],
         });
 
+        // Initial setup for cards
         gsap.set(cardsRef.current, {
           x: 0, y: '7vh', scale: 0.58,
           opacity: 0, rotation: 0,
           force3D: true, transformOrigin: 'center center',
+        });
+
+        // Initial setup for title group
+        gsap.set(titleGroupRef.current, {
+          opacity: 0,
+          scale: 0.58,
+          y: '5vh',
+          transformOrigin: 'center center',
         });
 
         const tl = gsap.timeline({
@@ -390,14 +392,41 @@ export default function Domains() {
             pin: true,
             anticipatePin: 1,
             fastScrollEnd: true,
+            onUpdate: (self) => {
+              const p = self.progress;
+              let intensity = 0;
+              if (p >= 0.35 && p < 0.65) {
+                intensity = (p - 0.35) / 0.30;
+              } else if (p >= 0.65 && p < 0.82) {
+                intensity = 1 - ((p - 0.65) / 0.17);
+              }
+              cardsRef.current.forEach((card) => {
+                if (!card) return;
+                card.style.boxShadow = intensity > 0.01
+                  ? `
+                    0 0 ${intensity * 40}px rgba(255,255,255,${intensity * 0.12}),
+                    0 0 ${intensity * 90}px rgba(255,255,255,${intensity * 0.07}),
+                    0 0 ${intensity * 160}px rgba(200,220,255,${intensity * 0.05})
+                  `
+                  : '';
+              });
+            },
           },
         });
 
+        // Cards fade in and scale up at the start of the scroll
         tl.to(cardsRef.current, {
           opacity: 1, scale: 0.78, y: '6vh',
           duration: 0.4,
           ease: 'power2.out', force3D: true,
-        });
+        }, 0);
+
+        // Title group scales up and fades in EXACTLY with the cards
+        tl.to(titleGroupRef.current, {
+          opacity: 1, scale: 1, y: 0,
+          duration: 0.4,
+          ease: 'power2.out',
+        }, 0);
 
         tl.to(cardsRef.current, {
           x: (i) => patternX[i],
@@ -423,8 +452,9 @@ export default function Domains() {
           ease: 'power2.out', force3D: true,
         });
 
+        // Fade out the title and section label when cards explode out
         tl.to(
-          [headingRef.current, eyebrowRef.current, sectionLabelRef.current],
+          [titleGroupRef.current, sectionLabelRef.current],
           { opacity: 0, y: -30, duration: 0.6, ease: 'power2.inOut' },
           '<'
         );
@@ -446,7 +476,7 @@ export default function Domains() {
           opacity: 1, z: 0, x: 0, y: 0, rotationX: 0, rotationY: 0, rotationZ: 0,
           duration: 2.0,
           stagger: { each: 0.04, from: 'random' },
-          ease: 'power3.out', force3D: true
+          ease: 'power3.out', force3D: true,
         }, '<');
 
         tl.to({}, { duration: 1.0 });
@@ -491,7 +521,7 @@ export default function Domains() {
           </h2>
           <div style={{
             marginTop: '14px', width: '80%', height: '1px',
-            background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)',
+            background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)',
           }} />
         </div>
         <div className="w-full flex flex-col justify-center">
@@ -509,6 +539,8 @@ export default function Domains() {
       >
         <EventsBackground />
         <HUDTextBridge />
+        
+        {/* Top Left Label */}
         <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
           <span style={{
             fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
@@ -518,15 +550,20 @@ export default function Domains() {
             SYSTEM.LOGS // DOMAINS
           </span>
         </div>
-        <div className="absolute z-20 flex flex-col items-center pointer-events-none"
-          style={{ top: '18%', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>
-          <span ref={eyebrowRef} style={{
+
+        {/* Grouped Title Container for Animation */}
+        <div 
+          ref={titleGroupRef} 
+          className="absolute z-20 flex flex-col items-center pointer-events-none w-full"
+          style={{ top: '18%', left: 0, whiteSpace: 'nowrap' }}
+        >
+          <span style={{
             fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
             fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase',
           }}>
             ▶ SECTOR_MAP // DOMAINS
           </span>
-          <h2 ref={headingRef} style={{
+          <h2 style={{
             margin: 0, fontSize: 'clamp(32px,4.5vw,72px)', fontWeight: '900',
             color: '#ffffff', letterSpacing: '-0.01em',
             fontFamily: '"Inter", "Arial Black", sans-serif',
@@ -536,19 +573,23 @@ export default function Domains() {
             <span style={{ color: 'rgba(255,255,255,0.4)', fontWeight: 900 }}>ROBOVITICS.</span>
           </h2>
           <div style={{
-            marginTop: '14px', width: '50%', height: '1px',
-            background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)',
+            marginTop: '14px', width: '30%', height: '1px',
+            background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)',
           }} />
         </div>
+
+        {/* Cards */}
         <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
           {DOMAINS.map((domain, index) => (
             <DomainCardDesktop key={`desktop-${domain.id}`} domain={domain} index={index} addToRefs={addToRefs} />
           ))}
         </div>
+        
+        {/* Scroll Hint */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-20">
           <span style={{
             fontSize: '8px', letterSpacing: '0.25em',
-            color: 'rgba(255,255,255,0.1)', fontFamily: 'monospace', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', textTransform: 'uppercase',
           }}>
             SCROLL TO DEPLOY ↓
           </span>
