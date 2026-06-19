@@ -35,20 +35,30 @@ export default function About() {
         <div className="flex flex-col gap-16">
           <div className="flex flex-col justify-center">
             <h2 className="text-5xl font-black tracking-tighter mb-4 drop-shadow-lg">
-              WE ARE <br/> <span style={{ color: 'rgba(255,255,255,0.4)' }}>ROBOVITICS.</span>
+              About Us <br/> <span className="text-xl md:text-2xl font-medium tracking-wide mt-3 block" style={{ color: 'rgba(255,255,255,0.5)' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
             </h2>
-            <p className="text-gray-400 font-mono text-base leading-relaxed drop-shadow-md">
-              The official robotics club of VIT Vellore. We are a collective of engineers, designers, and innovators dedicated to pushing the boundaries of autonomous systems. We don&apos;t just study robotics; we solder the circuits, write the algorithms, and machine the parts that bring machines to life.
-            </p>
+            <div className="flex flex-col gap-6">
+              <p className="text-gray-200 font-mono text-base md:text-[1.05rem] leading-[1.8] drop-shadow-lg">
+                RoboVITics, the official Robotics Club of VIT Vellore, is a community of passionate innovators exploring robotics, automation, and emerging technologies. Through hands-on projects, workshops, and technical events, we provide students with opportunities to learn, create, and transform ideas into reality.
+              </p>
+              <p className="text-gray-200 font-mono text-base md:text-[1.05rem] leading-[1.8] drop-shadow-lg">
+                Over the years, RoboVITics has grown into a hub of innovation and excellence, empowering students to build impactful solutions, compete on prestigious platforms, and continuously expand their technical expertise. Driven by creativity, collaboration, and ambition, we strive to shape the next generation of engineers and innovators.
+              </p>
+            </div>
           </div>
 
           <div className="flex flex-col justify-center">
             <h2 className="text-5xl font-black tracking-tighter mb-4 drop-shadow-lg">
-              POWERED BY <br/> <span style={{ color: 'rgba(255,255,255,0.4)' }}>VIT VELLORE.</span>
+              About VIT <br/> <span className="text-xl md:text-2xl font-medium tracking-wide mt-3 block" style={{ color: 'rgba(255,255,255,0.5)' }}>&quot;A place to learn, a chance to grow&quot;</span>
             </h2>
-            <p className="text-gray-400 font-mono text-base leading-relaxed drop-shadow-md">
-              Vellore Institute of Technology provides the launchpad for our ambitions. Backed by world-class infrastructure and a culture that champions disruptive tech, we leverage the university&apos;s cutting-edge manufacturing labs and research facilities to turn theoretical blueprints into heavy-duty reality.
-            </p>
+            <div className="flex flex-col gap-6">
+              <p className="text-gray-200 font-mono text-base md:text-[1.05rem] leading-[1.8] drop-shadow-lg">
+                Vellore Institute of Technology (VIT) is one of India&apos;s leading private universities, accredited with A++ by NAAC and consistently ranked among the top institutions by NIRF. With a thriving community of 40,000+ students, strong industry partnerships, and global collaborations, VIT fosters an environment that encourages innovation, research, and hands-on learning.
+              </p>
+              <p className="text-gray-200 font-mono text-base md:text-[1.05rem] leading-[1.8] drop-shadow-lg">
+                This dynamic ecosystem empowers students to explore their interests, develop practical skills, and contribute to impactful initiatives, serving as the foundation for communities like RoboVITics to learn, innovate, and grow.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -92,11 +102,16 @@ export default function About() {
                     className="absolute inset-0 flex flex-col justify-center"
                   >
                     <h2 className="text-6xl lg:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
-                      WE ARE <br/> <span style={{ color: '#4FAEF3' }}>ROBOVITICS.</span>
+                      About Us <br/> <span className="text-2xl lg:text-3xl font-medium tracking-wide mt-4 block" style={{ color: '#4FAEF3' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
                     </h2>
-                    <p className="text-gray-400 font-mono text-lg max-w-2xl leading-relaxed drop-shadow-md">
-                      The official robotics club of VIT Vellore. We are a collective of engineers, designers, and innovators dedicated to pushing the boundaries of autonomous systems. We don&apos;t just study robotics; we solder the circuits, write the algorithms, and machine the parts that bring machines to life.
-                    </p>
+                    <div className="flex flex-col gap-6 max-w-3xl">
+                      <p className="text-gray-200 font-mono text-[1.1rem] lg:text-lg leading-loose drop-shadow-lg">
+                        RoboVITics, the official Robotics Club of VIT Vellore, is a community of passionate innovators exploring robotics, automation, and emerging technologies. Through hands-on projects, workshops, and technical events, we provide students with opportunities to learn, create, and transform ideas into reality.
+                      </p>
+                      <p className="text-gray-200 font-mono text-[1.1rem] lg:text-lg leading-loose drop-shadow-lg">
+                        Over the years, RoboVITics has grown into a hub of innovation and excellence, empowering students to build impactful solutions, compete on prestigious platforms, and continuously expand their technical expertise. Driven by creativity, collaboration, and ambition, we strive to shape the next generation of engineers and innovators.
+                      </p>
+                    </div>
                   </motion.div>
                 )}
 
@@ -110,11 +125,16 @@ export default function About() {
                     className="absolute inset-0 flex flex-col justify-center"
                   >
                     <h2 className="text-6xl lg:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
-                      POWERED BY <br/> <span style={{ color: '#4FAEF3' }}>VIT VELLORE.</span>
+                      About VIT <br/> <span className="text-2xl lg:text-3xl font-medium tracking-wide mt-4 block" style={{ color: '#4FAEF3' }}>&quot;A place to learn, a chance to grow&quot;</span>
                     </h2>
-                    <p className="text-gray-400 font-mono text-lg max-w-2xl leading-relaxed drop-shadow-md">
-                      Vellore Institute of Technology provides the launchpad for our ambitions. Backed by world-class infrastructure and a culture that champions disruptive tech, we leverage the university&apos;s cutting-edge manufacturing labs and research facilities to turn theoretical blueprints into heavy-duty reality.
-                    </p>
+                    <div className="flex flex-col gap-6 max-w-3xl">
+                      <p className="text-gray-200 font-mono text-[1.1rem] lg:text-lg leading-loose drop-shadow-lg">
+                        Vellore Institute of Technology (VIT) is one of India&apos;s leading private universities, accredited with A++ by NAAC and consistently ranked among the top institutions by NIRF. With a thriving community of 40,000+ students, strong industry partnerships, and global collaborations, VIT fosters an environment that encourages innovation, research, and hands-on learning.
+                      </p>
+                      <p className="text-gray-200 font-mono text-[1.1rem] lg:text-lg leading-loose drop-shadow-lg">
+                        This dynamic ecosystem empowers students to explore their interests, develop practical skills, and contribute to impactful initiatives, serving as the foundation for communities like RoboVITics to learn, innovate, and grow.
+                      </p>
+                    </div>
                   </motion.div>
                 )}
                 
