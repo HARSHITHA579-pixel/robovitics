@@ -15,30 +15,30 @@ export default function Page() {
 
   // 1. Tracks overall page scroll
   const { scrollYProgress: overallScroll } = useScroll();
-  
+
   // 2. Tracks specifically when the Domains section enters the screen
   const { scrollYProgress: domainsEnterProgress } = useScroll({
     target: domainsRef,
-    offset: ["start end", "start start"] 
+    offset: ["start end", "start start"]
   });
 
   // --- THE ORCHESTRATOR ANIMATIONS ---
-  
+
   const bgOpacity = useTransform(domainsEnterProgress, [0, 0.94, 1], [0.87, 0.87, 0]);
-  
+
   // 1. Calculate RAW numeric values first so we can apply physics to them
   // We go from 0 to 120 so it completely clears the right side of the screen
   const rawGearX = useTransform(domainsEnterProgress, [0, 1], [0, 120]);
   const rawGearY = useTransform(overallScroll, [0, 1], [0, 50]);
-  
+
   // COMBINED ROTATION:
   // overallScroll * 720 = Normal slow rotation down the page
   // domains * 420 = We increased this from 150 because it has to travel a longer 
   // distance across the whole screen. A higher number ensures it "rolls" instead of "slides".
   const rawGearRotation = useTransform(
     [overallScroll, domainsEnterProgress],
-    ([overall, domains]) => {
-      return (overall * 720) + (domains * 420); 
+    ([overall, domains]: [number, number]) => {
+      return (overall * 720) + (domains * 420);
     }
   );
 
@@ -55,15 +55,15 @@ export default function Page() {
 
   return (
     <main className="relative bg-black text-white flex flex-col font-sans selection:bg-gray-300 selection:text-black">
-      
+
       {/* GLOBAL BACKGROUND GRID */}
-      <motion.div 
+      <motion.div
         style={{ opacity: bgOpacity, backgroundImage: "url('/hero-bg.png')" }}
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
       />
 
       {/* GLOBAL SCROLL PROGRESS LINE */}
-      <motion.div 
+      <motion.div
         style={{ scaleY: overallScroll }}
         className="fixed top-0 right-0 w-1 bg-gray-300 origin-top z-50 shadow-[0_0_15px_#D1D5DB]"
       />
