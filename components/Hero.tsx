@@ -1,12 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import LogoAssembly, { getAssemblyDurationMs } from './LogoAssembly';
 
 export default function Hero() {
   const fullSubtitleText = "The Official Robotics Club of VIT Vellore";
   const [typedSubtitle, setTypedSubtitle] = useState("");
+  // Subtitle typing no longer starts on a fixed timeout — it waits for the
+  // logo assembly (pieces flying in -> lock-in glow pulse) to fully finish.
+  const [logoAssembled, setLogoAssembled] = useState(false);
 
   const titleContainer = {
     hidden: { opacity: 0 },
@@ -27,8 +31,23 @@ export default function Hero() {
       },
     },
   };
+
+  const handleLogoComplete = useCallback(() => {
+    setLogoAssembled(true);
+  }, []);
+
   useEffect(() => {
+    // Fallback in case onAnimationComplete doesn't fire (e.g. reduced-motion
+    // browsers) — flips the flag once the known assembly duration elapses.
+    const fallback = setTimeout(() => setLogoAssembled(true), getAssemblyDurationMs() + 200);
+    return () => clearTimeout(fallback);
+  }, []);
+
+  useEffect(() => {
+    if (!logoAssembled) return;
+
     let subtitleIndex = 0;
+    // Brief pause (~0.3-0.5s) after the logo locks in before typing starts.
     const typingDelay = setTimeout(() => {
       const typingInterval = setInterval(() => {
         setTypedSubtitle(fullSubtitleText.substring(0, subtitleIndex + 1));
@@ -38,15 +57,27 @@ export default function Hero() {
         }
       }, 40);
       return () => clearInterval(typingInterval);
-    }, 1000);
+    }, 400);
     return () => clearTimeout(typingDelay);
-  }, []);
+  }, [logoAssembled, fullSubtitleText]);
 
   return (
     <div className="relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-between px-6 md:px-12 lg:px-24 w-full max-w-[1600px] mx-auto gap-8 lg:gap-12 pb-12 lg:pb-0">
 
       {/* LEFT SIDE: Text Container */}
       <div className="relative z-20 w-full lg:w-[60%] flex flex-col justify-center pointer-events-auto pt-20 lg:pt-0">
+
+        {/* Logo assembly animation replaces the static "ROBOVITICS" letter-stagger title */}
+        <div className="w-full max-w-[820px] mb-4">
+          <LogoAssembly onComplete={handleLogoComplete} />
+        </div>
+
+        {/*
+          Original letter-by-letter title kept (hidden) for reference / easy
+          rollback — remove if not needed. Left commented out per request to
+          not delete existing implementation outright.
+        */}
+        {/*
         <motion.h1
           variants={titleContainer}
           initial="hidden"
@@ -59,11 +90,12 @@ export default function Hero() {
             </span>
           ))}
         </motion.h1>
+        */}
 
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
+          animate={{ opacity: logoAssembled ? 1 : 0 }}
+          transition={{ duration: 0.5 }}
           className="text-base md:text-xl lg:text-xl xl:text-2xl text-gray-300 font-mono flex items-center h-10 whitespace-nowrap"
         >
           <span className="text-gray-300 font-bold mr-3">{'>'}</span>
