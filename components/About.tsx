@@ -32,34 +32,48 @@ export default function About() {
           <span className="font-bold mr-2 text-white">01.</span> System.Logs // About
         </div>
 
-        <div className="flex flex-col gap-16">
-          <div className="flex flex-col justify-center">
-            <h2 className="text-5xl font-black tracking-tighter mb-4 drop-shadow-lg">
-              About Us <br/> <span className="text-xl md:text-2xl font-medium tracking-wide mt-3 block" style={{ color: 'rgba(255,255,255,0.5)' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
-            </h2>
-            <div className="flex flex-col gap-6">
-              <p className="text-gray-200 font-mono text-base md:text-[1.05rem] leading-[1.8] drop-shadow-lg">
-                RoboVITics, the official Robotics Club of VIT Vellore, is a community of passionate innovators exploring robotics, automation, and emerging technologies. Through hands-on projects, workshops, and technical events, we provide students with opportunities to learn, create, and transform ideas into reality.
-              </p>
-              <p className="text-gray-200 font-mono text-base md:text-[1.05rem] leading-[1.8] drop-shadow-lg">
-                Over the years, RoboVITics has grown into a hub of innovation and excellence, empowering students to build impactful solutions, compete on prestigious platforms, and continuously expand their technical expertise. Driven by creativity, collaboration, and ambition, we strive to shape the next generation of engineers and innovators.
-              </p>
+        <div className="flex flex-col gap-24">
+          
+          {/* About Us Mobile */}
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col justify-center">
+              <h2 className="text-5xl font-black tracking-tighter mb-4 drop-shadow-lg">
+                About Us <br/> <span className="text-xl md:text-2xl font-medium tracking-tight mt-3 block" style={{ color: 'rgba(255,255,255,0.7)' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
+              </h2>
+              <div className="flex flex-col gap-5 mt-2">
+                <p className="text-white/90 text-base md:text-lg leading-relaxed drop-shadow-md tracking-normal font-light">
+                  RoboVITics, the official Robotics Club of VIT Vellore, is a community of passionate innovators exploring robotics, automation, and emerging technologies. Through hands-on projects, workshops, and technical events, we provide students with opportunities to learn, create, and transform ideas into reality.
+                </p>
+                <p className="text-white/90 text-base md:text-lg leading-relaxed drop-shadow-md tracking-normal font-light">
+                  Over the years, RoboVITics has grown into a hub of innovation and excellence, empowering students to build impactful solutions, compete on prestigious platforms, and continuously expand their technical expertise. Driven by creativity, collaboration, and ambition, we strive to shape the next generation of engineers and innovators.
+                </p>
+              </div>
+            </div>
+            <div className="w-full flex justify-center mt-2">
+              <img src="/AboutUs.png.jpeg" alt="About Us" className="w-full max-w-[400px] rounded-2xl object-cover shadow-[0_0_40px_rgba(79,174,243,0.15)] ring-1 ring-white/10" />
             </div>
           </div>
 
-          <div className="flex flex-col justify-center">
-            <h2 className="text-5xl font-black tracking-tighter mb-4 drop-shadow-lg">
-              About VIT <br/> <span className="text-xl md:text-2xl font-medium tracking-wide mt-3 block" style={{ color: 'rgba(255,255,255,0.5)' }}>&quot;A place to learn, a chance to grow&quot;</span>
-            </h2>
-            <div className="flex flex-col gap-6">
-              <p className="text-gray-200 font-mono text-base md:text-[1.05rem] leading-[1.8] drop-shadow-lg">
-                Vellore Institute of Technology (VIT) is one of India&apos;s leading private universities, accredited with A++ by NAAC and consistently ranked among the top institutions by NIRF. With a thriving community of 40,000+ students, strong industry partnerships, and global collaborations, VIT fosters an environment that encourages innovation, research, and hands-on learning.
-              </p>
-              <p className="text-gray-200 font-mono text-base md:text-[1.05rem] leading-[1.8] drop-shadow-lg">
-                This dynamic ecosystem empowers students to explore their interests, develop practical skills, and contribute to impactful initiatives, serving as the foundation for communities like RoboVITics to learn, innovate, and grow.
-              </p>
+          {/* About VIT Mobile */}
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col justify-center">
+              <h2 className="text-5xl font-black tracking-tighter mb-4 drop-shadow-lg">
+                About VIT <br/> <span className="text-xl md:text-2xl font-medium tracking-tight mt-3 block" style={{ color: 'rgba(255,255,255,0.7)' }}>&quot;A place to learn, a chance to grow&quot;</span>
+              </h2>
+              <div className="flex flex-col gap-5 mt-2">
+                <p className="text-white/90 text-base md:text-lg leading-relaxed drop-shadow-md tracking-normal font-light">
+                  Vellore Institute of Technology (VIT) is one of India&apos;s leading private universities, accredited with A++ by NAAC and consistently ranked among the top institutions by NIRF. With a thriving community of 40,000+ students, strong industry partnerships, and global collaborations, VIT fosters an environment that encourages innovation, research, and hands-on learning.
+                </p>
+                <p className="text-white/90 text-base md:text-lg leading-relaxed drop-shadow-md tracking-normal font-light">
+                  This dynamic ecosystem empowers students to explore their interests, develop practical skills, and contribute to impactful initiatives, serving as the foundation for communities like RoboVITics to learn, innovate, and grow.
+                </p>
+              </div>
+            </div>
+            <div className="w-full flex justify-center mt-2">
+              <img src="/AboutVit.png.jpeg" alt="About VIT" className="w-full max-w-[400px] rounded-2xl object-cover shadow-[0_0_40px_rgba(79,174,243,0.15)] ring-1 ring-white/10" />
             </div>
           </div>
+
         </div>
       </section>
 
@@ -72,7 +86,7 @@ export default function About() {
             <span className="font-bold mr-2 text-white">01.</span> System.Logs // About
           </div>
 
-          <div className="relative w-full h-[400px] flex items-center mt-12">
+          <div className="relative w-full h-[500px] flex items-center mt-12">
             
             {/* Scroll Progress Bar - FIXED */}
             <div
@@ -99,18 +113,28 @@ export default function About() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -50 }}
                     transition={{ duration: 0.6, ease: "easeInOut" }}
-                    className="absolute inset-0 flex flex-col justify-center"
+                    className="absolute inset-0 flex items-center justify-between gap-12 lg:gap-20"
                   >
-                    <h2 className="text-6xl lg:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
-                      About Us <br/> <span className="text-2xl lg:text-3xl font-medium tracking-wide mt-4 block" style={{ color: '#4FAEF3' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
-                    </h2>
-                    <div className="flex flex-col gap-6 max-w-3xl">
-                      <p className="text-gray-200 font-mono text-[1.1rem] lg:text-lg leading-loose drop-shadow-lg">
-                        RoboVITics, the official Robotics Club of VIT Vellore, is a community of passionate innovators exploring robotics, automation, and emerging technologies. Through hands-on projects, workshops, and technical events, we provide students with opportunities to learn, create, and transform ideas into reality.
-                      </p>
-                      <p className="text-gray-200 font-mono text-[1.1rem] lg:text-lg leading-loose drop-shadow-lg">
-                        Over the years, RoboVITics has grown into a hub of innovation and excellence, empowering students to build impactful solutions, compete on prestigious platforms, and continuously expand their technical expertise. Driven by creativity, collaboration, and ambition, we strive to shape the next generation of engineers and innovators.
-                      </p>
+                    <div className="flex-1 flex flex-col justify-center">
+                      <h2 className="text-6xl lg:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
+                        About Us <br/> <span className="text-xl lg:text-2xl font-medium tracking-tight mt-4 block" style={{ color: '#4FAEF3' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
+                      </h2>
+                      <div className="flex flex-col gap-5">
+                        <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
+                          RoboVITics, the official Robotics Club of VIT Vellore, is a community of passionate innovators exploring robotics, automation, and emerging technologies. Through hands-on projects, workshops, and technical events, we provide students with opportunities to learn, create, and transform ideas into reality.
+                        </p>
+                        <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
+                          Over the years, RoboVITics has grown into a hub of innovation and excellence, empowering students to build impactful solutions, compete on prestigious platforms, and continuously expand their technical expertise. Driven by creativity, collaboration, and ambition, we strive to shape the next generation of engineers and innovators.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="hidden md:flex flex-1 max-w-[450px] lg:max-w-[550px] xl:max-w-[650px] justify-center items-center">
+                      <img 
+                        src="/AboutUs.png.jpeg" 
+                        alt="About Us" 
+                        className="w-full h-auto object-contain rounded-2xl shadow-[0_0_60px_rgba(79,174,243,0.15)] ring-1 ring-white/10"
+                      />
                     </div>
                   </motion.div>
                 )}
@@ -122,18 +146,28 @@ export default function About() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -50 }}
                     transition={{ duration: 0.6, ease: "easeInOut" }}
-                    className="absolute inset-0 flex flex-col justify-center"
+                    className="absolute inset-0 flex items-center justify-between gap-12 lg:gap-20"
                   >
-                    <h2 className="text-6xl lg:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
-                      About VIT <br/> <span className="text-2xl lg:text-3xl font-medium tracking-wide mt-4 block" style={{ color: '#4FAEF3' }}>&quot;A place to learn, a chance to grow&quot;</span>
-                    </h2>
-                    <div className="flex flex-col gap-6 max-w-3xl">
-                      <p className="text-gray-200 font-mono text-[1.1rem] lg:text-lg leading-loose drop-shadow-lg">
-                        Vellore Institute of Technology (VIT) is one of India&apos;s leading private universities, accredited with A++ by NAAC and consistently ranked among the top institutions by NIRF. With a thriving community of 40,000+ students, strong industry partnerships, and global collaborations, VIT fosters an environment that encourages innovation, research, and hands-on learning.
-                      </p>
-                      <p className="text-gray-200 font-mono text-[1.1rem] lg:text-lg leading-loose drop-shadow-lg">
-                        This dynamic ecosystem empowers students to explore their interests, develop practical skills, and contribute to impactful initiatives, serving as the foundation for communities like RoboVITics to learn, innovate, and grow.
-                      </p>
+                    <div className="flex-1 flex flex-col justify-center">
+                      <h2 className="text-6xl lg:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
+                        About VIT <br/> <span className="text-xl lg:text-2xl font-medium tracking-tight mt-4 block" style={{ color: '#4FAEF3' }}>&quot;A place to learn, a chance to grow&quot;</span>
+                      </h2>
+                      <div className="flex flex-col gap-5">
+                        <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
+                          Vellore Institute of Technology (VIT) is one of India&apos;s leading private universities, accredited with A++ by NAAC and consistently ranked among the top institutions by NIRF. With a thriving community of 40,000+ students, strong industry partnerships, and global collaborations, VIT fosters an environment that encourages innovation, research, and hands-on learning.
+                        </p>
+                        <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
+                          This dynamic ecosystem empowers students to explore their interests, develop practical skills, and contribute to impactful initiatives, serving as the foundation for communities like RoboVITics to learn, innovate, and grow.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="hidden md:flex flex-1 max-w-[450px] lg:max-w-[550px] xl:max-w-[650px] justify-center items-center">
+                      <img 
+                        src="/AboutVit.png.jpeg" 
+                        alt="About VIT" 
+                        className="w-full h-auto object-contain rounded-2xl shadow-[0_0_60px_rgba(79,174,243,0.15)] ring-1 ring-white/10"
+                      />
                     </div>
                   </motion.div>
                 )}
