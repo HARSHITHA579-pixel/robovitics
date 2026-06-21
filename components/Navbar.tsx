@@ -6,97 +6,101 @@ import { useEffect, useState } from 'react';
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [heroChromeOpacity, setHeroChromeOpacity] = useState(1);
-  const navItems = ['About', 'Domains', 'Events'];
+  const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  const navItems = ['About', 'Domains', 'Events', 'Projects', 'Teams'];
 
   useEffect(() => {
-    let frame = 0;
+    setMounted(true);
 
-    const updateHeroChrome = () => {
+    let frame = 0;
+    const updateScroll = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const fadeDistance = Math.min(window.innerHeight * 0.55, 460);
-        const opacity = Math.max(0, Math.min(1, 1 - window.scrollY / fadeDistance));
-        setHeroChromeOpacity(opacity);
+        setScrolled(window.scrollY > 24);
       });
     };
 
-    updateHeroChrome();
-    window.addEventListener('scroll', updateHeroChrome, { passive: true });
-    window.addEventListener('resize', updateHeroChrome);
+    updateScroll();
+    window.addEventListener('scroll', updateScroll, { passive: true });
+    window.addEventListener('resize', updateScroll);
 
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', updateHeroChrome);
-      window.removeEventListener('resize', updateHeroChrome);
+      window.removeEventListener('scroll', updateScroll);
+      window.removeEventListener('resize', updateScroll);
     };
   }, []);
 
-  const heroChromeStyle = {
-    opacity: heroChromeOpacity,
-    transform: `translateY(${(1 - heroChromeOpacity) * -10}px)`,
-    pointerEvents: heroChromeOpacity > 0.08 ? 'auto' : 'none',
-  } as const;
-  const navShellStyle = {
-    maxWidth: `${760 + heroChromeOpacity * 392}px`,
-  };
-
   return (
-    <header className="fixed left-0 right-0 top-0 z-[80] px-3 pt-3 sm:px-6 md:px-10">
+    <header
+      className={`fixed left-0 right-0 top-0 z-[80] flex justify-center px-3 transition-[padding] duration-500 ease-out sm:px-6 ${scrolled ? 'pt-2' : 'pt-5'
+        }`}
+    >
       <div
-        style={navShellStyle}
-        className="relative mx-auto grid grid-cols-[1fr_auto] items-center gap-3 border border-white/[0.09] bg-black/28 px-2.5 py-2 text-white shadow-[0_12px_36px_rgba(0,0,0,0.22)] backdrop-blur-md transition-[max-width] duration-300 ease-out md:grid-cols-[1fr_auto_1fr]"
+        className={`relative grid w-full grid-cols-[auto_1fr_auto] items-center gap-4 overflow-hidden border border-white/[0.14] px-4 py-2.5 text-white shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl backdrop-saturate-150 transition-[max-width,background-color,box-shadow,transform,opacity] duration-500 ease-out sm:px-6 ${mounted ? 'translate-y-0 opacity-100' : '-translate-y-6 opacity-0'
+          } ${scrolled
+            ? 'bg-black/85 shadow-[0_14px_44px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.12)]'
+            : 'bg-black/65'
+          }`}
+        style={{ maxWidth: scrolled ? '880px' : '1040px' }}
       >
-        <span className="pointer-events-none absolute -left-px -top-px h-2 w-2 border-l border-t border-white/35" />
-        <span className="pointer-events-none absolute -right-px -top-px h-2 w-2 border-r border-t border-white/35" />
-        <span className="pointer-events-none absolute -bottom-px -left-px h-2 w-2 border-b border-l border-white/22" />
-        <span className="pointer-events-none absolute -bottom-px -right-px h-2 w-2 border-b border-r border-white/22" />
-        <span className="pointer-events-none absolute left-[22%] top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-white/12 to-transparent lg:block" />
-        <span className="pointer-events-none absolute right-[22%] top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-white/12 to-transparent lg:block" />
-
+        {/* Corner accents — cyan HUD style */}
+        <span className="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l border-t border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
+        <span className="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r border-t border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
+        <span className="pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b border-l border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
+        <span className="pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b border-r border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
+        <span className="pointer-events-none absolute left-[24%] top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-[#4FAEF3]/25 to-transparent lg:block" />
+        <span className="pointer-events-none absolute right-[24%] top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-[#4FAEF3]/25 to-transparent lg:block" />
+        {/* Logo */}
         <Link
           href="/"
           onClick={() => setMenuOpen(false)}
-          style={heroChromeStyle}
-          className="hidden min-w-0 items-center justify-self-start transition-[opacity,transform] duration-200 md:flex"
+          className="flex min-w-0 items-center justify-self-start"
         >
           <Image
             src="/robovitics-logo.png"
             alt="roboVITics Logo"
-            width={150}
-            height={40}
-            className="h-5 w-auto object-contain opacity-90 sm:h-6 md:h-7"
+            width={180}
+            height={48}
+            className="h-6 w-auto object-contain opacity-95 transition-opacity duration-200 hover:opacity-100 sm:h-7 md:h-8"
             priority
           />
         </Link>
 
+        {/* Mobile label */}
         <span className="flex items-center gap-2 pl-1 font-mono text-[9px] uppercase tracking-[0.22em] text-white/32 md:hidden">
-          <span className="h-1 w-1 rounded-full border border-white/35" />
+          <span className="h-1 w-1 rounded-full border border-[#4FAEF3]/60" />
           NAV
         </span>
 
-        <nav className="hidden items-center gap-0.5 justify-self-center font-mono text-[10px] uppercase tracking-[0.2em] text-white/48 md:flex">
+        {/* Center nav links */}
+        <nav className="hidden items-center gap-1 justify-self-center font-mono text-[10px] uppercase tracking-[0.2em] text-white/90 md:flex">
           {navItems.map((item, index) => (
             <Link
               key={item}
               href={`#${item.toLowerCase()}`}
-              className="group relative px-3 py-1.5 transition-colors duration-200 hover:text-white/88"
+              className="group relative px-3 py-1.5 transition-colors duration-200 hover:text-white"
             >
-              <span className="mr-2 text-white/20">0{index + 1}</span>
+              <span className="mr-2 text-[#4FAEF3] drop-shadow-[0_0_6px_rgba(79,174,243,0.6)] transition-colors duration-200 group-hover:text-[#4FAEF3]">
+                0{index + 1}
+              </span>
               {item}
-              <span className="absolute bottom-0 left-3 right-3 h-px origin-left scale-x-0 bg-white/50 transition-transform duration-200 group-hover:scale-x-100" />
+              <span className="absolute bottom-0 left-3 right-3 h-px origin-left scale-x-0 bg-[#4FAEF3] shadow-[0_0_8px_rgba(79,174,243,0.7)] transition-transform duration-300 group-hover:scale-x-100" />
             </Link>
           ))}
         </nav>
 
+        {/* CTA */}
         <Link
-          href="#about"
-          style={heroChromeStyle}
-          className="hidden justify-self-end border border-white/16 bg-white/[0.045] px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/78 transition-[opacity,transform,background-color,border-color,color] duration-200 hover:border-white/35 hover:bg-white/12 hover:text-white sm:inline-flex"
+          href="#contact"
+          className="hidden justify-self-end border border-white/16 bg-white/[0.04] px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/90 transition-all duration-300 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] sm:inline-flex"
         >
-          Join the Club
+          Contact Us
         </Link>
 
+        {/* Mobile menu toggle */}
         <button
           type="button"
           aria-label="Toggle navigation menu"
@@ -114,7 +118,7 @@ export default function Navbar() {
       </div>
 
       {menuOpen && (
-        <nav className="mx-auto mt-2 max-w-6xl overflow-hidden border border-white/10 bg-black/76 font-mono text-[11px] uppercase tracking-[0.18em] text-gray-200 shadow-[0_18px_50px_rgba(0,0,0,0.32)] backdrop-blur-xl md:hidden">
+        <nav className="absolute left-3 right-3 top-[64px] mx-auto max-w-6xl overflow-hidden border border-white/10 bg-black/85 font-mono text-[11px] uppercase tracking-[0.18em] text-gray-200 shadow-[0_18px_50px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:left-6 sm:right-6 md:hidden">
           {navItems.map((item, index) => (
             <Link
               key={item}
@@ -123,9 +127,16 @@ export default function Navbar() {
               className="flex items-center justify-between border-b border-white/10 px-4 py-3 transition-colors last:border-b-0 hover:bg-white/10"
             >
               <span>{item}</span>
-              <span className="text-white/28">0{index + 1}</span>
+              <span className="text-[#4FAEF3]/60">0{index + 1}</span>
             </Link>
           ))}
+          <Link
+            href="#contact"
+            onClick={() => setMenuOpen(false)}
+            className="flex items-center justify-between px-4 py-3 text-[#4FAEF3] transition-colors hover:bg-white/10"
+          >
+            <span>Contact Us</span>
+          </Link>
         </nav>
       )}
     </header>

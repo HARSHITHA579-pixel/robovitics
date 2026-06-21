@@ -35,7 +35,7 @@ function EventsBackground() {
         />
       ))}
       <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
-        <line x1="8%" y1="9%"  x2="66%" y2="14%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+        <line x1="8%" y1="9%" x2="66%" y2="14%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
         <line x1="66%" y1="14%" x2="80%" y2="47%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
         <line x1="15%" y1="58%" x2="44%" y2="78%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
       </svg>
@@ -49,14 +49,23 @@ const DOMAINS = [
     title: 'ELECTRICAL',
     sub: 'Circuits & Power',
     icon: (
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-        <polygon
-          points="21,2 9,19 17,19 15,34 27,17 19,17"
-          fill="none"
-          stroke="rgba(235,238,242,0.86)"
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-        />
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)] text-white/90 group-hover:text-white">
+        {/* Microchip */}
+        <rect x="12" y="12" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="1.5" fill="rgba(79,174,243,0.05)" />
+        {/* Power Symbol in chip */}
+        <path d="M18 14V17M16 16C15 17 15 19 16 20C17 21 19 21 20 20C21 19 21 17 20 16" stroke="#4FAEF3" strokeWidth="1.5" strokeLinecap="round" className="opacity-80 group-hover:opacity-100" />
+        {/* Circuit traces */}
+        <path d="M12 14H8L6 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 22H8L6 24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M24 14H28L30 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M24 22H28L30 24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M14 12V8L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M22 12V8L24 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M14 24V28L12 30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M22 24V28L24 30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Dots */}
+        <circle cx="6" cy="12" r="1.5" fill="#4FAEF3" className="opacity-60 group-hover:opacity-100" />
+        <circle cx="30" cy="24" r="1.5" fill="#4FAEF3" className="opacity-60 group-hover:opacity-100" />
       </svg>
     ),
   },
@@ -65,18 +74,21 @@ const DOMAINS = [
     title: 'MECHANICAL',
     sub: 'Design & Fabrication',
     icon: (
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-        <circle cx="18" cy="18" r="6" stroke="rgba(235,238,242,0.86)" strokeWidth="1.8" />
-        <circle cx="18" cy="18" r="2.5" fill="rgba(235,238,242,0.45)" />
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)] text-white/90 group-hover:text-white">
+        {/* Gear */}
+        <circle cx="14" cy="14" r="6" stroke="currentColor" strokeWidth="1.5" fill="rgba(79,174,243,0.05)" />
+        <circle cx="14" cy="14" r="2" stroke="#4FAEF3" strokeWidth="1.5" className="opacity-80 group-hover:opacity-100 transition-opacity" />
         {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => {
           const r = (deg * Math.PI) / 180;
-          const x1 = 18 + 7 * Math.cos(r), y1 = 18 + 7 * Math.sin(r);
-          const x2 = 18 + 11 * Math.cos(r), y2 = 18 + 11 * Math.sin(r);
-          return (
-            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
-              stroke="rgba(235,238,242,0.86)" strokeWidth="2.4" strokeLinecap="square" />
-          );
+          const x1 = 14 + 6 * Math.cos(r), y1 = 14 + 6 * Math.sin(r);
+          const x2 = 14 + 9 * Math.cos(r), y2 = 14 + 9 * Math.sin(r);
+          return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />;
         })}
+        {/* Wrench */}
+        <path d="M18 18L28 28C29.1 29.1 31 29.1 31 28C32.1 26.9 32.1 25 31 24L21 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M21 14C23 12 23 9 21 7C19 5 16 5 14 7L17 10L14 13L11 10C9 12 9 15 11 17C13 19 16 19 18 17L21 14Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+        {/* Highlight */}
+        <line x1="22" y1="22" x2="26" y2="26" stroke="#4FAEF3" strokeWidth="1.5" strokeLinecap="round" className="opacity-60 group-hover:opacity-100" />
       </svg>
     ),
   },
@@ -85,28 +97,22 @@ const DOMAINS = [
     title: 'ML & AI',
     sub: 'Machine Learning',
     icon: (
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-        {[8, 18, 28].map((y, i) => (
-          <circle key={i} cx="8" cy={y} r="2.2" stroke="rgba(235,238,242,0.86)" strokeWidth="1.5" />
-        ))}
-        {[11, 21, 31].map((y, i) => (
-          <circle key={i} cx="18" cy={y} r="2.2" stroke="rgba(235,238,242,0.86)" strokeWidth="1.5" />
-        ))}
-        {[14, 26].map((y, i) => (
-          <circle key={i} cx="28" cy={y} r="2.2" stroke="rgba(235,238,242,0.86)" strokeWidth="1.5" />
-        ))}
-        {[8, 18, 28].flatMap((y1) =>
-          [11, 21, 31].map((y2, j) => (
-            <line key={`${y1}-${j}`} x1="10" y1={y1} x2="16" y2={y2}
-              stroke="rgba(235,238,242,0.28)" strokeWidth="0.9" />
-          ))
-        )}
-        {[11, 21, 31].flatMap((y1) =>
-          [14, 26].map((y2, j) => (
-            <line key={`${y1}-${j}`} x1="20" y1={y1} x2="26" y2={y2}
-              stroke="rgba(235,238,242,0.28)" strokeWidth="0.9" />
-          ))
-        )}
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)] text-white/90 group-hover:text-white">
+        {/* Brain side */}
+        <path d="M16 6C10 6 6 10 6 16C6 18 7 19 8 20C7 22 8 26 12 28C14 29 16 28 18 28V6H16Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" fill="rgba(79,174,243,0.05)" />
+        {/* Network nodes inside brain */}
+        <circle cx="10" cy="14" r="1.5" fill="#4FAEF3" className="opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+        <circle cx="14" cy="10" r="1.5" fill="#4FAEF3" className="opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+        <circle cx="14" cy="18" r="1.5" fill="#4FAEF3" className="opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+        <line x1="10" y1="14" x2="14" y2="10" stroke="#4FAEF3" strokeWidth="1" className="opacity-40" />
+        <line x1="10" y1="14" x2="14" y2="18" stroke="#4FAEF3" strokeWidth="1" className="opacity-40" />
+        {/* Robot face side */}
+        <path d="M18 6H24C28 6 30 10 30 16V22C30 26 26 28 22 28H18V6Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+        {/* Robot eye */}
+        <circle cx="24" cy="16" r="3" stroke="currentColor" strokeWidth="1.5" />
+        <circle cx="24" cy="16" r="1" fill="#4FAEF3" className="opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+        {/* Robot mouth/details */}
+        <line x1="22" y1="24" x2="26" y2="24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     ),
   },
@@ -115,11 +121,16 @@ const DOMAINS = [
     title: 'CYBERSECURITY',
     sub: 'Systems & Defense',
     icon: (
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-        <path d="M18 3L30 8L30 18C30 25 24 31 18 33C12 31 6 25 6 18L6 8Z"
-          stroke="rgba(235,238,242,0.86)" strokeWidth="1.8" fill="none" strokeLinejoin="round" />
-        <path d="M12 18L16 22L24 14"
-          stroke="rgba(235,238,242,0.86)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)] text-white/90 group-hover:text-white">
+        {/* Shield */}
+        <path d="M18 4L6 9V17C6 24 11 30 18 32C25 30 30 24 30 17V9L18 4Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" fill="rgba(79,174,243,0.05)" />
+        {/* Padlock Body */}
+        <rect x="14" y="16" width="8" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" />
+        {/* Padlock Shackle */}
+        <path d="M14 16V14C14 11.7909 15.7909 10 18 10C20.2091 10 22 11.7909 22 14V16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        {/* Keyhole */}
+        <circle cx="18" cy="19" r="1.5" fill="#4FAEF3" className="opacity-80 group-hover:opacity-100" />
+        <line x1="18" y1="20" x2="18" y2="22" stroke="#4FAEF3" strokeWidth="1.5" strokeLinecap="round" className="opacity-80 group-hover:opacity-100" />
       </svg>
     ),
   },
@@ -128,15 +139,19 @@ const DOMAINS = [
     title: 'WEB DEV',
     sub: 'Frontend & Backend',
     icon: (
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-        <rect x="3" y="5" width="30" height="26" rx="2" stroke="rgba(235,238,242,0.86)" strokeWidth="1.8" />
-        <line x1="3" y1="12" x2="33" y2="12" stroke="rgba(235,238,242,0.5)" strokeWidth="1.2" />
-        <circle cx="8" cy="8.5" r="1.4" fill="rgba(235,238,242,0.45)" />
-        <circle cx="13" cy="8.5" r="1.4" fill="rgba(235,238,242,0.45)" />
-        <line x1="7" y1="18" x2="29" y2="18" stroke="rgba(235,238,242,0.25)" strokeWidth="1.2" />
-        <line x1="7" y1="22" x2="24" y2="22" stroke="rgba(235,238,242,0.25)" strokeWidth="1.2" />
-        <line x1="7" y1="26" x2="20" y2="26" stroke="rgba(235,238,242,0.25)" strokeWidth="1.2" />
-        <rect x="10" y="33" width="16" height="3" rx="1" stroke="rgba(235,238,242,0.45)" strokeWidth="1.2" />
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)] text-white/90 group-hover:text-white">
+        {/* Monitor */}
+        <rect x="4" y="6" width="28" height="18" rx="2" stroke="currentColor" strokeWidth="1.5" fill="rgba(79,174,243,0.05)" />
+        <line x1="4" y1="20" x2="32" y2="20" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M14 24L12 30H24L22 24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="10" y1="30" x2="26" y2="30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        {/* Globe */}
+        <circle cx="24" cy="14" r="5" stroke="#4FAEF3" strokeWidth="1.5" className="opacity-80 group-hover:opacity-100" />
+        <ellipse cx="24" cy="14" rx="2" ry="5" stroke="#4FAEF3" strokeWidth="1.5" className="opacity-80 group-hover:opacity-100" />
+        <line x1="19" y1="14" x2="29" y2="14" stroke="#4FAEF3" strokeWidth="1.5" className="opacity-80 group-hover:opacity-100" />
+        {/* HTML / Code */}
+        <path d="M10 11L7 14L10 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M16 11L19 14L16 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
   },
@@ -145,118 +160,99 @@ const DOMAINS = [
     title: 'APP DEV',
     sub: 'Mobile & Cross-Platform',
     icon: (
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-        <rect x="11" y="2" width="14" height="32" rx="2.5" stroke="rgba(235,238,242,0.86)" strokeWidth="1.8" />
-        <line x1="11" y1="7" x2="25" y2="7" stroke="rgba(235,238,242,0.42)" strokeWidth="1" />
-        <line x1="11" y1="29" x2="25" y2="29" stroke="rgba(235,238,242,0.42)" strokeWidth="1" />
-        <circle cx="18" cy="32" r="1.2" fill="rgba(235,238,242,0.45)" />
-        <rect x="15" y="4" width="6" height="1.5" rx="0.75" fill="rgba(235,238,242,0.35)" />
-        <rect x="14" y="12" width="8" height="7" rx="1" stroke="rgba(235,238,242,0.35)" strokeWidth="1" />
-        <line x1="14" y1="23" x2="22" y2="23" stroke="rgba(235,238,242,0.25)" strokeWidth="1" />
-        <line x1="14" y1="26" x2="20" y2="26" stroke="rgba(235,238,242,0.25)" strokeWidth="1" />
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)] text-white/90 group-hover:text-white">
+        {/* Phone body */}
+        <rect x="8" y="4" width="20" height="28" rx="3" stroke="currentColor" strokeWidth="1.5" fill="rgba(79,174,243,0.05)" />
+        <line x1="15" y1="7" x2="21" y2="7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        {/* Video play icon */}
+        <path d="M14 14L22 18L14 22V14Z" stroke="#4FAEF3" strokeWidth="1.5" strokeLinejoin="round" className="opacity-80 group-hover:opacity-100" />
+        {/* Code brackets */}
+        <path d="M13 26L10 28L13 30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M23 26L26 28L23 30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="19" y1="25" x2="17" y2="31" stroke="#4FAEF3" strokeWidth="1.5" strokeLinecap="round" className="opacity-60 group-hover:opacity-100" />
       </svg>
     ),
   },
 ];
 
-function Screw() {
-  return (
-    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-      <circle cx="5" cy="5" r="3.7" fill="#070809" stroke="rgba(235,238,242,0.34)" strokeWidth="0.8" />
-      <circle cx="5" cy="5" r="1.5" fill="rgba(235,238,242,0.28)" />
-      <line x1="2.7" y1="5" x2="7.3" y2="5"
-        stroke="rgba(235,238,242,0.5)" strokeWidth="0.8" strokeLinecap="square" />
-    </svg>
-  );
-}
-
 function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
-  const { id, title, sub, icon } = domain;
+  const { title, sub, icon } = domain;
   return (
-    <>
-      <div style={{
-        position: 'absolute', inset: 0,
-        transform: 'translate(8px, 10px)',
-        background: 'rgba(0,0,0,0.62)',
-        borderRadius: '4px',
-        filter: 'blur(10px)',
-      }} />
-      <div style={{
-        position: 'relative',
-        borderRadius: '4px',
-        padding: 'clamp(10px, 1.1vw, 13px) clamp(10px, 1.15vw, 14px) clamp(11px, 1.2vw, 15px)',
-        background: `
-          linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-          linear-gradient(165deg, rgba(255,255,255,0.11), rgba(255,255,255,0.02) 38%, rgba(0,0,0,0.35)),
-          rgba(28,30,34,0.95)
-        `,
-        backgroundSize: '18px 18px, 18px 18px, auto, auto',
-        border: '1px solid rgba(235,238,242,0.28)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.75), 0 0 0 1px rgba(0,0,0,0.75)',
-        overflow: 'visible',
-        color: '#f1f3f5',
-      }}>
-        <span style={{ position: 'absolute', top: '5px', left: '6px' }}><Screw /></span>
-        <span style={{ position: 'absolute', top: '5px', right: '6px' }}><Screw /></span>
-        <span style={{ position: 'absolute', bottom: '5px', left: '6px' }}><Screw /></span>
-        <span style={{ position: 'absolute', bottom: '5px', right: '6px' }}><Screw /></span>
-        
-        {/* Top/bottom highlight lines */}
-        <span style={{ position: 'absolute', top: '-1px', left: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.7)' }} />
-        <span style={{ position: 'absolute', bottom: '-1px', right: '18px', width: '36px', height: '1px', background: 'rgba(255,255,255,0.4)' }} />
-        
-        <div style={{ textAlign: 'center', marginBottom: '10px', marginTop: '4px' }}>
-          <span style={{
-            fontFamily: 'monospace', fontSize: '7px', letterSpacing: '0.22em',
-            textTransform: 'uppercase', color: 'rgba(235,238,242,0.34)',
-            textShadow: '0 0 10px rgba(180,205,255,0.14)',
-          }}>
-            MODULE_{id}
-          </span>
+    <div className="group relative w-full h-full transition-transform duration-500 ease-out hover:-translate-y-2">
+      <div
+        className="relative h-full overflow-hidden rounded-[4px] transition-all duration-500 group-hover:shadow-[0_0_25px_rgba(79,174,243,0.18)]"
+        style={{
+          padding: 'clamp(14px, 1.4vw, 18px) clamp(12px, 1.3vw, 16px) clamp(13px, 1.3vw, 17px)',
+          background: '#0a0a0a',
+          border: '1px solid rgba(255,255,255,0.08)',
+        }}
+      >
+        {/* Styled background layer, identical treatment to Events cards */}
+        <div
+          className="absolute pointer-events-none transition-opacity duration-500"
+          style={{
+            top: -1, right: -1, bottom: -1, left: -1,
+            borderRadius: '4px',
+            background: `
+              linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+              linear-gradient(165deg, rgba(255,255,255,0.11), rgba(255,255,255,0.02) 38%, rgba(0,0,0,0.35)),
+              rgba(28,30,34,0.95)
+            `,
+            backgroundSize: '18px 18px, 18px 18px, auto, auto',
+            border: '1px solid rgba(235,238,242,0.28)',
+          }}
+        />
+
+        {/* Cyan corner brackets, matching Events card styling */}
+        <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ top: 6, left: 6, width: 14, height: 14, borderTop: '1.5px solid rgba(79,174,243,0.85)', borderLeft: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
+        <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ top: 6, right: 6, width: 14, height: 14, borderTop: '1.5px solid rgba(79,174,243,0.85)', borderRight: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
+        <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ bottom: 6, left: 6, width: 14, height: 14, borderBottom: '1.5px solid rgba(79,174,243,0.85)', borderLeft: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
+        <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ bottom: 6, right: 6, width: 14, height: 14, borderBottom: '1.5px solid rgba(79,174,243,0.85)', borderRight: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
+
+        {/* Cyan top/bottom highlight lines, matching Events card styling */}
+        <div className="absolute inset-0 pointer-events-none z-10">
+          <span style={{ position: 'absolute', top: '-1px', left: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.6)' }} />
+          <span style={{ position: 'absolute', bottom: '-1px', right: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.35)' }} />
         </div>
-        <div style={{
-          margin: '0 auto 12px',
-          width: 'clamp(46px, 5.4vw, 68px)',
-          height: 'clamp(46px, 5.4vw, 68px)',
-          borderRadius: '4px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'linear-gradient(145deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))',
-          boxShadow: 'inset 0 0 22px rgba(255,255,255,0.035), inset 0 0 0 1px rgba(255,255,255,0.04)',
-          border: '1px solid rgba(235,238,242,0.18)',
-        }}>
-          {icon}
-        </div>
-        <div style={{
-          height: '1px', margin: '0 8px 10px',
-          background: 'linear-gradient(90deg, transparent, rgba(235,238,242,0.42) 30%, rgba(235,238,242,0.42) 70%, transparent)',
-          boxShadow: '0 0 10px rgba(180,205,255,0.16)',
-        }} />
-        <div style={{ textAlign: 'center', padding: '0 8px' }}>
-          <h3 style={{
-            margin: '0 0 4px',
-            fontFamily: '"Inter", "Arial Black", sans-serif',
-            fontWeight: '900',
-            fontSize: 'clamp(11px, 1vw, 14px)',
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-            color: 'rgba(245,247,250,0.9)',
-            textShadow: '0 0 16px rgba(255,255,255,0.18)',
-            lineHeight: 1.1,
-          }}>
+
+        <div className="relative z-30 flex h-full flex-col items-center">
+          <div style={{
+            margin: '6px auto 14px',
+            width: 'clamp(46px, 5.4vw, 68px)',
+            height: 'clamp(46px, 5.4vw, 68px)',
+            borderRadius: '4px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'linear-gradient(145deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))',
+            boxShadow: 'inset 0 0 22px rgba(255,255,255,0.035), inset 0 0 0 1px rgba(255,255,255,0.04)',
+            border: '1px solid rgba(235,238,242,0.18)',
+          }} className="transition-all duration-500 group-hover:border-[#4FAEF3]/30 group-hover:bg-[#4FAEF3]/[0.02] group-hover:shadow-[inset_0_0_22px_rgba(79,174,243,0.1)]">
+            {icon}
+          </div>
+
+          <h3
+            className="text-center font-sans font-black uppercase tracking-[0.06em] text-white transition-all duration-500 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]"
+            style={{ margin: '0 0 6px', fontSize: 'clamp(11px, 1vw, 14px)', lineHeight: 1.15 }}
+          >
             {title}
           </h3>
-          <p style={{
-            margin: 0, fontFamily: 'monospace',
-            fontSize: 'clamp(7px, 0.55vw, 7px)',
-            letterSpacing: '0.1em', textTransform: 'uppercase',
-            color: 'rgba(168,176,188,0.62)',
-          }}>
+          <p
+            className="text-center font-mono uppercase tracking-[0.1em] transition-all duration-500"
+            style={{ margin: '0 0 10px', fontSize: 'clamp(7px, 0.55vw, 9px)', color: 'rgba(79,174,243,0.85)' }}
+          >
             {sub}
           </p>
+
+          <div
+            style={{
+              height: '1px', margin: '0 6px 10px', width: 'calc(100% - 12px)',
+              background: 'linear-gradient(90deg, transparent, rgba(79,174,243,0.4) 30%, rgba(79,174,243,0.4) 70%, transparent)',
+              boxShadow: '0 0 10px rgba(79,174,243,0.2)',
+            }}
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -357,9 +353,9 @@ export default function Domains() {
         const wordElements = gsap.utils.toArray<Element>('.bridge-word');
 
         const wordCount = wordElements.length;
-        const randZ    = Array.from({ length: wordCount }, () => gsap.utils.random(-800, 1000));
-        const randX    = Array.from({ length: wordCount }, () => gsap.utils.random(-400, 400));
-        const randY    = Array.from({ length: wordCount }, () => gsap.utils.random(-400, 400));
+        const randZ = Array.from({ length: wordCount }, () => gsap.utils.random(-800, 1000));
+        const randX = Array.from({ length: wordCount }, () => gsap.utils.random(-400, 400));
+        const randY = Array.from({ length: wordCount }, () => gsap.utils.random(-400, 400));
         const randRotX = Array.from({ length: wordCount }, () => gsap.utils.random(-90, 90));
         const randRotY = Array.from({ length: wordCount }, () => gsap.utils.random(-90, 90));
         const randRotZ = Array.from({ length: wordCount }, () => gsap.utils.random(-45, 45));
@@ -520,7 +516,7 @@ export default function Domains() {
             fontFamily: '"Inter", "Arial Black", sans-serif',
             textTransform: 'uppercase', lineHeight: 1,
           }}>
-           
+
           </h2>
           <div style={{
             marginTop: '14px', width: '80%', height: '1px',
@@ -542,7 +538,7 @@ export default function Domains() {
       >
         <EventsBackground />
         <HUDTextBridge />
-        
+
         {/* Top Left Label */}
         <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
           <span style={{
@@ -555,8 +551,8 @@ export default function Domains() {
         </div>
 
         {/* Grouped Title Container for Animation */}
-        <div 
-          ref={titleGroupRef} 
+        <div
+          ref={titleGroupRef}
           className="absolute z-20 flex flex-col items-center pointer-events-none w-full"
           style={{ top: '18%', left: 0, whiteSpace: 'nowrap' }}
         >
@@ -573,7 +569,7 @@ export default function Domains() {
             textTransform: 'uppercase', lineHeight: 1, textAlign: 'center',
           }}>
             DOMAINS AT{' '}
-<span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
+            <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
           </h2>
           <div style={{
             marginTop: '14px', width: '30%', height: '1px',
@@ -587,7 +583,7 @@ export default function Domains() {
             <DomainCardDesktop key={`desktop-${domain.id}`} domain={domain} index={index} addToRefs={addToRefs} />
           ))}
         </div>
-        
+
         {/* Scroll Hint */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-20">
           <span style={{
