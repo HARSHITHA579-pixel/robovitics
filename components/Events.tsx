@@ -318,7 +318,7 @@ export default function Events() {
           if (tl.time() >= landTime && !flippedRef.current[cardIdx]) {
             flippedRef.current[cardIdx] = true;
             if (events[cardIdx]?.id === "MODULE_01") {
-              const hintFlipper = cardsRef.current[cardIdx]?.querySelector(".ev-hint-flipper");
+              const hintFlipper = eventsCardsRef.current[cardIdx]?.querySelector(".ev-hint-flipper");
               if (hintFlipper) {
                 gsap.timeline()
                   .to(hintFlipper, { rotateY: 180, duration: 0.4, ease: "power2.out" })
