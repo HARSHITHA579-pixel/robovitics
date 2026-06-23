@@ -7,16 +7,11 @@ import Hero from '@/components/Hero';
 import About from '@/components/About';
 import Domains from '@/components/Domains';
 import Events from "@/components/Events";
-import TimelineDive from '@/components/TimelineDive';
-import GalaxyDive from '@/components/GalaxyDive';
 import Memories from '@/components/Memories';
-import NextSection from '@/components/NextSection';
+import TeamRoster from '@/components/TeamRoster';
 
 export default function Page() {
   const domainsRef = useRef<HTMLDivElement>(null);
-
-  // Ref for the global gear — shared with NextSection
-  const gearRef = useRef<HTMLDivElement>(null);
 
   // 1. Tracks overall page scroll
   const { scrollYProgress: overallScroll } = useScroll();
@@ -65,9 +60,8 @@ export default function Page() {
         className="fixed top-0 right-0 w-1 bg-gray-300 origin-top z-50 shadow-[0_0_15px_#D1D5DB]"
       />
 
-      {/* GLOBAL MASSIVE GEAR — ref passed to NextSection for takeover */}
+      {/* GLOBAL MASSIVE GEAR */}
       <motion.div
-        ref={gearRef}
         style={{ rotate: gearRotation, y: gearY, x: gearX }}
         className="fixed -left-16 -bottom-20 z-10 opacity-[0.14] pointer-events-none sm:-left-28 sm:-bottom-28 sm:opacity-[0.16] lg:-left-40 lg:-bottom-40 lg:opacity-20"
       >
@@ -102,8 +96,7 @@ export default function Page() {
 
       <Memories />
 
-      {/* Global gear ref passed in — NextSection takes over its transform during its scroll window */}
-      <NextSection gearRef={gearRef} />
+      <TeamRoster />
 
     </main>
   );

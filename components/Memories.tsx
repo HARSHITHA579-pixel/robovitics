@@ -22,27 +22,27 @@ const MEMORIES: Memory[] = [
 ];
 
 const DEBRIS_COUNT = 12;
-const FAR_Z  = -20;
+const FAR_Z = -20;
 
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
-const lerp   = (a: number, b: number, t: number) => a + (b - a) * t;
-const easeBox= (t: number) => (t < 0.5 ? 16*t*t*t*t*t : 1 - Math.pow(-2*t+2,5)/2);
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const easeBox = (t: number) => (t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2);
 
 interface MemoryNode { data: Memory; el: HTMLDivElement; }
 
 function buildGearShape(outerR: number, innerR: number, teeth: number): THREE.Shape {
   const shape = new THREE.Shape();
-  const step  = (Math.PI * 2) / teeth;
+  const step = (Math.PI * 2) / teeth;
   for (let i = 0; i < teeth; i++) {
     const a0 = i * step - step * 0.42;
     const a1 = a0 + step * 0.28;
     const a2 = a1 + step * 0.28;
     const a3 = a2 + step * 0.28;
-    if (i === 0) shape.moveTo(Math.cos(a0)*innerR, Math.sin(a0)*innerR);
-    else         shape.lineTo(Math.cos(a0)*innerR, Math.sin(a0)*innerR);
-    shape.lineTo(Math.cos(a1)*outerR, Math.sin(a1)*outerR);
-    shape.lineTo(Math.cos(a2)*outerR, Math.sin(a2)*outerR);
-    shape.lineTo(Math.cos(a3)*innerR, Math.sin(a3)*innerR);
+    if (i === 0) shape.moveTo(Math.cos(a0) * innerR, Math.sin(a0) * innerR);
+    else shape.lineTo(Math.cos(a0) * innerR, Math.sin(a0) * innerR);
+    shape.lineTo(Math.cos(a1) * outerR, Math.sin(a1) * outerR);
+    shape.lineTo(Math.cos(a2) * outerR, Math.sin(a2) * outerR);
+    shape.lineTo(Math.cos(a3) * innerR, Math.sin(a3) * innerR);
   }
   shape.closePath();
   const hole = new THREE.Path();
@@ -50,6 +50,82 @@ function buildGearShape(outerR: number, innerR: number, teeth: number): THREE.Sh
   shape.holes.push(hole);
   return shape;
 }
+
+const globalStyles = `
+  .mwt-card {
+    position: absolute; top: 0; left: 0; width: min(365px, 76vw);
+    transform-origin: center center; will-change: transform, opacity, filter;
+    pointer-events: none; z-index: 6; transform-style: preserve-3d;
+    filter:
+      drop-shadow(0 0 10px rgba(79,174,243,var(--mwt-card-glow, 0.16)))
+      drop-shadow(0 12px 34px rgba(0,0,0,0.5));
+  }
+  .mwt-card-inner {
+    background: rgba(10, 10, 10, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 24px 20px 20px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mwt-card-bg {
+    position: absolute;
+    top: -1px; right: -1px; bottom: -1px; left: -1px;
+    border-radius: 4px;
+    background:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(165deg, rgba(255,255,255,0.11), rgba(255,255,255,0.02) 38%, rgba(0,0,0,0.35)),
+      rgba(28,30,34,0.95);
+    background-size: 18px 18px, 18px 18px, auto, auto;
+    border: 1px solid rgba(235,238,242,0.28);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .mwt-card-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(79,174,243,0.03) 0 1px, transparent 1px 8px);
+    opacity: 0.22;
+    mix-blend-mode: screen;
+  }
+  .mwt-corner {
+    position: absolute; width: 14px; height: 14px; z-index: 10;
+    filter: drop-shadow(0 0 4px rgba(79,174,243,0.5));
+  }
+  .top-left    { top: 6px; left: 6px;    border-top: 1.5px solid rgba(79,174,243,0.85); border-left:   1.5px solid rgba(79,174,243,0.85); }
+  .top-right   { top: 6px; right: 6px;   border-top: 1.5px solid rgba(79,174,243,0.85); border-right:  1.5px solid rgba(79,174,243,0.85); }
+  .bottom-left  { bottom: 6px; left: 6px;  border-bottom: 1.5px solid rgba(79,174,243,0.85); border-left:   1.5px solid rgba(79,174,243,0.85); }
+  .bottom-right { bottom: 6px; right: 6px; border-bottom: 1.5px solid rgba(79,174,243,0.85); border-right:  1.5px solid rgba(79,174,243,0.85); }
+  .mwt-line { position: absolute; height: 1px; z-index: 10; }
+  .top-line    { top: -1px;    left: 20px;  width: 40px; background: rgba(79,174,243,0.6); }
+  .bottom-line { bottom: -1px; right: 20px; width: 40px; background: rgba(79,174,243,0.35); }
+  .mwt-img-wrap, .mwt-card-date, .mwt-card-title, .mwt-card-desc {
+    position: relative; z-index: 15;
+  }
+  .mwt-img-wrap {
+    width: 100%; height: 166px; overflow: hidden; border-radius: 2px;
+    margin-bottom: 20px; background: #000;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .mwt-img-wrap img {
+    width: 100%; height: 100%; object-fit: cover; opacity: 0.85;
+    filter: grayscale(100%) contrast(1.25) brightness(0.78);
+  }
+  .mwt-card-date {
+    font-family: monospace; font-size: 11px; letter-spacing: 0.18em;
+    color: #4FAEF3; text-transform: uppercase; margin: 0 0 10px;
+  }
+  .mwt-card-title {
+    font-family: "Inter", "Arial Black", sans-serif; font-weight: 900; font-size: 23px; color: #fff;
+    text-transform: uppercase; letter-spacing: 0.02em; margin: 0 0 12px; line-height: 1.1;
+  }
+  .mwt-card-desc {
+    font-family: monospace; font-size: 12px; line-height: 1.6;
+    color: rgba(255,255,255,0.5); margin: 0;
+  }
+`;
 
 export default function MemoryWarpTunnel() {
   const wrapRef      = useRef<HTMLDivElement>(null);
@@ -69,11 +145,11 @@ export default function MemoryWarpTunnel() {
     const rtext     = rtextRef.current;
     const hint      = hintRef.current;
     if (!wrap || !sceneWrap || !box || !canvas || !cardLayer || !rtext || !hint) return;
-    const wrapEl = wrap;
-    const sceneEl = sceneWrap;
-    const boxEl = box;
-    const rtextEl = rtext;
-    const hintEl = hint;
+    const wrapEl   = wrap;
+    const sceneEl  = sceneWrap;
+    const boxEl    = box;
+    const rtextEl  = rtext;
+    const hintEl   = hint;
 
     let VW = window.innerWidth;
     let VH = window.innerHeight;
@@ -106,14 +182,11 @@ export default function MemoryWarpTunnel() {
     const chipGeo = new THREE.BoxGeometry(1.45, 1.45, 0.32);
     const nutGeo  = new THREE.CylinderGeometry(0.95, 0.95, 0.54, 6);
 
-    const GEO_TYPES = [boltGeo, washerGeo, gearGeo, chipGeo, nutGeo];
+    const GEO_TYPES  = [boltGeo, washerGeo, gearGeo, chipGeo, nutGeo];
     const SLOT_COUNT = Math.ceil(DEBRIS_COUNT / GEO_TYPES.length);
 
     const wireMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.25, 
+      color: 0xffffff, wireframe: true, transparent: true, opacity: 0.25,
     });
 
     const instancedMeshes: THREE.InstancedMesh[] = GEO_TYPES.map((geo) => {
@@ -123,19 +196,19 @@ export default function MemoryWarpTunnel() {
       return mesh;
     });
 
-    // ── Per-debris state ─────────────────────────────────────
-    const debrisX      = new Float32Array(DEBRIS_COUNT);
-    const debrisY      = new Float32Array(DEBRIS_COUNT);
-    const debrisZ      = new Float32Array(DEBRIS_COUNT);
-    const debrisSpeed  = new Float32Array(DEBRIS_COUNT);
-    const debrisType   = new Uint8Array(DEBRIS_COUNT);
-    const debrisAxisX  = new Float32Array(DEBRIS_COUNT);
-    const debrisAxisY  = new Float32Array(DEBRIS_COUNT);
-    const debrisAxisZ  = new Float32Array(DEBRIS_COUNT);
-    const debrisAngV   = new Float32Array(DEBRIS_COUNT);
-    const debrisAngle  = new Float32Array(DEBRIS_COUNT);
-    const debrisSlot   = new Uint8Array(DEBRIS_COUNT);
-    const slotCounter  = new Uint8Array(GEO_TYPES.length);
+    // ── Per-debris state ──────────────────────────────────────
+    const debrisX     = new Float32Array(DEBRIS_COUNT);
+    const debrisY     = new Float32Array(DEBRIS_COUNT);
+    const debrisZ     = new Float32Array(DEBRIS_COUNT);
+    const debrisSpeed = new Float32Array(DEBRIS_COUNT);
+    const debrisType  = new Uint8Array(DEBRIS_COUNT);
+    const debrisAxisX = new Float32Array(DEBRIS_COUNT);
+    const debrisAxisY = new Float32Array(DEBRIS_COUNT);
+    const debrisAxisZ = new Float32Array(DEBRIS_COUNT);
+    const debrisAngV  = new Float32Array(DEBRIS_COUNT);
+    const debrisAngle = new Float32Array(DEBRIS_COUNT);
+    const debrisSlot  = new Uint8Array(DEBRIS_COUNT);
+    const slotCounter = new Uint8Array(GEO_TYPES.length);
 
     const _dummy = new THREE.Object3D();
     const _axis  = new THREE.Vector3();
@@ -143,22 +216,17 @@ export default function MemoryWarpTunnel() {
 
     function seedDebris(i: number) {
       const angle    = Math.random() * Math.PI * 2;
-      const r        = 3.5 + Math.random() * 5; 
-      
+      const r        = 3.5 + Math.random() * 5;
       debrisX[i]     = Math.cos(angle) * r;
       debrisY[i]     = Math.sin(angle) * r * 0.55;
       debrisZ[i]     = -Math.random() * Math.abs(FAR_Z);
-      
       debrisSpeed[i] = 0.2 + Math.random() * 0.4;
-      
       debrisType[i]  = Math.floor(Math.random() * GEO_TYPES.length);
       debrisSlot[i]  = slotCounter[debrisType[i]] % SLOT_COUNT;
       slotCounter[debrisType[i]]++;
-
-      const ax = Math.random()*2-1, ay = Math.random()*2-1, az = Math.random()*2-1;
-      const len = Math.sqrt(ax*ax+ay*ay+az*az) || 1;
-      debrisAxisX[i] = ax/len; debrisAxisY[i] = ay/len; debrisAxisZ[i] = az/len;
-
+      const ax = Math.random() * 2 - 1, ay = Math.random() * 2 - 1, az = Math.random() * 2 - 1;
+      const len = Math.sqrt(ax * ax + ay * ay + az * az) || 1;
+      debrisAxisX[i] = ax / len; debrisAxisY[i] = ay / len; debrisAxisZ[i] = az / len;
       debrisAngV[i]  = (0.03 + Math.random() * 0.12) * (Math.PI * 2) * (Math.random() < 0.5 ? 1 : -1);
       debrisAngle[i] = Math.random() * Math.PI * 2;
     }
@@ -178,15 +246,12 @@ export default function MemoryWarpTunnel() {
       el.innerHTML = `
         <div class="mwt-card-inner">
           <div class="mwt-card-bg"></div>
-          
           <span class="mwt-corner top-left"></span>
           <span class="mwt-corner top-right"></span>
           <span class="mwt-corner bottom-left"></span>
           <span class="mwt-corner bottom-right"></span>
-
           <span class="mwt-line top-line"></span>
           <span class="mwt-line bottom-line"></span>
-
           <div class="mwt-img-wrap"><img src="${m.img}" alt="${m.title}" loading="lazy"/></div>
           <div class="mwt-card-date">${m.year}</div>
           <div class="mwt-card-title">${m.title}</div>
@@ -197,12 +262,8 @@ export default function MemoryWarpTunnel() {
     });
 
     function getBoxRect() {
-      const sw = VW*0.41, sh = VH*0.54, sl = VW*0.04, st = (VH-sh)/2;
-      return {
-        w: sw, h: sh,
-        l: sl, t: st,
-        r: 8,
-      };
+      const sw = VW * 0.41, sh = VH * 0.54, sl = VW * 0.04, st = (VH - sh) / 2;
+      return { w: sw, h: sh, l: sl, t: st, r: 8 };
     }
 
     let rafId = 0, lastTime = performance.now();
@@ -210,7 +271,7 @@ export default function MemoryWarpTunnel() {
 
     function getProgress() {
       const rect = wrapEl.getBoundingClientRect();
-      return clamp(-rect.top, 0, VH*6.5) / (VH*6.5);
+      return clamp(-rect.top, 0, VH * 6.5) / (VH * 6.5);
     }
 
     function loop(time: number) {
@@ -222,52 +283,51 @@ export default function MemoryWarpTunnel() {
       const p = getProgress();
 
       // --- TIMELINE ---
-      const targetZoom = clamp((p - 0.025) / 0.22, 0, 1);
-      zoomProgress += (targetZoom - zoomProgress) * (dt * 0.008);
+      const targetZoom = clamp((p - 0.025) / 0.32, 0, 1);
+      zoomProgress += (targetZoom - zoomProgress) * (dt * 0.006);
 
+      // Cards start immediately when zoom finishes, no trailing empty scroll
       let targetT = 0;
-      if (p > 0.26) {
-        const seqP = clamp((p-0.26)/0.69, 0, 1);
-        targetT = seqP * (MEMORIES.length + 4); 
+      if (p > 0.345) {
+        const seqP = clamp((p - 0.345) / 0.60, 0, 1);
+        targetT = seqP * (MEMORIES.length + 2.85);
       }
       displayT += (targetT - displayT) * (dt * 0.004);
 
       // --- stage zoom ---
       const ep1 = easeBox(zoomProgress);
       const r   = getBoxRect();
-      const fillScale = Math.max(VW / r.w, VH / r.h);
+      const fillScale  = Math.max(VW / r.w, VH / r.h);
       const sceneScale = lerp(1, fillScale, ep1);
       const boxCenterX = r.l + r.w / 2;
       const boxCenterY = r.t + r.h / 2;
       const sceneX = lerp(0, VW / 2 - boxCenterX * fillScale, ep1);
       const sceneY = lerp(0, VH / 2 - boxCenterY * fillScale, ep1);
-      const tilt = Math.sin(ep1 * Math.PI);
-      const tiltX = lerp(0, 2.5, tilt);
-      const tiltY = lerp(0, -7, tilt);
-      const tiltZ = lerp(0, -2.5, tilt);
+      const tilt   = Math.sin(ep1 * Math.PI);
+      const tiltX  = lerp(0, 2.5, tilt);
+      const tiltY  = lerp(0, -7, tilt);
+      const tiltZ  = lerp(0, -2.5, tilt);
 
-      sceneEl.style.transform = `perspective(1400px) translate3d(${sceneX}px, ${sceneY}px, 0) rotateX(${tiltX}deg) rotateY(${tiltY}deg) rotateZ(${tiltZ}deg) scale(${sceneScale})`;
+      sceneEl.style.transform = `perspective(1400px) translate3d(${sceneX}px,${sceneY}px,0) rotateX(${tiltX}deg) rotateY(${tiltY}deg) rotateZ(${tiltZ}deg) scale(${sceneScale})`;
       boxEl.style.width        = `${r.w}px`;
       boxEl.style.height       = `${r.h}px`;
       boxEl.style.left         = `${r.l}px`;
       boxEl.style.top          = `${r.t}px`;
       boxEl.style.borderRadius = `${r.r}px`;
       boxEl.style.transform    = 'translateZ(0)';
-      
-      boxEl.style.boxShadow    = `0 0 50px rgba(79, 174, 243, ${lerp(0.2, 0, ep1)})`;
-      boxEl.style.borderColor  = `rgba(79, 174, 243, ${lerp(0.2, 0, ep1)})`;
-      
+      boxEl.style.boxShadow    = `0 0 50px rgba(79,174,243,${lerp(0.2, 0, ep1)})`;
+      boxEl.style.borderColor  = `rgba(79,174,243,${lerp(0.2, 0, ep1)})`;
       rtextEl.style.opacity    = '1';
-      hintEl.style.opacity     = `${Math.max(0, 1 - p*7)}`;
+      hintEl.style.opacity     = `${Math.max(0, 1 - p * 7)}`;
 
       const CW = Math.round(r.w), CH = Math.round(r.h);
-      if (renderer.domElement.width !== Math.round(CW * Math.min(devicePixelRatio,2))) {
+      if (renderer.domElement.width !== Math.round(CW * Math.min(devicePixelRatio, 2))) {
         renderer.setSize(CW, CH, true);
         camera.aspect = CW / CH;
         camera.updateProjectionMatrix();
       }
 
-      const tunnelSpeed = clamp(dt*0.01 + Math.abs(targetT-displayT)*0.5, 0.12, 4.0);
+      const tunnelSpeed = clamp(dt * 0.01 + Math.abs(targetT - displayT) * 0.5, 0.12, 4.0);
 
       _dummy.position.set(0, 0, -9999);
       _dummy.scale.setScalar(0.001);
@@ -284,16 +344,13 @@ export default function MemoryWarpTunnel() {
           debrisZ[i] = FAR_Z;
           continue;
         }
-
         debrisAngle[i] += debrisAngV[i] * (dt / 1000);
-
         _dummy.position.set(debrisX[i], debrisY[i], debrisZ[i]);
         _axis.set(debrisAxisX[i], debrisAxisY[i], debrisAxisZ[i]);
         _quat.setFromAxisAngle(_axis, debrisAngle[i]);
         _dummy.quaternion.copy(_quat);
         _dummy.scale.setScalar(1);
         _dummy.updateMatrix();
-
         instancedMeshes[debrisType[i]].setMatrixAt(debrisSlot[i], _dummy.matrix);
       }
 
@@ -302,43 +359,37 @@ export default function MemoryWarpTunnel() {
 
       // --- HORIZONTAL CAROUSEL MATH ---
       nodes.forEach((n, i) => {
-        const diff = displayT - (i + 2.5); 
+        const diff  = displayT - (i + 2.5);
         const depth = clamp(Math.abs(diff), 0, 2.4);
-        const x = -diff * 5.2;
-        const y = Math.sin((i * 1.7) + displayT) * 0.55;
+        const x     = -diff * 5.2;
+        const y     = Math.sin((i * 1.7) + displayT) * 0.55;
         const worldZ = 2 - depth * 1.25;
-        const rotY = clamp(diff * -18, -38, 38);
-        const rotX = clamp(-y * 8, -7, 7);
+        const rotY  = clamp(diff * -18, -38, 38);
+        const rotX  = clamp(-y * 8, -7, 7);
         const drift = Math.sin((time * 0.001) + i) * 10;
-        
+
         const absDiff = Math.abs(diff);
         let opacity = 0;
-        
-        if (absDiff < 1.0) {
-          opacity = 1;
-        } else if (absDiff < 2.0) {
-          opacity = 1 - (absDiff - 1.0);
-        }
+        if (absDiff < 1.0) opacity = 1;
+        else if (absDiff < 2.0) opacity = 1 - (absDiff - 1.0);
 
-        if (opacity <= 0.01) { n.el.style.opacity='0'; return; }
-        
+        if (opacity <= 0.01) { n.el.style.opacity = '0'; return; }
+
         const v = new THREE.Vector3(x, 0, worldZ);
         v.project(camera);
-        
-        if (v.z < -1 || v.z > 1) { n.el.style.opacity='0'; return; }
-        
+        if (v.z < -1 || v.z > 1) { n.el.style.opacity = '0'; return; }
+
         const sx    = (v.x * 0.5 + 0.5) * CW;
         const sy    = (1 - (v.y * 0.5 + 0.5)) * CH;
-        
         const scale = (clamp(8 / (camera.position.z - worldZ), 0.05, 3.0) / sceneScale) * lerp(0.9, 1.08, opacity);
-        
+
         n.el.style.transform = `translate(${sx + drift}px,${sy}px) translate(-50%,-50%) perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
         n.el.style.opacity   = `${opacity}`;
         n.el.style.setProperty('--mwt-card-glow', `${0.12 + opacity * 0.28}`);
       });
 
-      camera.position.x = Math.sin(displayT*2.0)*0.3;
-      camera.position.y = Math.cos(displayT*2.5)*0.15;
+      camera.position.x = Math.sin(displayT * 2.0) * 0.3;
+      camera.position.y = Math.cos(displayT * 2.5) * 0.15;
       camera.lookAt(0, 0, FAR_Z);
 
       renderer.render(fadeScene, fadeCam);
@@ -362,44 +413,39 @@ export default function MemoryWarpTunnel() {
 
   return (
     <>
+      {/* Global card styles injected as a plain <style> tag to avoid JSX parser issues */}
+      <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
+
       <style jsx>{`
         .mwt-wrap { position: relative; height: 950vh; background: #0d0d0d; }
         .mwt-sticky { position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #0d0d0d; }
         .mwt-scene {
-          position: absolute;
-          inset: 0;
+          position: absolute; inset: 0;
           transform-origin: 0 0;
           will-change: transform;
         }
-        
         .mwt-grid {
           position: absolute; inset: 0; pointer-events: none; z-index: 1;
           background-image:
             linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-            linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px);
+            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
           background-size: 40px 40px;
         }
-
         .mwt-svg-overlay {
           position: absolute; inset: 0; height: 100%; width: 100%; pointer-events: none; z-index: 1;
         }
-        
         .mwt-label {
           position: absolute; top: 34px; left: 46px; z-index: 20;
           font-family: monospace; font-size: 11px; letter-spacing: 0.2em;
           color: rgba(255,255,255,0.35); text-transform: uppercase; pointer-events: none;
         }
         .mwt-label b { color: #ffffff; font-weight: 700; margin-right: 8px; }
-        
-        .mwt-box { 
-          position: absolute; 
-          background: #05080c; 
-          border: 1px solid rgba(79, 174, 243, 0.2); 
-          border-radius: 4px;
-          z-index: 5; overflow: hidden; 
+        .mwt-box {
+          position: absolute; background: #05080c;
+          border: 1px solid rgba(79,174,243,0.2); border-radius: 4px;
+          z-index: 5; overflow: hidden;
         }
         .mwt-box canvas { position: absolute; inset: 0; display: block; }
-        
         .mwt-rtext {
           position: absolute; right: 0; top: 0; width: 45%; height: 100%;
           display: flex; flex-direction: column; justify-content: center;
@@ -415,12 +461,11 @@ export default function MemoryWarpTunnel() {
           font-weight: 900; color: #fff; line-height: 1; letter-spacing: -0.01em; margin: 0 0 24px;
           text-transform: uppercase;
         }
-        .mwt-rtext h2 span { color: #4FAEF3; } 
+        .mwt-rtext h2 span { color: #4FAEF3; }
         .mwt-rtext .sub {
-          font-family: monospace; font-size: 13px; color: rgba(255,255,255,.6);
+          font-family: monospace; font-size: 13px; color: rgba(255,255,255,0.6);
           line-height: 1.85; max-width: 380px; margin: 0;
         }
-        
         .mwt-hint {
           position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 30;
           font-family: monospace; font-size: 8px; letter-spacing: 0.25em;
@@ -428,88 +473,6 @@ export default function MemoryWarpTunnel() {
           animation: mwt-blink 2s ease-in-out infinite;
         }
         @keyframes mwt-blink { 0%,100%{opacity:.2} 50%{opacity:.8} }
-        
-        :global(.mwt-card) {
-          position: absolute; top: 0; left: 0; width: min(365px, 76vw);
-          transform-origin: center center; will-change: transform, opacity, filter;
-          pointer-events: none; z-index: 6; transform-style: preserve-3d;
-          filter:
-            drop-shadow(0 0 10px rgba(79,174,243,var(--mwt-card-glow, 0.16)))
-            drop-shadow(0 12px 34px rgba(0,0,0,0.5));
-        }
-        
-        :global(.mwt-card-inner) {
-          background: rgba(10, 10, 10, 0.92);
-          border: 1px solid rgba(255, 255, 255, 0.1); 
-          padding: 24px 20px 20px;
-          border-radius: 4px;
-          position: relative;
-          overflow: hidden;
-        }
-
-        :global(.mwt-card-bg) {
-          position: absolute;
-          top: -1px; right: -1px; bottom: -1px; left: -1px;
-          border-radius: 4px;
-          background: 
-            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-            linear-gradient(165deg, rgba(255,255,255,0.11), rgba(255,255,255,0.02) 38%, rgba(0,0,0,0.35)),
-            rgba(28,30,34,0.95);
-          background-size: 18px 18px, 18px 18px, auto, auto;
-          border: 1px solid rgba(235,238,242,0.28);
-          pointer-events: none;
-          z-index: 0;
-        }
-        :global(.mwt-card-bg::after) {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: repeating-linear-gradient(0deg, rgba(79,174,243,0.03) 0 1px, transparent 1px 8px);
-          opacity: 0.22;
-          mix-blend-mode: screen;
-        }
-        
-        :global(.mwt-corner) {
-          position: absolute; width: 14px; height: 14px; z-index: 10;
-          filter: drop-shadow(0 0 4px rgba(79,174,243,0.5));
-        }
-        :global(.top-left) { top: 6px; left: 6px; border-top: 1.5px solid rgba(79,174,243,0.85); border-left: 1.5px solid rgba(79,174,243,0.85); }
-        :global(.top-right) { top: 6px; right: 6px; border-top: 1.5px solid rgba(79,174,243,0.85); border-right: 1.5px solid rgba(79,174,243,0.85); }
-        :global(.bottom-left) { bottom: 6px; left: 6px; border-bottom: 1.5px solid rgba(79,174,243,0.85); border-left: 1.5px solid rgba(79,174,243,0.85); }
-        :global(.bottom-right) { bottom: 6px; right: 6px; border-bottom: 1.5px solid rgba(79,174,243,0.85); border-right: 1.5px solid rgba(79,174,243,0.85); }
-
-        :global(.mwt-line) { position: absolute; height: 1px; z-index: 10; }
-        :global(.top-line) { top: -1px; left: 20px; width: 40px; background: rgba(79,174,243,0.6); }
-        :global(.bottom-line) { bottom: -1px; right: 20px; width: 40px; background: rgba(79,174,243,0.35); }
-
-        :global(.mwt-img-wrap), :global(.mwt-card-date), :global(.mwt-card-title), :global(.mwt-card-desc) {
-          position: relative; z-index: 15;
-        }
-
-        :global(.mwt-img-wrap) {
-          width: 100%; height: 166px; overflow: hidden; border-radius: 2px;
-          margin-bottom: 20px; background: #000;
-          border: 1px solid rgba(255,255,255,0.05); 
-        }
-        :global(.mwt-img-wrap img) { 
-          width:100%; height:100%; object-fit:cover; opacity:0.85; 
-          filter: grayscale(100%) contrast(1.25) brightness(0.78); 
-        }
-        :global(.mwt-card-date)    {
-          font-family: monospace; font-size: 11px; letter-spacing: 0.18em;
-          color: #4FAEF3; 
-          text-transform: uppercase; margin: 0 0 10px;
-        }
-        :global(.mwt-card-title)   {
-          font-family: "Inter", "Arial Black", sans-serif; font-weight: 900; font-size: 23px; color: #fff;
-          text-transform: uppercase; letter-spacing: 0.02em; margin: 0 0 12px; line-height: 1.1;
-        }
-        :global(.mwt-card-desc)    {
-          font-family: monospace; font-size: 12px; line-height: 1.6;
-          color: rgba(255,255,255,0.5); margin: 0;
-        }
-
         .mwt-bg-dot {
           position: absolute; width: 5px; height: 5px; border-radius: 50%;
           background: rgba(255,255,255,0.25);
@@ -529,23 +492,23 @@ export default function MemoryWarpTunnel() {
             {([
               [8, 9], [66, 14], [15, 58], [80, 47], [44, 78],
             ] as [number, number][]).map(([lp, tp], i) => (
-              <div key={i} className="mwt-bg-dot z-[1]" style={{ left: `${lp}%`, top: `${tp}%` }} />
+              <div key={i} className="mwt-bg-dot" style={{ left: `${lp}%`, top: `${tp}%` }} />
             ))}
 
             <div className="mwt-label"><b>06.</b>SYSTEM.LOGS // MEMORY_BANK</div>
-            
+
             <div className="mwt-box" ref={boxRef}>
               <canvas ref={canvasRef} />
               <div ref={cardLayerRef} />
             </div>
-            
+
             <div className="mwt-rtext" ref={rtextRef}>
               <span className="eyebrow">▶ BOOT_SEQUENCE.LOAD()</span>
               <h2>YEARS OF<br /><span>DATA.</span></h2>
               <p className="sub">From late-night builds to competition floors&mdash;<br />every circuit and line of code that shaped RoboVITics.</p>
             </div>
           </div>
-          
+
           <div className="mwt-hint" ref={hintRef}>SCROLL TO DEPLOY ↓</div>
         </div>
       </div>
