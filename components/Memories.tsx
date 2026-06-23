@@ -22,7 +22,7 @@ const MEMORIES: Memory[] = [
   { year: '2024', title: 'New Heights', desc: 'Record turnout at flagship events, and a new arena for combat robotics.', img: 'https://images.unsplash.com/photo-1563207153-f403bf289096?q=80&w=600&auto=format&fit=crop' },
 ];
 
-const DEBRIS_COUNT = 8;
+const DEBRIS_COUNT = 16;
 const FAR_Z = -35;
 
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
@@ -278,14 +278,14 @@ export default function MemoryWarpTunnel() {
       debrisX[i]     = Math.cos(angle) * r;
       debrisY[i]     = Math.sin(angle) * r * 0.55;
       debrisZ[i]     = FAR_Z + (Math.random() * 5);
-      debrisSpeed[i] = 0.12 + Math.random() * 0.2;
+      debrisSpeed[i] = 0.3 + Math.random() * 0.5;
       debrisType[i]  = Math.floor(Math.random() * GEO_TYPES.length);
       debrisSlot[i]  = slotCounter[debrisType[i]] % SLOT_COUNT;
       slotCounter[debrisType[i]]++;
       const ax = Math.random() * 2 - 1, ay = Math.random() * 2 - 1, az = Math.random() * 2 - 1;
       const len = Math.sqrt(ax * ax + ay * ay + az * az) || 1;
       debrisAxisX[i] = ax / len; debrisAxisY[i] = ay / len; debrisAxisZ[i] = az / len;
-      debrisAngV[i]  = (0.008 + Math.random() * 0.035) * (Math.PI * 2) * (Math.random() < 0.5 ? 1 : -1);
+      debrisAngV[i]  = (0.03 + Math.random() * 0.12) * (Math.PI * 2) * (Math.random() < 0.5 ? 1 : -1);
       debrisAngle[i] = Math.random() * Math.PI * 2;
     }
 
@@ -405,7 +405,7 @@ export default function MemoryWarpTunnel() {
         camera.updateProjectionMatrix();
       }
 
-      const tunnelSpeed = clamp(dt * 0.004 + Math.abs(targetT - displayT) * 0.16, 0.045, 1.25);
+      const tunnelSpeed = clamp(dt * 0.01 + Math.abs(targetT - displayT) * 0.5, 0.12, 4.0);
 
       _dummy.position.set(0, 0, -9999);
       _dummy.scale.setScalar(0.001);
