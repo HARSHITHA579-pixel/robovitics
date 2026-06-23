@@ -7,6 +7,12 @@ import Hero from '@/components/Hero';
 import About from '@/components/About';
 import Domains from '@/components/Domains';
 import Events from "@/components/Events";
+import TimelineDive from '@/components/TimelineDive';
+import GalaxyDive from '@/components/GalaxyDive';
+import Memories from '@/components/Memories';
+
+// 1. Import the new section here! (Adjust the path if you named the file differently)
+import NextSection from '@/components/NextSection'; 
 
 
 export default function Page() {
@@ -101,6 +107,12 @@ export default function Page() {
         <Domains />
       </div>
       <Events />
+      
+      {/* 2. The 3D Memory Tunnel plays out here */}
+      <Memories />
+
+      {/* 3. Once Memories is done, this catches the scroll and slides in from the right */}
+      <NextSection />
 
     </main>
   );
