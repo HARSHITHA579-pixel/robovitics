@@ -22,7 +22,6 @@ const MEMORIES: Memory[] = [
 ];
 
 const DEBRIS_COUNT = 16;
-// Pushed spawn point way back to prevent popping
 const FAR_Z = -35;
 
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
@@ -155,16 +154,6 @@ export default function MemoryWarpTunnel() {
     let VW = window.innerWidth;
     let VH = window.innerHeight;
 
-    // ── Mouse Tracking (Parallax) ─────────────────────────────
-    const mouse = { x: 0, y: 0 };
-    const targetMouse = { x: 0, y: 0 };
-    
-    const handleMouseMove = (e: MouseEvent) => {
-      targetMouse.x = (e.clientX / VW) * 2 - 1;
-      targetMouse.y = -(e.clientY / VH) * 2 + 1;
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-
     // ── Renderer ──────────────────────────────────────────────
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -172,41 +161,55 @@ export default function MemoryWarpTunnel() {
 
     const scene  = new THREE.Scene();
     
-    // Deep space fog to prevent elements from abruptly "popping" in
-    scene.fog = new THREE.FogExp2(0x05080f, 0.05);
+    // Pure black fog for the void effect
+    scene.fog = new THREE.FogExp2(0x000000, 0.05);
 
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
     camera.position.set(0, 0, 8);
 
     const fadeScene = new THREE.Scene();
     const fadeCam   = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    
+    // Pure black persistence trail
     const fadeMat   = new THREE.MeshBasicMaterial({
-      color: 0x05080f, transparent: true, opacity: 0.35,
+      color: 0x000000, transparent: true, opacity: 0.35,
       depthTest: false, depthWrite: false,
     });
     fadeScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), fadeMat));
 
-    // ── Starfield Background ──────────────────────────────────
-    const starsGeometry = new THREE.BufferGeometry();
-    const starsMaterial = new THREE.PointsMaterial({
-      color: 0x4FAEF3,
-      size: 0.03,
-      transparent: true,
-      opacity: 0.8,
-      blending: THREE.AdditiveBlending
-    });
-
-    const starsCount = 4000;
-    const starsPositions = new Float32Array(starsCount * 3);
-    for (let i = 0; i < starsCount; i++) {
-      starsPositions[i * 3] = (Math.random() - 0.5) * 80;
-      starsPositions[i * 3 + 1] = (Math.random() - 0.5) * 80;
-      starsPositions[i * 3 + 2] = -Math.random() * Math.abs(FAR_Z * 4);
+    // ── GALAXY STARFIELD (Multi-Layered) ──────────────────────
+    function createStarLayer(count: number, size: number, opacity: number, spread: number) {
+      const geo = new THREE.BufferGeometry();
+      const pos = new Float32Array(count * 3);
+      for (let i = 0; i < count; i++) {
+        // Exponent spreads stars sparsely at edges, densely at core
+        const r = Math.pow(Math.random(), 2) * spread; 
+        const theta = Math.random() * Math.PI * 2;
+        pos[i * 3]     = Math.cos(theta) * r;
+        pos[i * 3 + 1] = Math.sin(theta) * r;
+        pos[i * 3 + 2] = -Math.random() * Math.abs(FAR_Z * 4);
+      }
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const mat = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: size,
+        transparent: true,
+        opacity: opacity,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      const points = new THREE.Points(geo, mat);
+      points.renderOrder = -2;
+      return points;
     }
-    starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
-    const starfield = new THREE.Points(starsGeometry, starsMaterial);
-    starfield.renderOrder = -1;
-    scene.add(starfield);
+
+    // Three distinct layers for depth
+    const starLayers = [
+      createStarLayer(8000, 0.015, 0.3, 120), // Ambient stardust
+      createStarLayer(3000, 0.03, 0.6, 70),   // Mid-ground stars
+      createStarLayer(1000, 0.05, 0.9, 30)    // Galactic core hero stars
+    ];
+    starLayers.forEach(layer => scene.add(layer));
 
     // ── Geometries ────────────────────────────────────────────
     const boltGeo   = new THREE.CylinderGeometry(1.1, 1.1, 0.45, 6);
@@ -222,14 +225,14 @@ export default function MemoryWarpTunnel() {
     const GEO_TYPES  = [boltGeo, washerGeo, gearGeo, chipGeo, nutGeo];
     const SLOT_COUNT = Math.ceil(DEBRIS_COUNT / GEO_TYPES.length);
 
-    // Glowing wireframe - INCREASED OPACITY
+    // Pure white, high-opacity wireframe for mechanical parts
     const wireMat = new THREE.MeshBasicMaterial({
-      color: 0x4FAEF3, wireframe: true, transparent: true, opacity: 0.95,
+      color: 0xffffff, wireframe: true, transparent: true, opacity: 0.9,
     });
     
-    // Solid dark core to prevent overlapping wireframes from looking messy
+    // Pure black solid core to maintain geometry readability
     const coreMat = new THREE.MeshBasicMaterial({
-      color: 0x05080f, transparent: false, depthWrite: true,
+      color: 0x000000, transparent: false, depthWrite: true,
     });
 
     const instancedMeshes: THREE.InstancedMesh[] = GEO_TYPES.map((geo) => {
@@ -242,7 +245,6 @@ export default function MemoryWarpTunnel() {
     const instancedCores: THREE.InstancedMesh[] = GEO_TYPES.map((geo) => {
       const mesh = new THREE.InstancedMesh(geo, coreMat, SLOT_COUNT);
       mesh.frustumCulled = false;
-      // Offset so the wireframe renders perfectly on top of the solid core
       mesh.renderOrder = -1;
       scene.add(mesh);
       return mesh;
@@ -271,7 +273,7 @@ export default function MemoryWarpTunnel() {
       const r        = 3.5 + Math.random() * 5;
       debrisX[i]     = Math.cos(angle) * r;
       debrisY[i]     = Math.sin(angle) * r * 0.55;
-      debrisZ[i]     = FAR_Z + (Math.random() * 5); // Spawn deep in the fog
+      debrisZ[i]     = FAR_Z + (Math.random() * 5);
       debrisSpeed[i] = 0.3 + Math.random() * 0.5;
       debrisType[i]  = Math.floor(Math.random() * GEO_TYPES.length);
       debrisSlot[i]  = slotCounter[debrisType[i]] % SLOT_COUNT;
@@ -295,7 +297,6 @@ export default function MemoryWarpTunnel() {
         mesh.setMatrixAt(s, _dummy.matrix);
 
     for (let i = 0; i < DEBRIS_COUNT; i++) seedDebris(i);
-    // Randomize initial Z positions so they aren't clumped together at start
     for (let i = 0; i < DEBRIS_COUNT; i++) debrisZ[i] = Math.random() * Math.abs(FAR_Z) * -1;
 
     const nodes: MemoryNode[] = MEMORIES.map((m) => {
@@ -340,11 +341,6 @@ export default function MemoryWarpTunnel() {
 
       const p = getProgress();
 
-      // Smoothly update mouse values for parallax
-      mouse.x += (targetMouse.x - mouse.x) * (dt * 0.005);
-      mouse.y += (targetMouse.y - mouse.y) * (dt * 0.005);
-
-      // --- TIMELINE ---
       const targetZoom = clamp((p - 0.025) / 0.32, 0, 1);
       zoomProgress += (targetZoom - zoomProgress) * (dt * 0.006);
 
@@ -355,7 +351,6 @@ export default function MemoryWarpTunnel() {
       }
       displayT += (targetT - displayT) * (dt * 0.004);
 
-      // --- stage zoom ---
       const ep1 = easeBox(zoomProgress);
       const r   = getBoxRect();
       const fillScale  = Math.max(VW / r.w, VH / r.h);
@@ -400,8 +395,6 @@ export default function MemoryWarpTunnel() {
       for (const mesh of instancedCores)
         for (let s = 0; s < SLOT_COUNT; s++) mesh.setMatrixAt(s, hiddenMat);
 
-      starfield.rotation.z = displayT * -0.05;
-
       for (let i = 0; i < DEBRIS_COUNT; i++) {
         debrisZ[i] += tunnelSpeed * debrisSpeed[i];
         if (debrisZ[i] > camera.position.z - 0.5 || debrisZ[i] < FAR_Z) {
@@ -414,12 +407,10 @@ export default function MemoryWarpTunnel() {
         _quat.setFromAxisAngle(_axis, debrisAngle[i]);
         _dummy.quaternion.copy(_quat);
         
-        // Update Core Mesh (scaled slightly down so wireframe stays crisp)
         _dummy.scale.setScalar(0.98);
         _dummy.updateMatrix();
         instancedCores[debrisType[i]].setMatrixAt(debrisSlot[i], _dummy.matrix);
 
-        // Update Wireframe Mesh
         _dummy.scale.setScalar(1);
         _dummy.updateMatrix();
         instancedMeshes[debrisType[i]].setMatrixAt(debrisSlot[i], _dummy.matrix);
@@ -428,12 +419,12 @@ export default function MemoryWarpTunnel() {
       for (const mesh of instancedMeshes) mesh.instanceMatrix.needsUpdate = true;
       for (const mesh of instancedCores) mesh.instanceMatrix.needsUpdate = true;
 
-      // --- HORIZONTAL CAROUSEL MATH ---
       nodes.forEach((n, i) => {
         const diff  = displayT - (i + 2.5);
         const depth = clamp(Math.abs(diff), 0, 2.4);
         const x     = -diff * 5.2;
-        const y     = Math.sin((i * 1.7) + displayT) * 0.55;
+        // Vertically stagger cards cleanly based purely on their index, removing scroll-bounce
+        const y     = Math.sin(i * 1.7) * 0.6; 
         const worldZ = 2 - depth * 1.25;
         const rotY  = clamp(diff * -18, -38, 38);
         const rotX  = clamp(-y * 8, -7, 7);
@@ -450,9 +441,8 @@ export default function MemoryWarpTunnel() {
         v.project(camera);
         if (v.z < -1 || v.z > 1) { n.el.style.opacity = '0'; return; }
 
-        // REDUCED mouse parallax on HTML cards
-        const sx    = (v.x * 0.5 + 0.5) * CW - (mouse.x * CW * 0.008);
-        const sy    = (1 - (v.y * 0.5 + 0.5)) * CH + (mouse.y * CH * 0.008);
+        const sx    = (v.x * 0.5 + 0.5) * CW;
+        const sy    = (1 - (v.y * 0.5 + 0.5)) * CH;
         const scale = (clamp(8 / (camera.position.z - worldZ), 0.05, 3.0) / sceneScale) * lerp(0.9, 1.08, opacity);
 
         n.el.style.transform = `translate(${sx + drift}px,${sy}px) translate(-50%,-50%) perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
@@ -460,12 +450,10 @@ export default function MemoryWarpTunnel() {
         n.el.style.setProperty('--mwt-card-glow', `${0.12 + opacity * 0.28}`);
       });
 
-      // REDUCED camera position update with Mouse Parallax
-      camera.position.x = Math.sin(displayT * 2.0) * 0.3 + (mouse.x * 0.4);
-      camera.position.y = Math.cos(displayT * 2.5) * 0.15 + (mouse.y * 0.4);
-      
-      // Look slightly ahead of center to exaggerate parallax depth (REDUCED)
-      camera.lookAt(mouse.x * 0.15, mouse.y * 0.15, FAR_Z);
+      // Camera is completely locked to 0,0 center ensuring stars NEVER jitter
+      camera.position.x = 0;
+      camera.position.y = 0;
+      camera.lookAt(0, 0, FAR_Z);
 
       renderer.render(fadeScene, fadeCam);
       renderer.render(scene, camera);
@@ -477,15 +465,16 @@ export default function MemoryWarpTunnel() {
 
     return () => {
       window.removeEventListener('resize', onResize);
-      window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(rafId);
       nodes.forEach((n) => n.el.remove());
       GEO_TYPES.forEach((g) => g.dispose());
       wireMat.dispose();
       coreMat.dispose();
       fadeMat.dispose();
-      starsGeometry.dispose();
-      starsMaterial.dispose();
+      starLayers.forEach(l => {
+        l.geometry.dispose();
+        (l.material as THREE.Material).dispose();
+      });
       renderer.dispose();
     };
   }, []);
@@ -495,8 +484,8 @@ export default function MemoryWarpTunnel() {
       <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
 
       <style jsx>{`
-        .mwt-wrap { position: relative; height: 950vh; background: #0d0d0d; }
-        .mwt-sticky { position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #0d0d0d; }
+        .mwt-wrap { position: relative; height: 950vh; background: #000; }
+        .mwt-sticky { position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #000; }
         .mwt-scene {
           position: absolute; inset: 0;
           transform-origin: 0 0;
@@ -505,8 +494,8 @@ export default function MemoryWarpTunnel() {
         .mwt-grid {
           position: absolute; inset: 0; pointer-events: none; z-index: 1;
           background-image:
-            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
           background-size: 40px 40px;
         }
         .mwt-svg-overlay {
@@ -515,12 +504,12 @@ export default function MemoryWarpTunnel() {
         .mwt-label {
           position: absolute; top: 34px; left: 46px; z-index: 20;
           font-family: monospace; font-size: 11px; letter-spacing: 0.2em;
-          color: rgba(255,255,255,0.35); text-transform: uppercase; pointer-events: none;
+          color: rgba(255,255,255,0.4); text-transform: uppercase; pointer-events: none;
         }
         .mwt-label b { color: #ffffff; font-weight: 700; margin-right: 8px; }
         .mwt-box {
-          position: absolute; background: #05080c;
-          border: 1px solid rgba(79,174,243,0.2); border-radius: 4px;
+          position: absolute; background: #000;
+          border: 1px solid rgba(255,255,255,0.15); border-radius: 4px;
           z-index: 5; overflow: hidden;
         }
         .mwt-box canvas { position: absolute; inset: 0; display: block; }
@@ -531,7 +520,7 @@ export default function MemoryWarpTunnel() {
         }
         .mwt-rtext .eyebrow {
           font-family: monospace; font-size: 9px; letter-spacing: 0.35em;
-          color: rgba(255,255,255,0.2); text-transform: uppercase; margin: 0 0 12px; display: block;
+          color: rgba(255,255,255,0.3); text-transform: uppercase; margin: 0 0 12px; display: block;
         }
         .mwt-rtext h2 {
           font-family: "Inter", "Arial Black", sans-serif;
@@ -547,14 +536,14 @@ export default function MemoryWarpTunnel() {
         .mwt-hint {
           position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 30;
           font-family: monospace; font-size: 8px; letter-spacing: 0.25em;
-          color: rgba(255,255,255,0.2); text-transform: uppercase; pointer-events: none;
+          color: rgba(255,255,255,0.3); text-transform: uppercase; pointer-events: none;
           animation: mwt-blink 2s ease-in-out infinite;
         }
         @keyframes mwt-blink { 0%,100%{opacity:.2} 50%{opacity:.8} }
         .mwt-bg-dot {
           position: absolute; width: 5px; height: 5px; border-radius: 50%;
-          background: rgba(255,255,255,0.25);
-          box-shadow: 0 0 6px rgba(255,255,255,0.15);
+          background: rgba(255,255,255,0.3);
+          box-shadow: 0 0 8px rgba(255,255,255,0.2);
         }
       `}</style>
 
@@ -563,9 +552,9 @@ export default function MemoryWarpTunnel() {
           <div className="mwt-scene" ref={sceneRef}>
             <div className="mwt-grid" />
             <svg className="mwt-svg-overlay" xmlns="http://www.w3.org/2000/svg">
-              <line x1="8%" y1="9%" x2="66%" y2="14%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
-              <line x1="66%" y1="14%" x2="80%" y2="47%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
-              <line x1="15%" y1="58%" x2="44%" y2="78%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+              <line x1="8%" y1="9%" x2="66%" y2="14%" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+              <line x1="66%" y1="14%" x2="80%" y2="47%" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+              <line x1="15%" y1="58%" x2="44%" y2="78%" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
             </svg>
             {([
               [8, 9], [66, 14], [15, 58], [80, 47], [44, 78],
