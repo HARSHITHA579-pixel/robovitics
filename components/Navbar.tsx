@@ -6,6 +6,13 @@ import { useEffect, useState, useRef } from 'react';
 
 // MOVED OUTSIDE: Prevents the infinite render loop
 const navItems = ['About', 'Domains', 'Events', 'Projects', 'Teams'];
+const mobileNavTargets: Record<string, string> = {
+  About: 'about-mobile',
+  Domains: 'domains-mobile',
+  Events: 'events-mobile',
+  Projects: 'projects',
+  Teams: 'command-structure',
+};
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -99,6 +106,22 @@ export default function Navbar() {
       window.removeEventListener('resize', updateIndicator);
     };
   }, [activeSection]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [menuOpen]);
 
   const heroChromeStyle = {
     opacity: heroChromeOpacity,
@@ -226,31 +249,99 @@ export default function Navbar() {
         </button>
       </div>
 
-      {menuOpen && (
-        <nav className="mx-auto mt-2 max-w-6xl overflow-hidden border border-white/10 bg-black/85 font-mono text-[11px] uppercase tracking-[0.18em] text-gray-200 shadow-[0_18px_50px_rgba(0,0,0,0.4)] backdrop-blur-xl md:hidden">
-          {navItems.map((item, index) => (
-            <Link
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              onClick={() => {
-                setMenuOpen(false);
-                setActiveSection(item);
-              }}
-              className="flex items-center justify-between border-b border-white/10 px-4 py-3 transition-colors hover:bg-white/10"
+      <div
+        className={`fixed inset-0 z-[-1] bg-black/50 backdrop-blur-[2px] transition-opacity duration-300 md:hidden ${
+          menuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+        onClick={() => setMenuOpen(false)}
+        aria-hidden="true"
+      />
+
+      <aside
+        className={`fixed bottom-0 right-0 top-0 z-[90] w-[min(82vw,340px)] border-l border-white/12 bg-[#070808]/95 text-white shadow-[-18px_0_60px_rgba(0,0,0,0.55)] backdrop-blur-2xl transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${
+          menuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        aria-hidden={!menuOpen}
+      >
+        <div
+          className="absolute inset-0 pointer-events-none opacity-35"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)
+            `,
+            backgroundSize: '28px 28px, 28px 28px',
+          }}
+        />
+
+        <div className="relative z-10 flex h-full flex-col px-5 pb-6 pt-8">
+          <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-5">
+            <div className="min-w-0">
+              <Image
+                src="/robovitics-logo.png"
+                alt="roboVITics Logo"
+                width={150}
+                height={40}
+                className="h-7 w-auto object-contain opacity-90"
+              />
+            </div>
+            <button
+              type="button"
+              aria-label="Close navigation menu"
+              onClick={() => setMenuOpen(false)}
+              className="flex h-9 w-9 shrink-0 items-center justify-center border border-white/12 bg-white/[0.035] text-white/70 transition-colors hover:bg-white/[0.07] hover:text-white"
             >
-              <span>{item}</span>
-              <span className="text-[#4FAEF3]/60">0{index + 1}</span>
+              <span className="relative block h-4 w-4">
+                <span className="absolute left-0 top-1/2 block h-px w-full -translate-y-1/2 rotate-45 bg-current" />
+                <span className="absolute left-0 top-1/2 block h-px w-full -translate-y-1/2 -rotate-45 bg-current" />
+              </span>
+            </button>
+          </div>
+
+          <nav className="mt-7 flex flex-col font-mono uppercase tracking-[0.16em]">
+            {navItems.map((item, index) => {
+              const isActive = activeSection === item;
+              return (
+                <Link
+                  key={item}
+                  href={`#${mobileNavTargets[item] ?? item.toLowerCase()}`}
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setActiveSection(item);
+                  }}
+                  className={`group relative border-b border-white/10 px-1 py-4 transition-colors ${
+                    isActive
+                      ? 'text-white'
+                      : 'text-white/62 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center justify-between gap-4">
+                    <span className="flex items-center gap-3">
+                      <span className={`text-[10px] ${isActive ? 'text-[#4FAEF3]/85' : 'text-white/28'}`}>0{index + 1}</span>
+                      <span className="text-[12px]">{item}</span>
+                    </span>
+                    <span className={`h-px w-6 transition-colors ${isActive ? 'bg-[#4FAEF3]/70' : 'bg-white/15 group-hover:bg-white/35'}`} />
+                  </span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="mt-auto border-t border-white/10 pt-5">
+            <Link
+              href="#about"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center justify-between border border-white/12 bg-white/[0.035] px-4 py-3 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-white/82 transition-colors hover:bg-white/[0.07] hover:text-white"
+            >
+              <span>Join the Club</span>
+              <span aria-hidden="true">↗</span>
             </Link>
-          ))}
-          <Link
-            href="#about"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center justify-between px-4 py-3 text-[#4FAEF3] transition-colors hover:bg-white/10"
-          >
-            <span>Join the Club</span>
-          </Link>
-        </nav>
-      )}
+            <p className="mt-4 font-mono text-[8px] uppercase tracking-[0.2em] text-white/25">
+              Tap a section to navigate
+            </p>
+          </div>
+        </div>
+      </aside>
     </header>
   );
 }

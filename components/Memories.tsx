@@ -157,10 +157,14 @@ export default function MemoryWarpTunnel() {
 
     let VW = window.innerWidth;
     let VH = window.innerHeight;
+    const isMobile = window.matchMedia('(max-width: 700px)').matches;
+    const activeDebrisCount = isMobile ? 8 : DEBRIS_COUNT;
+    const scrollUnits = isMobile ? 8 : 14;
+    const maxPixelRatio = isMobile ? 1.25 : 2;
 
     // ── Renderer ──────────────────────────────────────────────
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
     renderer.autoClearColor = false;
 
     const scene  = new THREE.Scene();
@@ -199,9 +203,9 @@ export default function MemoryWarpTunnel() {
     }
 
     const starLayers = [
-      createStarLayer(8000, 0.015, 0.3, 120),
-      createStarLayer(3000, 0.03,  0.6, 70),
-      createStarLayer(1000, 0.05,  0.9, 30),
+      createStarLayer(isMobile ? 1400 : 8000, isMobile ? 0.012 : 0.015, 0.3, 120),
+      createStarLayer(isMobile ? 700 : 3000, isMobile ? 0.024 : 0.03,  0.6, 70),
+      createStarLayer(isMobile ? 260 : 1000, isMobile ? 0.04 : 0.05,  0.9, 30),
     ];
     starLayers.forEach(layer => scene.add(layer));
 
@@ -279,8 +283,8 @@ export default function MemoryWarpTunnel() {
     for (const mesh of instancedCores)
       for (let s = 0; s < SLOT_COUNT; s++) mesh.setMatrixAt(s, _dummy.matrix);
 
-    for (let i = 0; i < DEBRIS_COUNT; i++) seedDebris(i);
-    for (let i = 0; i < DEBRIS_COUNT; i++) debrisZ[i] = Math.random() * Math.abs(FAR_Z) * -1;
+    for (let i = 0; i < activeDebrisCount; i++) seedDebris(i);
+    for (let i = 0; i < activeDebrisCount; i++) debrisZ[i] = Math.random() * Math.abs(FAR_Z) * -1;
 
     const nodes: MemoryNode[] = MEMORIES.map((m) => {
       const el = document.createElement('div');
@@ -304,6 +308,11 @@ export default function MemoryWarpTunnel() {
     });
 
     function getBoxRect() {
+      if (isMobile) {
+        const sw = VW * 0.86;
+        const sh = Math.min(VH * 0.38, 310);
+        return { w: sw, h: sh, l: (VW - sw) / 2, t: VH * 0.44, r: 8 };
+      }
       const sw = VW * 0.41, sh = VH * 0.54, sl = VW * 0.04, st = (VH - sh) / 2;
       return { w: sw, h: sh, l: sl, t: st, r: 8 };
     }
@@ -313,7 +322,7 @@ export default function MemoryWarpTunnel() {
 
     function getProgress() {
       const rect = wrapEl.getBoundingClientRect();
-      return clamp(-rect.top, 0, VH * 14) / (VH * 14);
+      return clamp(-rect.top, 0, VH * scrollUnits) / (VH * scrollUnits);
     }
 
     function loop(time: number) {
@@ -346,7 +355,7 @@ export default function MemoryWarpTunnel() {
       const fillX = VW / 2 - boxCenterX * fillScale;
       const fillY = VH / 2 - boxCenterY * fillScale;
       const portalW = Math.min(VW * 0.78, 1080);
-      const portalH = Math.min(VH * 0.58, 620);
+      const portalH = Math.min(VH * (isMobile ? 0.42 : 0.58), 620);
       const portalScale = Math.min(portalW / r.w, portalH / r.h);
       
       const portalX = VW / 2 - boxCenterX * portalScale;
@@ -378,7 +387,7 @@ export default function MemoryWarpTunnel() {
       portalEl.style.transform = `translate3d(-50%, -50%, 0) scale(${lerp(0.9, 1, portalT)})`;
 
       const CW = Math.round(r.w), CH = Math.round(r.h);
-      if (renderer.domElement.width !== Math.round(CW * Math.min(devicePixelRatio, 2))) {
+      if (renderer.domElement.width !== Math.round(CW * Math.min(devicePixelRatio, maxPixelRatio))) {
         renderer.setSize(CW, CH, true);
         camera.aspect = CW / CH;
         camera.updateProjectionMatrix();
@@ -396,7 +405,7 @@ export default function MemoryWarpTunnel() {
       for (const mesh of instancedCores)
         for (let s = 0; s < SLOT_COUNT; s++) mesh.setMatrixAt(s, hiddenMat);
 
-      for (let i = 0; i < DEBRIS_COUNT; i++) {
+      for (let i = 0; i < activeDebrisCount; i++) {
         debrisZ[i] += tunnelSpeed * debrisSpeed[i];
         if (debrisZ[i] > camera.position.z - 0.5 || debrisZ[i] < FAR_Z) {
           seedDebris(i);
@@ -421,7 +430,7 @@ export default function MemoryWarpTunnel() {
       nodes.forEach((n, i) => {
         const diff  = displayT - (i + 2.5);
         const depth = clamp(Math.abs(diff), 0, 2.4);
-        const x     = -diff * 5.2;
+        const x     = -diff * (isMobile ? 3.45 : 5.2);
         const y     = Math.sin(i * 1.7) * 0.6;
         const worldZ = 2 - depth * 1.25;
         const rotY  = clamp(diff * -18, -38, 38);
@@ -441,7 +450,7 @@ export default function MemoryWarpTunnel() {
 
         const sx    = (v.x * 0.5 + 0.5) * CW;
         const sy    = (1 - (v.y * 0.5 + 0.5)) * CH;
-        const scale = (clamp(8 / (camera.position.z - worldZ), 0.05, 3.0) / sceneScale) * lerp(0.9, 1.08, opacity) * lerp(1, 0.55, portalT);
+        const scale = (clamp(8 / (camera.position.z - worldZ), 0.05, 3.0) / sceneScale) * lerp(isMobile ? 0.58 : 0.9, isMobile ? 0.76 : 1.08, opacity) * lerp(1, isMobile ? 0.72 : 0.55, portalT);
 
         n.el.style.transform = `translate(${sx + drift}px,${sy}px) translate(-50%,-50%) perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
         n.el.style.opacity   = `${opacity * (1 - portalT)}`;
@@ -547,9 +556,25 @@ export default function MemoryWarpTunnel() {
           box-shadow: 0 0 8px rgba(255,255,255,0.2);
         }
         @media (max-width: 700px) {
+          .mwt-wrap { height: 900vh; }
           .mwt-label { left: 20px; top: 22px; font-size: 9px; }
-          .mwt-rtext { width: 100%; padding: 0 24px; justify-content: flex-end; padding-bottom: 92px; }
-          .mwt-rtext .sub { max-width: 300px; }
+          .mwt-grid { background-size: 32px 32px; }
+          .mwt-rtext {
+            top: 0; width: 100%; height: auto; padding: 82px 22px 0;
+            justify-content: flex-start; text-align: center; align-items: center;
+          }
+          .mwt-rtext .eyebrow { font-size: 7px; letter-spacing: 0.24em; margin-bottom: 9px; }
+          .mwt-rtext h2 { font-size: clamp(31px, 10.5vw, 42px); margin-bottom: 11px; }
+          .mwt-rtext .sub {
+            max-width: 292px; font-size: 10px; line-height: 1.65; color: rgba(255,255,255,0.56);
+          }
+          .mwt-card { width: min(270px, 74vw); }
+          .mwt-card-inner { padding: 12px 12px 13px; }
+          .mwt-img-wrap { height: 96px; margin-bottom: 12px; }
+          .mwt-card-date { font-size: 9px; margin-bottom: 7px; }
+          .mwt-card-title { font-size: 16px; margin-bottom: 7px; }
+          .mwt-card-desc { font-size: 9.5px; line-height: 1.5; }
+          .mwt-hint { bottom: 24px; width: 100%; text-align: center; font-size: 7px; }
         }
       `}</style>
 
