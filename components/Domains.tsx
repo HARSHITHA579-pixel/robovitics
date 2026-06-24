@@ -206,11 +206,15 @@ function CardInner({ domain, compact = false }: { domain: (typeof DOMAINS)[0]; c
           }}
         />
 
-        {/* Cyan corner brackets, matching Events card styling */}
-        <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ top: 6, left: 6, width: 14, height: 14, borderTop: '1.5px solid rgba(79,174,243,0.85)', borderLeft: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
-        <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ top: 6, right: 6, width: 14, height: 14, borderTop: '1.5px solid rgba(79,174,243,0.85)', borderRight: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
-        <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ bottom: 6, left: 6, width: 14, height: 14, borderBottom: '1.5px solid rgba(79,174,243,0.85)', borderLeft: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
-        <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ bottom: 6, right: 6, width: 14, height: 14, borderBottom: '1.5px solid rgba(79,174,243,0.85)', borderRight: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
+        {!compact && (
+          <>
+            {/* Cyan corner brackets, matching Events card styling */}
+            <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ top: 6, left: 6, width: 14, height: 14, borderTop: '1.5px solid rgba(79,174,243,0.85)', borderLeft: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
+            <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ top: 6, right: 6, width: 14, height: 14, borderTop: '1.5px solid rgba(79,174,243,0.85)', borderRight: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
+            <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ bottom: 6, left: 6, width: 14, height: 14, borderBottom: '1.5px solid rgba(79,174,243,0.85)', borderLeft: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
+            <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ bottom: 6, right: 6, width: 14, height: 14, borderBottom: '1.5px solid rgba(79,174,243,0.85)', borderRight: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
+          </>
+        )}
 
         {/* Cyan top/bottom highlight lines, matching Events card styling */}
         <div className="absolute inset-0 pointer-events-none z-10">
@@ -218,29 +222,31 @@ function CardInner({ domain, compact = false }: { domain: (typeof DOMAINS)[0]; c
           <span style={{ position: 'absolute', bottom: '-1px', right: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.35)' }} />
         </div>
 
-        <div className="relative z-30 flex h-full flex-col items-center">
+        <div className="relative z-30 flex h-full flex-col items-center justify-center">
           <div style={{
-            margin: compact ? '4px auto 10px' : '6px auto 14px',
-            width: compact ? '42px' : 'clamp(46px, 5.4vw, 68px)',
-            height: compact ? '42px' : 'clamp(46px, 5.4vw, 68px)',
+            margin: compact ? '0 auto 14px' : '6px auto 14px',
+            width: compact ? '56px' : 'clamp(46px, 5.4vw, 68px)',
+            height: compact ? '56px' : 'clamp(46px, 5.4vw, 68px)',
             borderRadius: '4px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: 'linear-gradient(145deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))',
             boxShadow: 'inset 0 0 22px rgba(255,255,255,0.035), inset 0 0 0 1px rgba(255,255,255,0.04)',
             border: '1px solid rgba(235,238,242,0.18)',
           }} className="transition-all duration-500 group-hover:border-[#4FAEF3]/30 group-hover:bg-[#4FAEF3]/[0.02] group-hover:shadow-[inset_0_0_22px_rgba(79,174,243,0.1)]">
-            {icon}
+            <div style={{ transform: compact ? 'scale(1.18)' : undefined }}>
+              {icon}
+            </div>
           </div>
 
           <h3
             className="text-center font-sans font-black uppercase tracking-[0.06em] text-white transition-all duration-500 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]"
-            style={{ margin: '0 0 6px', fontSize: compact ? '10px' : 'clamp(11px, 1vw, 14px)', lineHeight: 1.15 }}
+            style={{ margin: '0 0 7px', fontSize: compact ? '13px' : 'clamp(11px, 1vw, 14px)', lineHeight: 1.15 }}
           >
             {title}
           </h3>
           <p
             className="text-center font-mono uppercase tracking-[0.1em] transition-all duration-500"
-            style={{ margin: compact ? '0 0 8px' : '0 0 10px', fontSize: compact ? '6.5px' : 'clamp(7px, 0.55vw, 9px)', color: 'rgba(79,174,243,0.85)' }}
+            style={{ margin: compact ? '0 0 10px' : '0 0 10px', fontSize: compact ? '7.5px' : 'clamp(7px, 0.55vw, 9px)', color: 'rgba(79,174,243,0.85)' }}
           >
             {sub}
           </p>

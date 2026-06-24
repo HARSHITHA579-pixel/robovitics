@@ -42,13 +42,13 @@ export default function Hero() {
   }, [logoAssembled, fullSubtitleText]);
 
   return (
-    <div className="relative z-10 flex flex-1 flex-col items-center justify-start gap-4 px-5 pb-2 pt-24 sm:px-8 md:px-12 lg:mx-auto lg:w-full lg:max-w-[1600px] lg:flex-row lg:justify-between lg:gap-12 lg:px-24 lg:pb-0 lg:pt-0">
+    <div className="relative z-10 flex flex-1 flex-col items-center justify-start gap-4 px-5 pb-0 pt-22 sm:px-8 sm:pt-24 md:px-12 lg:mx-auto lg:w-full lg:max-w-[1600px] lg:flex-row lg:justify-between lg:gap-12 lg:px-24 lg:pb-0 lg:pt-0">
 
       {/* LEFT SIDE: Text Container */}
       <div className="relative z-20 flex w-full flex-col items-center justify-center pt-0 text-center pointer-events-auto lg:w-[60%] lg:items-start lg:text-left">
 
         {/* Logo assembly animation replaces the static "ROBOVITICS" letter-stagger title */}
-        <div className="mb-3 w-full max-w-[min(92vw,520px)] sm:max-w-[620px] md:max-w-[720px] lg:mb-4 lg:max-w-[820px]">
+        <div className="mb-4 w-full max-w-[min(92vw,520px)] sm:mb-3 sm:max-w-[620px] md:max-w-[720px] lg:mb-4 lg:max-w-[820px]">
           <LogoAssembly onComplete={handleLogoComplete} />
         </div>
 
@@ -56,7 +56,7 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: logoAssembled ? 1 : 0 }}
           transition={{ duration: 0.5 }}
-          className="flex min-h-14 w-full max-w-[19rem] items-start justify-center text-pretty font-mono text-sm leading-relaxed text-gray-300 sm:max-w-[32rem] sm:text-base md:max-w-none md:text-xl lg:h-10 lg:min-h-0 lg:items-center lg:justify-start lg:text-xl xl:text-2xl"
+          className="flex min-h-12 w-full max-w-[19rem] items-start justify-center text-pretty font-mono text-sm leading-relaxed text-gray-300 sm:min-h-14 sm:max-w-[32rem] sm:text-base md:max-w-none md:text-xl lg:h-10 lg:min-h-0 lg:items-center lg:justify-start lg:text-xl xl:text-2xl"
         >
           <span className="mr-2 flex-shrink-0 font-bold text-gray-300 sm:mr-3">{'>'}</span>
           <span className="min-w-0 break-words">
@@ -71,7 +71,7 @@ export default function Hero() {
       </div>
 
       {/* RIGHT SIDE: Massive Bot Image */}
-      <div className="relative z-20 mt-0 flex h-[clamp(310px,43svh,430px)] w-full justify-center pointer-events-none sm:h-[48svh] md:h-[56svh] lg:mt-0 lg:h-[80vh] lg:max-h-[950px] lg:w-[40%] lg:justify-end">
+      <div className="relative z-20 mt-3 flex h-[clamp(330px,45svh,440px)] w-full justify-center pointer-events-none sm:mt-0 sm:h-[48svh] md:h-[56svh] lg:mt-0 lg:h-[80vh] lg:max-h-[950px] lg:w-[40%] lg:justify-end">
         <motion.div
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}

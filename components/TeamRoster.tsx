@@ -62,46 +62,6 @@ const BOARD = Array.from({ length: 24 }).map((_, i) => ({
 }));
 
 // ----------------------------------------------------------------------
-// SCAN LINE — runs once on reveal, loops on hover
-// ----------------------------------------------------------------------
-function ScanLine({ active }: { active: boolean }) {
-  return (
-    <div
-      className="absolute inset-0 pointer-events-none overflow-hidden z-20"
-      style={{ opacity: active ? 1 : 0, transition: 'opacity 0.2s' }}
-    >
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          height: '2px',
-          background: 'rgba(79,174,243,0.55)',
-          animation: active ? 'scanMove 1.6s linear infinite' : 'none',
-        }}
-      />
-      <style>{`
-        @keyframes scanMove {
-          0%   { top: -2px; }
-          100% { top: 100%; }
-        }
-        @keyframes bootFadeUp {
-          0%   { opacity: 0; transform: translateY(12px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes glitch {
-          0%,100% { clip-path: inset(0 0 100% 0); opacity: 0; }
-          10%     { clip-path: inset(20% 0 60% 0); opacity: 0.7; }
-          20%     { clip-path: inset(50% 0 30% 0); opacity: 0.5; }
-          30%     { clip-path: inset(80% 0 5% 0);  opacity: 0.8; }
-          40%     { clip-path: inset(0 0 0 0);      opacity: 1; }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-// ----------------------------------------------------------------------
 // PROFILE CARD
 // ----------------------------------------------------------------------
 interface PersonData {
@@ -115,29 +75,14 @@ interface PersonData {
 function ProfileCard({
   person,
   revealed,
-  index,
+  interactive = true,
 }: {
   person: PersonData;
   revealed: boolean;
-  index: number;
+  interactive?: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
-  const [bootDone, setBootDone] = useState(false);
-  const [scanning, setScanning] = useState(false);
-
-  // On reveal: play scan once, then settle
-  useEffect(() => {
-    if (!revealed) return;
-    const start = setTimeout(() => setScanning(true), 0);
-    const t = setTimeout(() => {
-      setScanning(false);
-      setBootDone(true);
-    }, 900);
-    return () => {
-      clearTimeout(start);
-      clearTimeout(t);
-    };
-  }, [revealed]);
+  const isActive = interactive && hovered;
 
   return (
     <div
@@ -145,19 +90,23 @@ function ProfileCard({
       style={{
         opacity: revealed ? 1 : 0,
         transform: revealed ? 'translateY(0)' : 'translateY(16px)',
-        transition: `opacity 0.5s ease ${index * 60}ms, transform 0.5s ease ${index * 60}ms`,
+        transition: 'opacity 0.5s ease, transform 0.5s ease',
       }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => {
+        if (interactive) setHovered(true);
+      }}
+      onMouseLeave={() => {
+        if (interactive) setHovered(false);
+      }}
     >
       <div
         className="team-card-inner relative h-full overflow-hidden rounded-[4px] flex flex-col"
         style={{
           padding: 'clamp(12px, 1.2vw, 16px)',
           background: '#0a0a0a',
-          border: hovered ? '1px solid rgba(79,174,243,0.45)' : '1px solid rgba(255,255,255,0.08)',
-          boxShadow: hovered ? '0 0 25px rgba(79,174,243,0.15)' : 'none',
-          transform: hovered ? 'translateY(-6px)' : 'translateY(0)',
+          border: isActive ? '1px solid rgba(79,174,243,0.45)' : '1px solid rgba(255,255,255,0.08)',
+          boxShadow: isActive ? '0 0 25px rgba(79,174,243,0.15)' : 'none',
+          transform: isActive ? 'translateY(-6px)' : 'translateY(0)',
           transition: 'all 0.4s ease',
         }}
       >
@@ -188,11 +137,13 @@ function ProfileCard({
               ...(c.left   !== undefined ? { left:   c.left }   : {}),
               ...(c.right  !== undefined ? { right:  c.right }  : {}),
               width: 14, height: 14,
-              borderTop:    c.borderTop    ? `1.5px solid ${hovered ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
-              borderBottom: c.borderBottom ? `1.5px solid ${hovered ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
-              borderLeft:   c.borderLeft   ? `1.5px solid ${hovered ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
-              borderRight:  c.borderRight  ? `1.5px solid ${hovered ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
-              filter: hovered ? 'drop-shadow(0 0 6px rgba(79,174,243,0.9))' : 'drop-shadow(0 0 4px rgba(79,174,243,0.5))',
+              borderTop:    c.borderTop    ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              borderBottom: c.borderBottom ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              borderLeft:   c.borderLeft   ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              borderRight:  c.borderRight  ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              opacity: isActive ? 1 : 0,
+              transform: isActive ? 'scale(1)' : 'scale(0.82)',
+              filter: isActive ? 'drop-shadow(0 0 6px rgba(79,174,243,0.9))' : 'drop-shadow(0 0 4px rgba(79,174,243,0.5))',
               transition: 'all 0.3s ease',
             }}
           />
@@ -200,8 +151,8 @@ function ProfileCard({
 
         {/* Cyan accent lines */}
         <div className="absolute inset-0 pointer-events-none z-10">
-          <span style={{ position: 'absolute', top: '-1px', left: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.6)' }} />
-          <span style={{ position: 'absolute', bottom: '-1px', right: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.35)' }} />
+          <span style={{ position: 'absolute', top: '-1px', left: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.6)', opacity: isActive ? 1 : 0, transition: 'opacity 0.3s ease' }} />
+          <span style={{ position: 'absolute', bottom: '-1px', right: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.35)', opacity: isActive ? 1 : 0, transition: 'opacity 0.3s ease' }} />
         </div>
 
         {/* Image area */}
@@ -209,8 +160,8 @@ function ProfileCard({
           className="team-image relative w-full mb-4 overflow-hidden rounded-[2px] bg-[#111]"
           style={{
             aspectRatio: '4/5',
-            border: hovered ? '1px solid rgba(79,174,243,0.5)' : '1px solid rgba(255,255,255,0.1)',
-            boxShadow: hovered ? '0 0 15px rgba(79,174,243,0.2)' : 'none',
+            border: isActive ? '1px solid rgba(79,174,243,0.5)' : '1px solid rgba(255,255,255,0.1)',
+            boxShadow: isActive ? '0 0 15px rgba(79,174,243,0.2)' : 'none',
             transition: 'all 0.4s ease',
           }}
         >
@@ -218,7 +169,7 @@ function ProfileCard({
           <div
             style={{
               position: 'absolute', inset: 0,
-              opacity: hovered ? 0 : 1,
+              opacity: isActive ? 0 : 1,
               transition: 'opacity 0.4s ease',
             }}
           >
@@ -228,7 +179,7 @@ function ProfileCard({
               style={{
                 width: '100%', height: '100%', objectFit: 'cover',
                 filter: 'grayscale(1)',
-                opacity: bootDone ? 0.85 : 0,
+                opacity: 0.85,
                 transition: 'opacity 0.6s ease',
               }}
             />
@@ -238,7 +189,7 @@ function ProfileCard({
           <div
             style={{
               position: 'absolute', inset: 0,
-              opacity: hovered ? 1 : 0,
+              opacity: isActive ? 1 : 0,
               transition: 'opacity 0.4s ease',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               background: '#0d0d0d',
@@ -250,14 +201,11 @@ function ProfileCard({
               style={{
                 width: '100%', height: '100%', objectFit: 'cover',
                 filter: 'grayscale(1) brightness(0.9)',
-                transform: hovered ? 'scale(1.0)' : 'scale(1.08)',
+                transform: isActive ? 'scale(1.0)' : 'scale(1.08)',
                 transition: 'transform 0.5s ease',
               }}
             />
           </div>
-
-          {/* Scan line — plays on boot reveal OR on hover */}
-          <ScanLine active={scanning || hovered} />
 
           {/* HUD label — visible on hover */}
           <div
@@ -266,7 +214,7 @@ function ProfileCard({
               fontSize: '8px', letterSpacing: '0.12em',
               color: 'rgba(79,174,243,0.9)', fontFamily: 'monospace',
               textTransform: 'uppercase',
-              opacity: hovered ? 1 : 0,
+              opacity: isActive ? 1 : 0,
               transition: 'opacity 0.3s ease',
               zIndex: 30,
             }}
@@ -274,17 +222,11 @@ function ProfileCard({
             IDENTIFYING...
           </div>
 
-          {/* Boot glitch overlay — plays once on reveal */}
-          {!bootDone && revealed && (
-            <div
-              style={{
-                position: 'absolute', inset: 0, zIndex: 25,
-                background: 'rgba(79,174,243,0.04)',
-                animation: 'glitch 0.9s steps(1) forwards',
-                pointerEvents: 'none',
-              }}
-            />
-          )}
+          {/* Scan sweep — visible on hover */}
+          <div
+            className={isActive ? 'team-scan-line is-active' : 'team-scan-line'}
+            aria-hidden="true"
+          />
         </div>
 
         {/* Name & role */}
@@ -296,8 +238,8 @@ function ProfileCard({
               fontSize: 'clamp(12px, 1.1vw, 15px)',
               letterSpacing: '0.06em',
               lineHeight: 1.15,
-              color: hovered ? '#4FAEF3' : '#ffffff',
-              textShadow: hovered ? '0 0 10px rgba(79,174,243,0.6)' : 'none',
+              color: isActive ? '#4FAEF3' : '#ffffff',
+              textShadow: isActive ? '0 0 10px rgba(79,174,243,0.6)' : 'none',
               transition: 'all 0.4s ease',
             }}
           >
@@ -319,8 +261,11 @@ function ProfileCard({
             style={{
               height: '1px', margin: '0 6px',
               width: 'calc(100% - 12px)',
-              background: 'linear-gradient(90deg, transparent, rgba(79,174,243,0.4) 30%, rgba(79,174,243,0.4) 70%, transparent)',
-              boxShadow: '0 0 10px rgba(79,174,243,0.2)',
+              background: isActive
+                ? 'linear-gradient(90deg, transparent, rgba(79,174,243,0.5) 30%, rgba(79,174,243,0.5) 70%, transparent)'
+                : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12) 30%, rgba(255,255,255,0.12) 70%, transparent)',
+              boxShadow: isActive ? '0 0 10px rgba(79,174,243,0.2)' : 'none',
+              transition: 'all 0.3s ease',
             }}
           />
         </div>
@@ -330,17 +275,18 @@ function ProfileCard({
 }
 
 // ----------------------------------------------------------------------
-// GRID WITH SCROLL-TRIGGERED SEQUENTIAL REVEAL
+// GRID WITH SCROLL-TRIGGERED REVEAL (ALL AT ONCE)
 // ----------------------------------------------------------------------
 function RevealGrid({
   people,
   columns,
+  interactive = true,
 }: {
   people: PersonData[];
   columns: string;
+  interactive?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [revealedCount, setRevealedCount] = useState(0);
   const [triggered, setTriggered] = useState(false);
 
   useEffect(() => {
@@ -359,22 +305,14 @@ function RevealGrid({
     return () => observer.disconnect();
   }, [triggered]);
 
-  useEffect(() => {
-    if (!triggered) return;
-    if (revealedCount >= people.length) return;
-    // Stagger: reveal 1 card every 120ms
-    const t = setTimeout(() => setRevealedCount((n) => n + 1), 120);
-    return () => clearTimeout(t);
-  }, [triggered, revealedCount, people.length]);
-
   return (
     <div ref={ref} className={`w-full grid ${columns} gap-3 md:gap-6`}>
-      {people.map((person, i) => (
+      {people.map((person) => (
         <ProfileCard
           key={person.id}
           person={person}
-          revealed={i < revealedCount}
-          index={i}
+          revealed={triggered}
+          interactive={interactive}
         />
       ))}
     </div>
@@ -417,6 +355,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
           <RevealGrid
             people={FACULTY}
             columns="grid-cols-2 lg:grid-cols-4"
+            interactive={false}
           />
         </div>
 
@@ -440,6 +379,52 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
 
       </div>
       <style jsx>{`
+        :global(.team-scan-line) {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          height: 2px;
+          z-index: 25;
+          opacity: 0;
+          pointer-events: none;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(79, 174, 243, 0.25) 18%,
+            rgba(79, 174, 243, 0.9) 50%,
+            rgba(79, 174, 243, 0.25) 82%,
+            transparent
+          );
+          box-shadow:
+            0 0 12px rgba(79, 174, 243, 0.55),
+            0 10px 26px rgba(79, 174, 243, 0.14);
+        }
+        :global(.team-scan-line::after) {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 2px;
+          height: 42px;
+          background: linear-gradient(
+            to bottom,
+            rgba(79, 174, 243, 0.16),
+            rgba(79, 174, 243, 0)
+          );
+        }
+        :global(.team-scan-line.is-active) {
+          opacity: 1;
+          animation: team-scan-sweep 1.55s ease-in-out infinite alternate;
+        }
+        @keyframes team-scan-sweep {
+          from {
+            transform: translateY(8px);
+          }
+          to {
+            transform: translateY(calc(100% + 230px));
+          }
+        }
         @media (max-width: 640px) {
           :global(.team-card-inner) {
             padding: 10px !important;

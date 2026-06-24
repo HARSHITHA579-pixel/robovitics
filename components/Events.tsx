@@ -20,9 +20,9 @@ type DeckItem = {
 type Mode = "events" | "outreach";
 
 const events: DeckItem[] = [
-  { id: "MODULE_01", name: "ROBOWARS", type: "COMBAT ROBOTICS", date: "FLAGSHIP · GRAVITAS 2025", desc: "3 weight classes. ₹3L prize pool. One of India's largest combat arenas — Team Orcus fought across all categories.", status: "FLAGSHIP", img: "/robowars.png", details: "Held 26–28 Sept 2025 and sponsored by Siemens and Analog Devices, RoboWars brought elite teams from across the country into one of India's largest and safest combat robotics arenas. Matches spanned 8kg, 15kg, and 60kg weight categories, testing mechanical design, electronics, and strategy under pressure. Our own Team Orcus competed in every category. Winners: Team Dot Robotics (8kg), Team Black Diamonds (15kg), and Team Shadow (60kg)." },
-  { id: "MODULE_02", name: "HANDS ON ROBOTICS", type: "WORKSHOP · HARDWARE + SOFTWARE", date: "PRE-GRAVITAS 2025 · 240+ ATTENDEES", desc: "Two days, zero prior experience needed. Sensors, microcontrollers, MicroPython, and live WebSocket-controlled robots.", status: "OPEN", img: "/hands-on.png", details: "Sponsored by Module143 and run on 22–23 Sept 2025, this two-day workshop took ~240 students from zero to building functional robotic systems. Sessions covered sensors, microcontrollers, and IoT-enabled devices, alongside MicroPython for efficient firmware. Participants also built web-based control systems using real-time communication and WebSocket integration — bridging embedded hardware, firmware, and browser-based control in one working pipeline." },
   { id: "MODULE_03", name: "MACHINE DESIGN", type: "FUSION 360 WORKSHOP", date: "PRE-GRAVITAS 2025 · 150 ATTENDEES", desc: "Hands-on CAD across modeling, joints, rendering, and simulation — plus real-time physics in PyBullet.", status: "OPEN", img: "/equinox.png", details: "A two-day deep dive into Fusion 360 held on 23–24 Sept 2025, covering 2D/3D modeling, joint assembly, animation, rendering, and simulation. Participants were introduced to PyBullet, a real-time physics engine, to test and validate their digital models against motion, collisions, and constraints. Practical, beyond-curriculum design projects sharpened both technical skill and industry readiness." },
+  { id: "MODULE_02", name: "HANDS ON ROBOTICS", type: "WORKSHOP · HARDWARE + SOFTWARE", date: "PRE-GRAVITAS 2025 · 240+ ATTENDEES", desc: "Two days, zero prior experience needed. Sensors, microcontrollers, MicroPython, and live WebSocket-controlled robots.", status: "OPEN", img: "/hands-on.png", details: "Sponsored by Module143 and run on 22–23 Sept 2025, this two-day workshop took ~240 students from zero to building functional robotic systems. Sessions covered sensors, microcontrollers, and IoT-enabled devices, alongside MicroPython for efficient firmware. Participants also built web-based control systems using real-time communication and WebSocket integration — bridging embedded hardware, firmware, and browser-based control in one working pipeline." },
+  { id: "MODULE_01", name: "ROBOWARS", type: "COMBAT ROBOTICS", date: "FLAGSHIP · GRAVITAS 2025", desc: "3 weight classes. ₹3L prize pool. One of India's largest combat arenas — Team Orcus fought across all categories.", status: "FLAGSHIP", img: "/robowars.png", details: "Held 26–28 Sept 2025 and sponsored by Siemens and Analog Devices, RoboWars brought elite teams from across the country into one of India's largest and safest combat robotics arenas. Matches spanned 8kg, 15kg, and 60kg weight categories, testing mechanical design, electronics, and strategy under pressure. Our own Team Orcus competed in every category. Winners: Team Dot Robotics (8kg), Team Black Diamonds (15kg), and Team Shadow (60kg)." },
   { id: "MODULE_04", name: "VORTEX 360", type: "72H CAD DESIGN-A-THON", date: "POWERED BY AUTODESK · FEB 2025", desc: "~1,300 participants. 3 days, real-world problem tracks, ₹1L prize pool, and direct access to Autodesk experts.", status: "FLAGSHIP", img: "/vortex.png", details: "A 72-hour CAD modeling design-a-thon sponsored by Autodesk, drawing nearly 1,300 students in teams of 3–5. Day 1 focused on problem understanding and brainstorming, Day 2 on refining designs and prototyping in Fusion 360, and Day 3 on final pitches before judges and industry experts. Beyond the ₹1L prize pool, the event offered direct networking with Autodesk professionals and industry leaders." },
   { id: "MODULE_05", name: "CRUISE THE WEB3VERSE", type: "WEB3 EVENT", date: "2 DAYS · ENDED IN A LIVE AUCTION", desc: "A two-day dive into Web3 concepts and tooling, closing out with a live auction finale.", status: "UPCOMING", img: "/equinox.png", details: "A two-day Web3-focused event exploring decentralized concepts and tooling, designed for curious builders and newcomers alike. The event culminated in a live auction, turning theory into a tangible, competitive finale that brought the whole cohort together for one last high-energy session." },
 ];
@@ -73,14 +73,18 @@ export default function Events() {
   const [isClosing, setIsClosing] = useState(false);
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
   const [mobileIndex, setMobileIndex] = useState(0);
+  const [mobileSlideDir, setMobileSlideDir] = useState<'next' | 'prev'>('next');
 
   // Refs for tracking animation state
   const flippedRef = useRef<boolean[]>([]);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const mobileCarouselRef = useRef<HTMLDivElement>(null);
   const mobileTouchStartX = useRef<number | null>(null);
   const mobileDidSwipe = useRef(false);
   const prevEventId = useRef<string | null>(null);
+  const prevMobileEventId = useRef<string | null>(null);
   const isSlideAnimating = useRef(false);
+  const isMobileSlideAnimating = useRef(false);
   const activeList = mode === "events" ? events : outreach;
   
   const baseShadow = "inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.75), 0 0 0 1px rgba(0,0,0,0.75), 8px 10px 20px rgba(0,0,0,0.55)";
@@ -182,10 +186,18 @@ export default function Events() {
   };
 
   const goMobileCard = (direction: 'next' | 'prev') => {
+    if (isMobileSlideAnimating.current) return;
+    setMobileSlideDir(direction);
     setMobileIndex((current) => {
       const delta = direction === 'next' ? 1 : -1;
       return (current + delta + activeList.length) % activeList.length;
     });
+  };
+
+  const goMobileIndex = (nextIndex: number) => {
+    if (isMobileSlideAnimating.current || nextIndex === mobileIndex) return;
+    setMobileSlideDir(nextIndex > mobileIndex ? 'next' : 'prev');
+    setMobileIndex(nextIndex);
   };
 
   const handleMobileTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
@@ -235,6 +247,45 @@ export default function Events() {
     }
     prevEventId.current = incomingId;
   }, [selectedEvent, slideDir]);
+
+  useEffect(() => {
+    if (!mobileCarouselRef.current) return;
+    const incomingId = activeList[mobileIndex]?.id;
+    if (!incomingId) return;
+
+    const outgoingId = prevMobileEventId.current;
+    const slides = Array.from(mobileCarouselRef.current.querySelectorAll('.ev-mobile-slide-item')) as HTMLElement[];
+    const incomingNode = slides.find(el => el.dataset.id === incomingId);
+    const outgoingNode = slides.find(el => el.dataset.id === outgoingId);
+
+    if (!outgoingId || outgoingId === incomingId || !incomingNode || !outgoingNode) {
+      slides.forEach(slide => {
+        if (slide.dataset.id === incomingId) gsap.set(slide, { x: "0%", autoAlpha: 1 });
+        else gsap.set(slide, { autoAlpha: 0 });
+      });
+      prevMobileEventId.current = incomingId;
+      return;
+    }
+
+    isMobileSlideAnimating.current = true;
+    const xInStart = mobileSlideDir === 'next' ? "100%" : "-100%";
+    const xOutEnd = mobileSlideDir === 'next' ? "-100%" : "100%";
+
+    gsap.set(incomingNode, { x: xInStart, autoAlpha: 1 });
+    gsap.to(outgoingNode, {
+      x: xOutEnd,
+      duration: 0.6,
+      ease: "power3.inOut",
+      onComplete: () => gsap.set(outgoingNode, { autoAlpha: 0 }),
+    });
+    gsap.to(incomingNode, {
+      x: "0%",
+      duration: 0.6,
+      ease: "power3.inOut",
+      onComplete: () => { isMobileSlideAnimating.current = false; },
+    });
+    prevMobileEventId.current = incomingId;
+  }, [activeList, mobileIndex, mobileSlideDir]);
 
   // ── Main Background Animations ─────────────────────────────────────────
   useEffect(() => {
@@ -496,7 +547,7 @@ export default function Events() {
         if (mobileDidSwipe.current) return;
         setSelectedEvent(ev);
       }}
-      className="group relative w-full overflow-hidden rounded-[4px] border border-white/10 bg-[#0a0a0a] text-left shadow-[0_12px_34px_rgba(0,0,0,0.38)]"
+      className="group relative h-full w-full overflow-hidden rounded-[4px] border border-white/10 bg-[#0a0a0a] text-left shadow-[0_12px_34px_rgba(0,0,0,0.38)]"
     >
       <div
         className="absolute inset-0 pointer-events-none"
@@ -505,11 +556,6 @@ export default function Events() {
           backgroundSize: '18px 18px, 18px 18px, auto, auto',
         }}
       />
-      <span className="absolute left-2 top-2 z-10 h-4 w-4 border-l border-t border-[#4FAEF3] shadow-[0_0_8px_rgba(79,174,243,0.55)]" />
-      <span className="absolute right-2 top-2 z-10 h-4 w-4 border-r border-t border-[#4FAEF3] shadow-[0_0_8px_rgba(79,174,243,0.55)]" />
-      <span className="absolute bottom-2 left-2 z-10 h-4 w-4 border-b border-l border-[#4FAEF3] shadow-[0_0_8px_rgba(79,174,243,0.55)]" />
-      <span className="absolute bottom-2 right-2 z-10 h-4 w-4 border-b border-r border-[#4FAEF3] shadow-[0_0_8px_rgba(79,174,243,0.55)]" />
-
       <div className="relative z-10">
         <div
           className="relative h-28 overflow-hidden border-b border-[#4FAEF3]/20 bg-neutral-900"
@@ -523,9 +569,6 @@ export default function Events() {
         >
           <img src={ev.img} alt={ev.name} className="h-full w-full object-cover opacity-80 transition duration-500 group-hover:scale-105" onError={(e) => { e.currentTarget.style.display = "none"; }} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
-          <span className="absolute left-4 top-4 border border-[#4FAEF3]/40 bg-black/45 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#4FAEF3] backdrop-blur-sm">
-            {ev.status}
-          </span>
         </div>
 
         <div className="p-4">
@@ -543,7 +586,7 @@ export default function Events() {
           <p className="line-clamp-2 font-mono text-[11px] leading-relaxed text-white/75">
             {ev.desc}
           </p>
-          <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/10 pt-3">
+          <div className="mt-3 flex items-center justify-between gap-3 border-t border-white/10 pt-2.5">
             <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-white/45">{ev.date}</span>
             <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.16em] text-[#4FAEF3]">Details</span>
           </div>
@@ -579,6 +622,8 @@ export default function Events() {
             onClick={() => {
               setMode("events");
               setMobileIndex(0);
+              isMobileSlideAnimating.current = false;
+              prevMobileEventId.current = null;
             }}
             className="flex-1 rounded-[3px] px-3 py-2 transition-colors"
             style={{ color: mode === "events" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "events" ? "#4FAEF3" : "transparent" }}
@@ -590,6 +635,8 @@ export default function Events() {
             onClick={() => {
               setMode("outreach");
               setMobileIndex(0);
+              isMobileSlideAnimating.current = false;
+              prevMobileEventId.current = null;
             }}
             className="flex-1 rounded-[3px] px-3 py-2 transition-colors"
             style={{ color: mode === "outreach" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "outreach" ? "#4FAEF3" : "transparent" }}
@@ -620,8 +667,16 @@ export default function Events() {
               </svg>
             </button>
 
-            <div className="min-w-0 flex-1">
-              {renderMobileCard(activeList[mobileIndex], mode === "outreach")}
+            <div ref={mobileCarouselRef} className="relative h-[345px] min-w-0 flex-1 overflow-hidden">
+              {activeList.map((ev) => (
+                <div
+                  key={`mobile-slide-${ev.id}`}
+                  data-id={ev.id}
+                  className="ev-mobile-slide-item invisible absolute inset-0"
+                >
+                  {renderMobileCard(ev, mode === "outreach")}
+                </div>
+              ))}
             </div>
 
             <button
@@ -642,7 +697,7 @@ export default function Events() {
                 key={`dot-${ev.id}`}
                 type="button"
                 aria-label={`Show ${ev.name}`}
-                onClick={() => setMobileIndex(index)}
+                onClick={() => goMobileIndex(index)}
                 className={`h-1.5 rounded-full transition-all ${
                   index === mobileIndex ? 'w-7 bg-[#4FAEF3]' : 'w-1.5 bg-white/25'
                 }`}

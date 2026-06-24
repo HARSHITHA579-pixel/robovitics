@@ -76,11 +76,14 @@ export default function Page() {
       <div className="relative z-20 flex min-h-svh flex-col justify-between overflow-x-clip lg:h-screen">
         <Hero />
         <footer className="relative z-10 flex w-full flex-col items-center justify-between gap-2 px-5 pb-5 pt-2 text-center font-mono text-[10px] leading-relaxed text-gray-500 sm:px-8 sm:text-xs md:flex-row md:items-end md:px-12 md:py-8 md:text-left md:text-sm lg:py-10">
-          <div>
+          <p className="max-w-[20rem] md:hidden">
+            Established in <span className="text-gray-300">2010</span>. Evolving ever since. We&apos;re the <span className="text-gray-300">engineers</span> that actually build.
+          </p>
+          <div className="hidden md:block">
             <p>Established in <span className="text-gray-300">2010</span>.</p>
             <p>Evolving ever since.</p>
           </div>
-          <div className="md:text-right">
+          <div className="hidden md:block md:text-right">
             <p>We&apos;re not just another <span className="text-gray-300">tech chapter</span>.</p>
             <p>We&apos;re the <span className="text-gray-300">engineers</span> that actually build.</p>
           </div>

@@ -123,6 +123,9 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
+  // Derived state to determine if user has scrolled
+  const isScrolled = heroChromeOpacity < 1;
+
   const heroChromeStyle = {
     opacity: heroChromeOpacity,
     transform: `translateY(${(1 - heroChromeOpacity) * -10}px)`,
@@ -137,21 +140,30 @@ export default function Navbar() {
     <header className="fixed left-0 right-0 top-0 z-[80] px-3 pt-3 sm:px-6 md:px-10">
       <div
         style={navShellStyle}
-        className="relative mx-auto grid grid-cols-[1fr_auto] items-center gap-3 overflow-hidden border border-white/[0.14] bg-black/65 px-4 py-2.5 text-white shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] backdrop-blur-2xl backdrop-saturate-150 transition-[max-width] duration-300 ease-out md:grid-cols-[1fr_auto_1fr]"
+        className={`relative ml-auto grid w-fit grid-cols-[auto] items-center gap-3 overflow-hidden border text-white transition-[max-width,background-color,border-color,box-shadow,padding,transform] duration-300 ease-out md:mx-auto md:backdrop-blur-2xl md:backdrop-saturate-150 md:border-white/[0.14] md:bg-black/65 md:shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] ${
+          isScrolled
+            ? 'max-md:mr-0 max-md:w-fit max-md:border-transparent max-md:bg-transparent max-md:p-0 max-md:shadow-none md:w-fit md:grid-cols-[auto] md:px-3 md:py-2'
+            : 'border-transparent bg-transparent p-0 shadow-none md:w-auto md:grid-cols-[1fr_auto_1fr] md:px-4 md:py-2.5'
+        }`}
       >
         {/* Corner accents — cyan HUD style */}
-        <span className="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l border-t border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
-        <span className="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r border-t border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
-        <span className="pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b border-l border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
-        <span className="pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b border-r border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
-        <span className="pointer-events-none absolute left-[22%] top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-[#4FAEF3]/25 to-transparent lg:block" />
-        <span className="pointer-events-none absolute right-[22%] top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-[#4FAEF3]/25 to-transparent lg:block" />
+        <span className="max-md:hidden pointer-events-none absolute left-0 top-0 h-3 w-3 border-l border-t border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
+        <span className="max-md:hidden pointer-events-none absolute right-0 top-0 h-3 w-3 border-r border-t border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
+        <span className="max-md:hidden pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b border-l border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
+        <span className="max-md:hidden pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b border-r border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
+        
+        {!isScrolled && (
+          <>
+            <span className="pointer-events-none absolute left-[22%] top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-[#4FAEF3]/25 to-transparent lg:block" />
+            <span className="pointer-events-none absolute right-[22%] top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-[#4FAEF3]/25 to-transparent lg:block" />
+          </>
+        )}
 
         <Link
           href="/"
           onClick={() => setMenuOpen(false)}
           style={heroChromeStyle}
-          className="hidden min-w-0 items-center justify-self-start transition-[opacity,transform] duration-200 md:flex"
+          className={`hidden min-w-0 items-center justify-self-start transition-[opacity,transform] duration-200 ${isScrolled ? 'md:hidden' : 'md:flex'}`}
         >
           <Image
             src="/robovitics-logo.png"
@@ -162,12 +174,6 @@ export default function Navbar() {
             priority
           />
         </Link>
-
-        {/* Mobile label */}
-        <span className="flex items-center gap-2 pl-1 font-mono text-[9px] uppercase tracking-[0.22em] text-white/32 md:hidden">
-          <span className="h-1 w-1 rounded-full border border-[#4FAEF3]/60" />
-          NAV
-        </span>
 
         {/* Center nav links */}
         <nav className="relative hidden items-center gap-0.5 justify-self-center font-mono text-[10px] uppercase tracking-[0.2em] text-white/90 md:flex">
@@ -227,18 +233,18 @@ export default function Navbar() {
         <Link
           href="#about"
           style={heroChromeStyle}
-          className="hidden justify-self-end border border-white/16 bg-white/[0.04] px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/90 transition-all duration-300 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] sm:inline-flex"
+          className={`hidden justify-self-end border border-white/16 bg-white/[0.04] px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/90 transition-all duration-300 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] ${isScrolled ? 'sm:hidden' : 'sm:inline-flex'}`}
         >
           Join the Club
         </Link>
 
-        {/* Mobile menu toggle */}
+        {/* Mobile menu toggle with subtle square background */}
         <button
           type="button"
           aria-label="Toggle navigation menu"
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((open) => !open)}
-          className="flex h-8 w-8 shrink-0 items-center justify-center justify-self-end border border-white/12 bg-white/[0.025] text-white/80 transition-colors hover:bg-white/[0.07] md:hidden"
+          className="flex h-9 w-9 shrink-0 items-center justify-center justify-self-end border border-white/12 bg-white/[0.03] text-white/80 transition-colors hover:bg-white/[0.08] hover:text-white md:hidden"
         >
           <span className="sr-only">Menu</span>
           <span className="flex h-3.5 w-4 flex-col justify-between">
