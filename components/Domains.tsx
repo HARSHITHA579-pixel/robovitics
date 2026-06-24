@@ -49,24 +49,7 @@ const DOMAINS = [
     title: 'ELECTRICAL',
     sub: 'Circuits & Power',
     icon: (
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)] text-white/90 group-hover:text-white">
-        {/* Microchip */}
-        <rect x="12" y="12" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="1.5" fill="rgba(79,174,243,0.05)" />
-        {/* Power Symbol in chip */}
-        <path d="M18 14V17M16 16C15 17 15 19 16 20C17 21 19 21 20 20C21 19 21 17 20 16" stroke="#4FAEF3" strokeWidth="1.5" strokeLinecap="round" className="opacity-80 group-hover:opacity-100" />
-        {/* Circuit traces */}
-        <path d="M12 14H8L6 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M12 22H8L6 24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M24 14H28L30 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M24 22H28L30 24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M14 12V8L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M22 12V8L24 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M14 24V28L12 30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M22 24V28L24 30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        {/* Dots */}
-        <circle cx="6" cy="12" r="1.5" fill="#4FAEF3" className="opacity-60 group-hover:opacity-100" />
-        <circle cx="30" cy="24" r="1.5" fill="#4FAEF3" className="opacity-60 group-hover:opacity-100" />
-      </svg>
+      <img src="/electrical.svg" alt="Electrical" width={36} height={36} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
     ),
   },
   {
@@ -74,22 +57,7 @@ const DOMAINS = [
     title: 'MECHANICAL',
     sub: 'Design & Fabrication',
     icon: (
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)] text-white/90 group-hover:text-white">
-        {/* Gear */}
-        <circle cx="14" cy="14" r="6" stroke="currentColor" strokeWidth="1.5" fill="rgba(79,174,243,0.05)" />
-        <circle cx="14" cy="14" r="2" stroke="#4FAEF3" strokeWidth="1.5" className="opacity-80 group-hover:opacity-100 transition-opacity" />
-        {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => {
-          const r = (deg * Math.PI) / 180;
-          const x1 = 14 + 6 * Math.cos(r), y1 = 14 + 6 * Math.sin(r);
-          const x2 = 14 + 9 * Math.cos(r), y2 = 14 + 9 * Math.sin(r);
-          return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />;
-        })}
-        {/* Wrench */}
-        <path d="M18 18L28 28C29.1 29.1 31 29.1 31 28C32.1 26.9 32.1 25 31 24L21 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M21 14C23 12 23 9 21 7C19 5 16 5 14 7L17 10L14 13L11 10C9 12 9 15 11 17C13 19 16 19 18 17L21 14Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-        {/* Highlight */}
-        <line x1="22" y1="22" x2="26" y2="26" stroke="#4FAEF3" strokeWidth="1.5" strokeLinecap="round" className="opacity-60 group-hover:opacity-100" />
-      </svg>
+      <img src="/mech.svg" alt="Mechanical" width={36} height={36} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
     ),
   },
   {
@@ -97,23 +65,7 @@ const DOMAINS = [
     title: 'ML & AI',
     sub: 'Machine Learning',
     icon: (
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)] text-white/90 group-hover:text-white">
-        {/* Brain side */}
-        <path d="M16 6C10 6 6 10 6 16C6 18 7 19 8 20C7 22 8 26 12 28C14 29 16 28 18 28V6H16Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" fill="rgba(79,174,243,0.05)" />
-        {/* Network nodes inside brain */}
-        <circle cx="10" cy="14" r="1.5" fill="#4FAEF3" className="opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
-        <circle cx="14" cy="10" r="1.5" fill="#4FAEF3" className="opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
-        <circle cx="14" cy="18" r="1.5" fill="#4FAEF3" className="opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
-        <line x1="10" y1="14" x2="14" y2="10" stroke="#4FAEF3" strokeWidth="1" className="opacity-40" />
-        <line x1="10" y1="14" x2="14" y2="18" stroke="#4FAEF3" strokeWidth="1" className="opacity-40" />
-        {/* Robot face side */}
-        <path d="M18 6H24C28 6 30 10 30 16V22C30 26 26 28 22 28H18V6Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-        {/* Robot eye */}
-        <circle cx="24" cy="16" r="3" stroke="currentColor" strokeWidth="1.5" />
-        <circle cx="24" cy="16" r="1" fill="#4FAEF3" className="opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
-        {/* Robot mouth/details */}
-        <line x1="22" y1="24" x2="26" y2="24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      </svg>
+      <img src="/aiml.svg" alt="ML & AI" width={36} height={36} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
     ),
   },
   {
@@ -121,17 +73,7 @@ const DOMAINS = [
     title: 'CYBERSECURITY',
     sub: 'Systems & Defense',
     icon: (
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)] text-white/90 group-hover:text-white">
-        {/* Shield */}
-        <path d="M18 4L6 9V17C6 24 11 30 18 32C25 30 30 24 30 17V9L18 4Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" fill="rgba(79,174,243,0.05)" />
-        {/* Padlock Body */}
-        <rect x="14" y="16" width="8" height="8" rx="1" stroke="currentColor" strokeWidth="1.5" />
-        {/* Padlock Shackle */}
-        <path d="M14 16V14C14 11.7909 15.7909 10 18 10C20.2091 10 22 11.7909 22 14V16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        {/* Keyhole */}
-        <circle cx="18" cy="19" r="1.5" fill="#4FAEF3" className="opacity-80 group-hover:opacity-100" />
-        <line x1="18" y1="20" x2="18" y2="22" stroke="#4FAEF3" strokeWidth="1.5" strokeLinecap="round" className="opacity-80 group-hover:opacity-100" />
-      </svg>
+      <img src="/cybersec.svg" alt="Cybersecurity" width={36} height={36} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
     ),
   },
   {
@@ -139,20 +81,7 @@ const DOMAINS = [
     title: 'WEB DEV',
     sub: 'Frontend & Backend',
     icon: (
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)] text-white/90 group-hover:text-white">
-        {/* Monitor */}
-        <rect x="4" y="6" width="28" height="18" rx="2" stroke="currentColor" strokeWidth="1.5" fill="rgba(79,174,243,0.05)" />
-        <line x1="4" y1="20" x2="32" y2="20" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M14 24L12 30H24L22 24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="10" y1="30" x2="26" y2="30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        {/* Globe */}
-        <circle cx="24" cy="14" r="5" stroke="#4FAEF3" strokeWidth="1.5" className="opacity-80 group-hover:opacity-100" />
-        <ellipse cx="24" cy="14" rx="2" ry="5" stroke="#4FAEF3" strokeWidth="1.5" className="opacity-80 group-hover:opacity-100" />
-        <line x1="19" y1="14" x2="29" y2="14" stroke="#4FAEF3" strokeWidth="1.5" className="opacity-80 group-hover:opacity-100" />
-        {/* HTML / Code */}
-        <path d="M10 11L7 14L10 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M16 11L19 14L16 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
+      <img src="/webdev.svg" alt="Web Development" width={36} height={36} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
     ),
   },
   {
@@ -160,17 +89,7 @@ const DOMAINS = [
     title: 'APP DEV',
     sub: 'Mobile & Cross-Platform',
     icon: (
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)] text-white/90 group-hover:text-white">
-        {/* Phone body */}
-        <rect x="8" y="4" width="20" height="28" rx="3" stroke="currentColor" strokeWidth="1.5" fill="rgba(79,174,243,0.05)" />
-        <line x1="15" y1="7" x2="21" y2="7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        {/* Video play icon */}
-        <path d="M14 14L22 18L14 22V14Z" stroke="#4FAEF3" strokeWidth="1.5" strokeLinejoin="round" className="opacity-80 group-hover:opacity-100" />
-        {/* Code brackets */}
-        <path d="M13 26L10 28L13 30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M23 26L26 28L23 30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <line x1="19" y1="25" x2="17" y2="31" stroke="#4FAEF3" strokeWidth="1.5" strokeLinecap="round" className="opacity-60 group-hover:opacity-100" />
-      </svg>
+      <img src="/appdev.svg" alt="App Development" width={36} height={36} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
     ),
   },
 ];
