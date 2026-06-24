@@ -151,7 +151,7 @@ function ProfileCard({
       onMouseLeave={() => setHovered(false)}
     >
       <div
-        className="relative h-full overflow-hidden rounded-[4px] flex flex-col"
+        className="team-card-inner relative h-full overflow-hidden rounded-[4px] flex flex-col"
         style={{
           padding: 'clamp(12px, 1.2vw, 16px)',
           background: '#0a0a0a',
@@ -206,7 +206,7 @@ function ProfileCard({
 
         {/* Image area */}
         <div
-          className="relative w-full mb-4 overflow-hidden rounded-[2px] bg-[#111]"
+          className="team-image relative w-full mb-4 overflow-hidden rounded-[2px] bg-[#111]"
           style={{
             aspectRatio: '4/5',
             border: hovered ? '1px solid rgba(79,174,243,0.5)' : '1px solid rgba(255,255,255,0.1)',
@@ -290,7 +290,7 @@ function ProfileCard({
         {/* Name & role */}
         <div className="relative z-30 mt-auto flex flex-col items-center w-full">
           <h3
-            className="text-center font-sans font-black uppercase"
+            className="team-name text-center font-sans font-black uppercase"
             style={{
               margin: '0 0 4px',
               fontSize: 'clamp(12px, 1.1vw, 15px)',
@@ -304,7 +304,7 @@ function ProfileCard({
             {person.name}
           </h3>
           <p
-            className="text-center font-mono uppercase"
+            className="team-role text-center font-mono uppercase"
             style={{
               margin: '0 0 8px',
               fontSize: 'clamp(8px, 0.65vw, 10px)',
@@ -368,7 +368,7 @@ function RevealGrid({
   }, [triggered, revealedCount, people.length]);
 
   return (
-    <div ref={ref} className={`w-full grid ${columns} gap-4 md:gap-6`}>
+    <div ref={ref} className={`w-full grid ${columns} gap-3 md:gap-6`}>
       {people.map((person, i) => (
         <ProfileCard
           key={person.id}
@@ -386,7 +386,7 @@ function RevealGrid({
 // ----------------------------------------------------------------------
 export default function TeamRoster({ id = 'command-structure' }: { id?: string }) {
   return (
-    <section id={id} className="relative w-full min-h-screen py-24 md:py-32 bg-[#0d0d0d] overflow-hidden">
+    <section id={id} className="relative w-full min-h-screen py-20 md:py-32 bg-[#0d0d0d] overflow-hidden">
       <EventsBackground />
 
       {/* Top Left Label */}
@@ -400,11 +400,11 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         </span>
       </div>
 
-      <div className="relative z-10 container mx-auto px-6 flex flex-col items-center">
+      <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col items-center">
 
         {/* ── FACULTY SECTION ── */}
-        <div className="w-full max-w-6xl flex flex-col items-center mb-24 md:mb-32">
-          <div className="flex flex-col items-center text-center mb-12">
+        <div className="w-full max-w-6xl flex flex-col items-center mb-16 md:mb-32">
+          <div className="flex flex-col items-center text-center mb-8 md:mb-12">
             <span style={{ fontSize: '10px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase' }}>
               ▶ ACCESS_LEVEL // TIER_01
             </span>
@@ -416,13 +416,13 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
 
           <RevealGrid
             people={FACULTY}
-            columns="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+            columns="grid-cols-2 lg:grid-cols-4"
           />
         </div>
 
         {/* ── BOARD SECTION ── */}
         <div className="w-full max-w-7xl flex flex-col items-center">
-          <div className="flex flex-col items-center text-center mb-12">
+          <div className="flex flex-col items-center text-center mb-8 md:mb-12">
             <span style={{ fontSize: '10px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase' }}>
               ▶ ACCESS_LEVEL // TIER_02
             </span>
@@ -439,6 +439,29 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         </div>
 
       </div>
+      <style jsx>{`
+        @media (max-width: 640px) {
+          :global(.team-card-inner) {
+            padding: 10px !important;
+            min-height: 214px;
+          }
+          :global(.team-image) {
+            aspect-ratio: 1 / 1 !important;
+            margin-bottom: 10px !important;
+          }
+          :global(.team-name) {
+            font-size: 10.5px !important;
+            letter-spacing: 0.045em !important;
+            line-height: 1.2 !important;
+            margin-bottom: 4px !important;
+          }
+          :global(.team-role) {
+            font-size: 7px !important;
+            letter-spacing: 0.08em !important;
+            margin-bottom: 7px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
