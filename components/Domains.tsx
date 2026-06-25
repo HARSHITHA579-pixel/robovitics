@@ -362,12 +362,6 @@ export default function Domains() {
           ease: 'power2.inOut', force3D: true,
         });
 
-        // Fade the title as soon as the cards start forming the circle.
-        tl.to(
-          [titleGroupRef.current, sectionLabelRef.current],
-          { opacity: 0, y: -30, duration: 0.65, ease: 'power2.inOut' }
-        );
-
         tl.to(cardsRef.current, {
           x: (i) => circleX[i],
           y: (i) => circleY[i],
@@ -375,7 +369,15 @@ export default function Domains() {
           duration: 1.9,
           ease: 'none',
           force3D: true,
+        });
+
+        tl.to(titleGroupRef.current, {
+          y: -80,
+          duration: 1.9,
+          ease: 'none',
         }, '<');
+
+        tl.addLabel('cardsZoomInStart');
 
         tl.to(cardsRef.current, {
           x: (i) => expandedCircleX[i],
@@ -385,6 +387,21 @@ export default function Domains() {
           ease: 'power2.inOut',
           force3D: true,
         });
+
+        // Keep the title clear of the circle, then remove it quickly as zoom starts.
+        tl.to(titleGroupRef.current, {
+          opacity: 0,
+          y: -120,
+          duration: 0.35,
+          ease: 'power2.inOut',
+        }, 'cardsZoomInStart+=0.05');
+
+        tl.to(sectionLabelRef.current, {
+          opacity: 0,
+          y: -30,
+          duration: 0.35,
+          ease: 'power2.inOut',
+        }, 'cardsZoomInStart+=0.05');
 
         tl.to(cardsRef.current, {
           x: (i) => zoomX[i],

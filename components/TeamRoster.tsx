@@ -52,13 +52,22 @@ const FACULTY = Array.from({ length: 4 }).map((_, i) => ({
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=fac${i}&backgroundColor=transparent`,
 }));
 
-const BOARD = Array.from({ length: 24 }).map((_, i) => ({
+const BOARD = Array.from({ length: 19 }).map((_, i) => ({
   id: `board-${i + 1}`,
   name: `BOARD MEMBER ${i + 1}`,
   role: i === 0 ? 'PRESIDENT' : i === 1 ? 'VICE PRESIDENT' : 'CORE BOARD',
   // Replace photoUrl with real member photo. Robot shown on hover.
   photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=board${i}&backgroundColor=b6e3f4`,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=board${i}&backgroundColor=transparent`,
+}));
+
+const SENIOR_BOARD = Array.from({ length: 15 }).map((_, i) => ({
+  id: `senior-board-${i + 1}`,
+  name: `SENIOR BOARD ${i + 1}`,
+  role: 'SENIOR BOARD',
+  // Replace photoUrl with real member photo. Robot shown on hover.
+  photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=senior-board${i}&backgroundColor=b6e3f4`,
+  robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=senior-board${i}&backgroundColor=transparent`,
 }));
 
 // ----------------------------------------------------------------------
@@ -76,13 +85,18 @@ function ProfileCard({
   person,
   revealed,
   interactive = true,
+  compact = false,
+  facultyCompact = false,
 }: {
   person: PersonData;
   revealed: boolean;
   interactive?: boolean;
+  compact?: boolean;
+  facultyCompact?: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
   const isActive = interactive && hovered;
+  const isSmall = compact || facultyCompact;
 
   return (
     <div
@@ -100,13 +114,13 @@ function ProfileCard({
       }}
     >
       <div
-        className="team-card-inner relative h-full overflow-hidden rounded-[4px] flex flex-col"
+        className={compact ? 'team-card-inner team-card-compact relative h-full overflow-hidden rounded-[4px] flex flex-col' : 'team-card-inner relative h-full overflow-hidden rounded-[4px] flex flex-col'}
         style={{
-          padding: 'clamp(12px, 1.2vw, 16px)',
+          padding: compact ? 'clamp(9px, 0.8vw, 11px)' : facultyCompact ? 'clamp(10px, 0.95vw, 13px)' : 'clamp(12px, 1.2vw, 16px)',
           background: '#0a0a0a',
-          border: isActive ? '1px solid rgba(79,174,243,0.45)' : '1px solid rgba(255,255,255,0.08)',
-          boxShadow: isActive ? '0 0 25px rgba(79,174,243,0.15)' : 'none',
-          transform: isActive ? 'translateY(-6px)' : 'translateY(0)',
+          border: isActive ? '1px solid rgba(79,174,243,0.45)' : `1px solid rgba(255,255,255,${compact ? 0.055 : 0.08})`,
+          boxShadow: isActive ? '0 0 20px rgba(79,174,243,0.13)' : 'none',
+          transform: isActive ? `translateY(${compact ? '-4px' : '-6px'})` : 'translateY(0)',
           transition: 'all 0.4s ease',
         }}
       >
@@ -118,6 +132,8 @@ function ProfileCard({
             background: `linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(165deg, rgba(255,255,255,0.11), rgba(255,255,255,0.02) 38%, rgba(0,0,0,0.35)), rgba(28,30,34,0.95)`,
             backgroundSize: '18px 18px, 18px 18px, auto, auto',
             border: '1px solid rgba(235,238,242,0.28)',
+            opacity: compact && !isActive ? 0.58 : 1,
+            transition: 'opacity 0.3s ease',
           }}
         />
 
@@ -136,7 +152,7 @@ function ProfileCard({
               ...(c.bottom !== undefined ? { bottom: c.bottom } : {}),
               ...(c.left   !== undefined ? { left:   c.left }   : {}),
               ...(c.right  !== undefined ? { right:  c.right }  : {}),
-              width: 14, height: 14,
+              width: isSmall ? 10 : 14, height: isSmall ? 10 : 14,
               borderTop:    c.borderTop    ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
               borderBottom: c.borderBottom ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
               borderLeft:   c.borderLeft   ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
@@ -159,7 +175,8 @@ function ProfileCard({
         <div
           className="team-image relative w-full mb-4 overflow-hidden rounded-[2px] bg-[#111]"
           style={{
-            aspectRatio: '4/5',
+            aspectRatio: compact ? '1/1' : '4/5',
+            marginBottom: compact ? '10px' : facultyCompact ? '12px' : '16px',
             border: isActive ? '1px solid rgba(79,174,243,0.5)' : '1px solid rgba(255,255,255,0.1)',
             boxShadow: isActive ? '0 0 15px rgba(79,174,243,0.2)' : 'none',
             transition: 'all 0.4s ease',
@@ -211,7 +228,7 @@ function ProfileCard({
           <div
             style={{
               position: 'absolute', bottom: 6, left: 8,
-              fontSize: '8px', letterSpacing: '0.12em',
+              fontSize: compact ? '6px' : facultyCompact ? '7px' : '8px', letterSpacing: '0.12em',
               color: 'rgba(79,174,243,0.9)', fontFamily: 'monospace',
               textTransform: 'uppercase',
               opacity: isActive ? 1 : 0,
@@ -235,8 +252,8 @@ function ProfileCard({
             className="team-name text-center font-sans font-black uppercase"
             style={{
               margin: '0 0 4px',
-              fontSize: 'clamp(12px, 1.1vw, 15px)',
-              letterSpacing: '0.06em',
+              fontSize: compact ? 'clamp(10px, 0.78vw, 12px)' : facultyCompact ? 'clamp(11px, 0.92vw, 13px)' : 'clamp(12px, 1.1vw, 15px)',
+              letterSpacing: compact ? '0.045em' : facultyCompact ? '0.05em' : '0.06em',
               lineHeight: 1.15,
               color: isActive ? '#4FAEF3' : '#ffffff',
               textShadow: isActive ? '0 0 10px rgba(79,174,243,0.6)' : 'none',
@@ -248,9 +265,9 @@ function ProfileCard({
           <p
             className="team-role text-center font-mono uppercase"
             style={{
-              margin: '0 0 8px',
-              fontSize: 'clamp(8px, 0.65vw, 10px)',
-              letterSpacing: '0.1em',
+              margin: compact ? '0 0 6px' : facultyCompact ? '0 0 7px' : '0 0 8px',
+              fontSize: compact ? 'clamp(6.5px, 0.5vw, 8px)' : facultyCompact ? 'clamp(7px, 0.55vw, 8.5px)' : 'clamp(8px, 0.65vw, 10px)',
+              letterSpacing: compact ? '0.08em' : facultyCompact ? '0.09em' : '0.1em',
               color: 'rgba(79,174,243,0.85)',
               transition: 'all 0.4s ease',
             }}
@@ -281,10 +298,16 @@ function RevealGrid({
   people,
   columns,
   interactive = true,
+  compact = false,
+  facultyCompact = false,
+  balanced = false,
 }: {
   people: PersonData[];
   columns: string;
   interactive?: boolean;
+  compact?: boolean;
+  facultyCompact?: boolean;
+  balanced?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [triggered, setTriggered] = useState(false);
@@ -306,15 +329,64 @@ function RevealGrid({
   }, [triggered]);
 
   return (
-    <div ref={ref} className={`w-full grid ${columns} gap-3 md:gap-6`}>
+    <div ref={ref} className={`w-full ${balanced ? 'team-grid-balanced' : `grid ${columns}`} ${compact ? 'gap-2.5 md:gap-4' : 'gap-3 md:gap-6'}`}>
       {people.map((person) => (
         <ProfileCard
           key={person.id}
           person={person}
           revealed={triggered}
           interactive={interactive}
+          compact={compact}
+          facultyCompact={facultyCompact}
         />
       ))}
+    </div>
+  );
+}
+
+function SectionTitle({
+  eyebrow,
+  title,
+  accent,
+  align = 'center',
+}: {
+  eyebrow: string;
+  title: string;
+  accent?: string;
+  align?: 'center' | 'left';
+}) {
+  return (
+    <div className={`flex flex-col ${align === 'center' ? 'items-center text-center' : 'items-start text-left'} mb-8 md:mb-10`}>
+      <span style={{
+        fontSize: '10px',
+        letterSpacing: '0.35em',
+        color: 'rgba(255,255,255,0.2)',
+        fontFamily: 'monospace',
+        marginBottom: '12px',
+        display: 'block',
+        textTransform: 'uppercase',
+      }}>
+        {eyebrow}
+      </span>
+      <h2 style={{
+        margin: 0,
+        fontSize: 'clamp(30px, 4.4vw, 58px)',
+        fontWeight: '900',
+        color: '#ffffff',
+        letterSpacing: '-0.01em',
+        fontFamily: '"Inter", "Arial Black", sans-serif',
+        textTransform: 'uppercase',
+        lineHeight: 1,
+      }}>
+        {title}{accent ? ' ' : ''}
+        {accent && <span style={{ color: '#4FAEF3' }}>{accent}</span>}
+      </h2>
+      <div style={{
+        marginTop: '16px',
+        width: align === 'center' ? '120px' : '88px',
+        height: '1px',
+        background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)',
+      }} />
     </div>
   );
 }
@@ -324,7 +396,7 @@ function RevealGrid({
 // ----------------------------------------------------------------------
 export default function TeamRoster({ id = 'command-structure' }: { id?: string }) {
   return (
-    <section id={id} className="relative w-full min-h-screen py-20 md:py-32 bg-[#0d0d0d] overflow-hidden">
+    <section id={id} className="relative w-full min-h-screen py-20 md:py-28 bg-[#0d0d0d] overflow-hidden">
       <EventsBackground />
 
       {/* Top Left Label */}
@@ -339,46 +411,104 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
       </div>
 
       <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col items-center">
-
         {/* ── FACULTY SECTION ── */}
-        <div className="w-full max-w-6xl flex flex-col items-center mb-16 md:mb-32">
-          <div className="flex flex-col items-center text-center mb-8 md:mb-12">
-            <span style={{ fontSize: '10px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase' }}>
-              ▶ ACCESS_LEVEL // TIER_01
-            </span>
-            <h2 style={{ margin: 0, fontSize: 'clamp(32px, 5vw, 64px)', fontWeight: '900', color: '#ffffff', letterSpacing: '-0.01em', fontFamily: '"Inter", "Arial Black", sans-serif', textTransform: 'uppercase', lineHeight: 1 }}>
-              FACULTY <span style={{ color: '#4FAEF3' }}>ADVISORS</span>
-            </h2>
-            <div style={{ marginTop: '16px', width: '120px', height: '1px', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)' }} />
-          </div>
+        <div id="team-faculty" className="w-full max-w-5xl scroll-mt-28 flex flex-col items-center mb-14 md:mb-24">
+          <SectionTitle
+            eyebrow="▶ ACCESS_LEVEL // TIER_01"
+            title="FACULTY"
+            accent="ADVISORS"
+          />
 
           <RevealGrid
             people={FACULTY}
             columns="grid-cols-2 lg:grid-cols-4"
             interactive={false}
+            facultyCompact
           />
         </div>
 
         {/* ── BOARD SECTION ── */}
-        <div className="w-full max-w-7xl flex flex-col items-center">
-          <div className="flex flex-col items-center text-center mb-8 md:mb-12">
-            <span style={{ fontSize: '10px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase' }}>
-              ▶ ACCESS_LEVEL // TIER_02
-            </span>
-            <h2 style={{ margin: 0, fontSize: 'clamp(32px, 5vw, 64px)', fontWeight: '900', color: '#ffffff', letterSpacing: '-0.01em', fontFamily: '"Inter", "Arial Black", sans-serif', textTransform: 'uppercase', lineHeight: 1 }}>
-              CORE <span style={{ color: '#4FAEF3' }}>BOARD</span>
-            </h2>
-            <div style={{ marginTop: '16px', width: '120px', height: '1px', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)' }} />
-          </div>
+        <div id="team-board" className="w-full max-w-7xl scroll-mt-28 flex flex-col items-center mb-14 md:mb-24">
+          <SectionTitle
+            eyebrow="▶ ACCESS_LEVEL // TIER_02"
+            title="BOARD"
+          />
 
           <RevealGrid
             people={BOARD}
-            columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6"
+            columns=""
+            compact
+            balanced
+          />
+        </div>
+
+        {/* ── SENIOR BOARD SECTION ── */}
+        <div id="team-senior-board" className="w-full max-w-7xl scroll-mt-28 flex flex-col items-center">
+          <SectionTitle
+            eyebrow="▶ ACCESS_LEVEL // TIER_03"
+            title="SENIOR"
+            accent="BOARD"
+          />
+
+          <RevealGrid
+            people={SENIOR_BOARD}
+            columns=""
+            compact
+            balanced
           />
         </div>
 
       </div>
       <style jsx>{`
+        :global(.team-grid-balanced) {
+          display: flex;
+          gap: 12px;
+          margin-left: -16px;
+          margin-right: -16px;
+          overflow-x: auto;
+          padding: 0 42px 10px 16px;
+          scroll-padding-left: 16px;
+          scroll-snap-type: x mandatory;
+          scrollbar-width: none;
+          -webkit-overflow-scrolling: touch;
+        }
+        :global(.team-grid-balanced::-webkit-scrollbar) {
+          display: none;
+        }
+        :global(.team-grid-balanced > *) {
+          flex: 0 0 clamp(142px, 42vw, 164px);
+          scroll-snap-align: start;
+        }
+        @media (min-width: 768px) {
+          :global(.team-grid-balanced) {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            margin-left: 0;
+            margin-right: 0;
+            overflow: visible;
+            padding: 0;
+            scroll-snap-type: none;
+          }
+          :global(.team-grid-balanced > *) {
+            flex: initial;
+            scroll-snap-align: none;
+          }
+        }
+        @media (min-width: 1024px) {
+          :global(.team-grid-balanced) {
+            grid-template-columns: repeat(10, minmax(0, 1fr));
+            max-width: 1040px;
+            margin-left: auto;
+            margin-right: auto;
+          }
+          :global(.team-grid-balanced > *) {
+            grid-column: span 2;
+          }
+          :global(.team-grid-balanced > :nth-last-child(4):nth-child(5n + 1)) {
+            grid-column: 2 / span 2;
+          }
+        }
         :global(.team-scan-line) {
           position: absolute;
           left: 0;
