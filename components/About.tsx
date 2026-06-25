@@ -3,6 +3,8 @@
 import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 
+const aboutDriveLink = 'https://drive.google.com/file/d/1Ycd76P7kxszbPqTYpeSCTFRmOsU1qTWY/view?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAb21jcASgblJleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAaeFsaDj9ZViLc2mc_5dTS9zWV0UHu9Qv8fXSJ2_wBnC-oeSCMO7g5y2VzUt1A_aem_OMmhAV5KvpCJEWMEwO_jRg';
+
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -69,6 +71,15 @@ export default function About() {
                   </span>
                 ))}
               </div>
+
+              <a
+                href={aboutDriveLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex items-center justify-center border border-[#4FAEF3]/55 bg-[#4FAEF3]/10 px-4 py-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[#A9D9FF] transition hover:border-[#4FAEF3] hover:bg-[#4FAEF3]/20 hover:text-white"
+              >
+                Want to know more?
+              </a>
 
               <div className="mt-5 overflow-hidden rounded-[3px] border border-white/10 bg-black">
                 <img src="/AboutUs.png.jpeg" alt="About Us" className="h-48 w-full object-cover opacity-90" />
@@ -173,6 +184,14 @@ export default function About() {
                         <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
                           Over the years, RoboVITics has grown into a hub of innovation and excellence, empowering students to build impactful solutions, compete on prestigious platforms, and continuously expand their technical expertise. Driven by creativity, collaboration, and ambition, we strive to shape the next generation of engineers and innovators.
                         </p>
+                        <a
+                          href={aboutDriveLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="pointer-events-auto mt-1 inline-flex w-fit items-center justify-center border border-[#4FAEF3]/55 bg-[#4FAEF3]/10 px-5 py-3 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-[#A9D9FF] transition hover:border-[#4FAEF3] hover:bg-[#4FAEF3]/20 hover:text-white"
+                        >
+                          Want to know more?
+                        </a>
                       </div>
                     </div>
 
