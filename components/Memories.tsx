@@ -602,7 +602,7 @@ export default function MemoryWarpTunnel() {
 
             <div className="mwt-rtext" ref={rtextRef}>
               <span className="eyebrow">▶ BOOT_SEQUENCE.LOAD()</span>
-              <h2>YEARS OF<br /><span>DATA.</span></h2>
+              <h2>YEARS OF<br /><span>DATA</span></h2>
               <p className="sub">From late-night builds to competition floors&mdash;<br />every circuit and line of code that shaped RoboVITics.</p>
             </div>
           </div>
