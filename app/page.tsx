@@ -12,6 +12,7 @@ import Projects from '@/components/Projects';
 import Sponsors from '@/components/Sponsors';
 import Memories from '@/components/Memories';
 import TeamRoster from '@/components/TeamRoster';
+import Footer from '@/components/Footer';
 
 export default function Page() {
   const domainsRef = useRef<HTMLDivElement>(null);
@@ -107,6 +108,8 @@ export default function Page() {
       <div className="relative z-20">
         <TeamRoster />
       </div>
+
+      <Footer />
 
     </main>
   );

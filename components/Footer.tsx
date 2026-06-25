@@ -1,0 +1,215 @@
+'use client';
+
+import Image from 'next/image';
+import { ReactNode } from 'react';
+
+const contactEmail = 'robovitics@vit.ac.in';
+const contactPhone = '+91 98765 43210';
+
+const socialLinks = [
+  {
+    label: 'Instagram',
+    href: 'https://www.instagram.com/robovitics/',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+        <rect x="4" y="4" width="16" height="16" rx="5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="17" cy="7" r="1.1" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com/company/robovitics/',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+        <path d="M6.7 9.6H3.8V20h2.9V9.6Z" fill="currentColor" />
+        <path d="M5.2 8.1a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4Z" fill="currentColor" />
+        <path d="M20.2 14.1V20h-2.9v-5.5c0-1.5-.7-2.4-1.9-2.4-1 0-1.6.6-1.9 1.2-.1.2-.1.6-.1.9V20h-2.9V9.6h2.9V11c.5-.8 1.5-1.8 3.2-1.8 2.2 0 3.6 1.5 3.6 4.9Z" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    label: 'GitHub',
+    href: 'https://github.com/RoboVITics',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+        <path
+          fill="currentColor"
+          d="M12 3.8a8.4 8.4 0 0 0-2.7 16.4c.4.1.6-.2.6-.4v-1.5c-2.3.5-2.8-1-2.8-1-.4-1-.9-1.3-.9-1.3-.8-.5.1-.5.1-.5.8.1 1.3.9 1.3.9.8 1.3 2 1 2.4.8.1-.5.3-.9.5-1.1-1.8-.2-3.8-.9-3.8-4.1 0-.9.3-1.6.9-2.2-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.3.9.7-.2 1.4-.3 2.1-.3.7 0 1.4.1 2.1.3 1.6-1.1 2.3-.9 2.3-.9.5 1.1.2 1.9.1 2.1.5.6.9 1.3.9 2.2 0 3.2-1.9 3.9-3.8 4.1.3.3.6.8.6 1.6v2.1c0 .2.2.5.6.4A8.4 8.4 0 0 0 12 3.8Z"
+        />
+      </svg>
+    ),
+  },
+];
+
+// Corner-bracket wrapper — matches the navbar logo bracket in the hero
+function Bracketed({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={`relative ${className}`}>
+      {/* top-left */}
+      <span className="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l border-t border-white/30" />
+      {/* top-right */}
+      <span className="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r border-t border-white/30" />
+      {/* bottom-left */}
+      <span className="pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b border-l border-white/30" />
+      {/* bottom-right */}
+      <span className="pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b border-r border-white/30" />
+      {children}
+    </div>
+  );
+}
+
+function ContactChip({
+  label,
+  value,
+  href,
+  icon,
+}: {
+  label: string;
+  value: string;
+  href: string;
+  icon: ReactNode;
+}) {
+  return (
+    <Bracketed>
+      <a
+        href={href}
+        className="group flex min-h-14 items-center gap-3 border border-white/8 bg-white/[0.02] px-4 text-left transition-colors hover:bg-white/[0.045]"
+      >
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-[#4FAEF3]/30 bg-[#4FAEF3]/10 text-[#8FD4FF] transition-colors group-hover:border-[#4FAEF3]/70 group-hover:text-white/90">
+          {icon}
+        </span>
+        <span className="min-w-0">
+          <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-white/30">{label}</span>
+          <span className="block truncate text-sm font-semibold text-white/80">{value}</span>
+        </span>
+      </a>
+    </Bracketed>
+  );
+}
+
+export default function Footer() {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <footer className="relative z-20 overflow-hidden bg-[#050607] px-5 pb-6 pt-12 text-white sm:px-8 md:px-12 lg:px-16">
+      <div className="pointer-events-none absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-[#4FAEF3]/60 to-transparent" />
+      {/* Same grid background as hero — seamless continuation */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-35"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px)',
+          backgroundSize: '36px 36px',
+        }}
+      />
+
+      <div className="relative mx-auto w-full max-w-7xl">
+
+        {/* Top row */}
+        <div className="grid gap-8 border-b border-white/8 pb-8 lg:grid-cols-[1fr_auto] lg:items-end">
+          <section className="max-w-xl">
+            <p className="font-mono text-xs uppercase tracking-[0.22em] text-white/35">
+              Official Robotics Club of VIT Vellore
+            </p>
+            <p className="mt-3 text-sm leading-7 text-white/55">
+              Student-led robotics, workshops, competitions, and engineering projects since 2010.
+            </p>
+          </section>
+
+          <section className="grid gap-3 sm:grid-cols-2 lg:min-w-[560px]">
+            <ContactChip
+              label="Email"
+              value={contactEmail}
+              href={`mailto:${contactEmail}`}
+              icon={
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+                  <path d="M4 6.5h16v11H4v-11Z" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="m5 7.5 7 5 7-5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                </svg>
+              }
+            />
+            <ContactChip
+              label="Phone"
+              value={contactPhone}
+              href={`tel:${contactPhone.replaceAll(' ', '')}`}
+              icon={
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+                  <path
+                    d="M7.2 4.8 9.3 9c.2.5.1 1-.3 1.3l-1.1.9a10.5 10.5 0 0 0 4.9 4.9l.9-1.1c.3-.4.9-.5 1.3-.3l4.2 2.1c.5.2.7.7.6 1.2l-.5 2.1c-.1.5-.6.9-1.1.9C9.8 21 3 14.2 3 5.8c0-.5.4-1 .9-1.1L6 4.2c.5-.1 1 .1 1.2.6Z"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                  />
+                </svg>
+              }
+            />
+          </section>
+        </div>
+
+        {/* Social + back to top row */}
+        <div className="grid gap-5 border-b border-white/8 py-5 md:grid-cols-[1fr_auto] md:items-center">
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="mr-1 font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
+              Connect
+            </p>
+            <div className="h-px w-10 bg-[#4FAEF3]/45" />
+            {socialLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={link.label}
+                title={link.label}
+                className="flex h-10 w-10 items-center justify-center border border-white/10 bg-white/[0.02] text-white/50 transition-colors hover:border-[#4FAEF3]/60 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3]"
+              >
+                {link.icon}
+              </a>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 md:justify-end">
+            <span className="hidden font-mono text-[10px] uppercase tracking-[0.18em] text-white/28 lg:inline">
+              Est. 2010
+            </span>
+            <span className="hidden h-px w-8 bg-white/10 lg:block" />
+            {/* Matches "JOIN THE CLUB" button style from hero nav */}
+            <Bracketed>
+              <button
+                type="button"
+                onClick={scrollToTop}
+                className="flex min-h-10 items-center gap-3 border border-white/20 bg-transparent px-4 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70 transition-colors hover:border-white/40 hover:bg-white/[0.04] hover:text-white"
+              >
+                <span>Back to top</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
+                  <path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+                </svg>
+              </button>
+            </Bracketed>
+          </div>
+        </div>
+
+        {/* Logo — no divider line, just breathing room */}
+        <div className="relative mt-6 overflow-hidden pb-3 pt-8">
+          <Image
+            src="/robovitics-logo.png"
+            alt="roboVITics Logo"
+            width={1400}
+            height={380}
+            className="mx-auto h-auto w-full max-w-6xl object-contain opacity-90"
+          />
+        </div>
+
+        <div className="mt-4 flex flex-col gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/35 sm:flex-row sm:items-center sm:justify-between">
+          <p>© 2026 RoboVITics, VIT Vellore.</p>
+          <p>Built by the Web/App Domain.</p>
+        </div>
+
+      </div>
+    </footer>
+  );
+}
