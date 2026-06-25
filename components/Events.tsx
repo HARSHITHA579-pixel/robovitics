@@ -274,14 +274,14 @@ export default function Events() {
     gsap.set(incomingNode, { x: xInStart, autoAlpha: 1 });
     gsap.to(outgoingNode, {
       x: xOutEnd,
-      duration: 0.6,
-      ease: "power3.inOut",
+      duration: 0.36,
+      ease: "power2.out",
       onComplete: () => gsap.set(outgoingNode, { autoAlpha: 0 }),
     });
     gsap.to(incomingNode, {
       x: "0%",
-      duration: 0.6,
-      ease: "power3.inOut",
+      duration: 0.36,
+      ease: "power2.out",
       onComplete: () => { isMobileSlideAnimating.current = false; },
     });
     prevMobileEventId.current = incomingId;
@@ -708,7 +708,8 @@ export default function Events() {
       </div>
     </section>
 
-    <section id="events" ref={sectionRef} className="hidden h-[600vh] bg-[#0d0d0d] md:block">
+    <section id="events" ref={sectionRef} className="relative hidden h-[600vh] bg-[#0d0d0d] md:block">
+      <span id="events-desktop" className="pointer-events-none absolute top-[480vh] h-px w-px" aria-hidden="true" />
       <div ref={pinRef} className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
         <EventsBackground />
 

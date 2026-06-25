@@ -95,8 +95,22 @@ function ProfileCard({
   facultyCompact?: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
-  const isActive = interactive && hovered;
+  const [canHover, setCanHover] = useState(false);
+  const isInteractive = interactive && canHover;
+  const isActive = isInteractive && hovered;
   const isSmall = compact || facultyCompact;
+
+  useEffect(() => {
+    const query = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const updateCanHover = () => {
+      setCanHover(query.matches);
+      if (!query.matches) setHovered(false);
+    };
+
+    updateCanHover();
+    query.addEventListener('change', updateCanHover);
+    return () => query.removeEventListener('change', updateCanHover);
+  }, []);
 
   return (
     <div
@@ -107,10 +121,10 @@ function ProfileCard({
         transition: 'opacity 0.5s ease, transform 0.5s ease',
       }}
       onMouseEnter={() => {
-        if (interactive) setHovered(true);
+        if (isInteractive) setHovered(true);
       }}
       onMouseLeave={() => {
-        if (interactive) setHovered(false);
+        if (isInteractive) setHovered(false);
       }}
     >
       <div
@@ -224,26 +238,6 @@ function ProfileCard({
             />
           </div>
 
-          {/* HUD label — visible on hover */}
-          <div
-            style={{
-              position: 'absolute', bottom: 6, left: 8,
-              fontSize: compact ? '6px' : facultyCompact ? '7px' : '8px', letterSpacing: '0.12em',
-              color: 'rgba(79,174,243,0.9)', fontFamily: 'monospace',
-              textTransform: 'uppercase',
-              opacity: isActive ? 1 : 0,
-              transition: 'opacity 0.3s ease',
-              zIndex: 30,
-            }}
-          >
-            IDENTIFYING...
-          </div>
-
-          {/* Scan sweep — visible on hover */}
-          <div
-            className={isActive ? 'team-scan-line is-active' : 'team-scan-line'}
-            aria-hidden="true"
-          />
         </div>
 
         {/* Name & role */}
@@ -507,52 +501,6 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
           }
           :global(.team-grid-balanced > :nth-last-child(4):nth-child(5n + 1)) {
             grid-column: 2 / span 2;
-          }
-        }
-        :global(.team-scan-line) {
-          position: absolute;
-          left: 0;
-          right: 0;
-          top: 0;
-          height: 2px;
-          z-index: 25;
-          opacity: 0;
-          pointer-events: none;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(79, 174, 243, 0.25) 18%,
-            rgba(79, 174, 243, 0.9) 50%,
-            rgba(79, 174, 243, 0.25) 82%,
-            transparent
-          );
-          box-shadow:
-            0 0 12px rgba(79, 174, 243, 0.55),
-            0 10px 26px rgba(79, 174, 243, 0.14);
-        }
-        :global(.team-scan-line::after) {
-          content: "";
-          position: absolute;
-          left: 0;
-          right: 0;
-          top: 2px;
-          height: 42px;
-          background: linear-gradient(
-            to bottom,
-            rgba(79, 174, 243, 0.16),
-            rgba(79, 174, 243, 0)
-          );
-        }
-        :global(.team-scan-line.is-active) {
-          opacity: 1;
-          animation: team-scan-sweep 1.55s ease-in-out infinite alternate;
-        }
-        @keyframes team-scan-sweep {
-          from {
-            transform: translateY(8px);
-          }
-          to {
-            transform: translateY(calc(100% + 230px));
           }
         }
         @media (max-width: 640px) {

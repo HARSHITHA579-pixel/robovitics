@@ -6,6 +6,10 @@ import { useEffect, useState, useRef } from 'react';
 
 // MOVED OUTSIDE: Prevents the infinite render loop
 const navItems = ['About', 'Domains', 'Events', 'Projects', 'Teams'];
+const desktopNavTargets: Record<string, string> = {
+  Domains: 'domains-desktop',
+  Events: 'events-desktop',
+};
 const mobileNavTargets: Record<string, string> = {
   About: 'about-mobile',
   Domains: 'domains-mobile',
@@ -205,7 +209,7 @@ export default function Navbar() {
                 ref={(el) => {
                   navRefs.current[index] = el;
                 }}
-                href={`#${item.toLowerCase()}`}
+                href={`#${desktopNavTargets[item] ?? item.toLowerCase()}`}
                 onClick={() => setActiveSection(item)}
                 className={`group relative z-10 px-2.5 py-1.5 transition-colors duration-200 xl:px-3 ${
                   isActive ? 'text-white' : 'hover:text-white/80'
