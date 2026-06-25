@@ -220,7 +220,7 @@ const BRIDGE_TEXT = "WE DON'T JUST STUDY THESE DOMAINS. WE SOLDER THE CIRCUITS, 
 function HUDTextBridge() {
   const words = BRIDGE_TEXT.split(' ');
   return (
-    <div className="bridge-layer absolute inset-0 z-30 pointer-events-none flex flex-col items-center justify-center p-6 md:p-12 hidden md:flex" style={{ perspective: '1200px' }}>
+    <div className="absolute inset-0 z-30 pointer-events-none flex flex-col items-center justify-center p-6 md:p-12 hidden md:flex" style={{ perspective: '1200px' }}>
       <div className="max-w-4xl mx-auto text-center">
         <span className="bridge-terminal-header block mb-6 font-mono text-[10px] tracking-[0.35em] text-[rgba(255,255,255,0.3)] uppercase opacity-0">
           &gt; SYSTEM_LOGS // PROTOCOL_OVERRIDE
@@ -297,8 +297,6 @@ export default function Domains() {
           rotationZ: (i) => randRotZ[i],
         });
 
-        gsap.set('.bridge-terminal-header', { opacity: 0 });
-
         // Initial setup for cards
         gsap.set(cardsRef.current, {
           x: 0, y: '7vh', scale: 0.58,
@@ -323,17 +321,6 @@ export default function Domains() {
             fastScrollEnd: true,
             onUpdate: (self) => {
               const p = self.progress;
-              const rawProgress = Math.max(0, Math.min(1, (self.scroll() - self.start) / (self.end - self.start)));
-              const bridgeLayer = sectionRef.current?.querySelector<HTMLElement>('.bridge-layer');
-
-              if (rawProgress < 0.58) {
-                if (bridgeLayer) bridgeLayer.style.display = 'none';
-                gsap.set(wordElements, { opacity: 0 });
-                gsap.set('.bridge-terminal-header', { opacity: 0 });
-              } else if (bridgeLayer) {
-                bridgeLayer.style.display = '';
-              }
-
               let intensity = 0;
               if (p >= 0.35 && p < 0.65) {
                 intensity = (p - 0.35) / 0.30;
