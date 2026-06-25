@@ -5,17 +5,20 @@ import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
 
 // MOVED OUTSIDE: Prevents the infinite render loop
-const navItems = ['About', 'Domains', 'Events', 'Projects', 'Teams'];
+const navItems = ['About', 'Domains', 'Events', 'Teams', 'Projects'];
 const desktopNavTargets: Record<string, string> = {
+  About: 'about',
   Domains: 'domains-desktop',
   Events: 'events-desktop',
+  Teams: 'technical-teams',
+  Projects: 'projects',
 };
 const mobileNavTargets: Record<string, string> = {
   About: 'about-mobile',
   Domains: 'domains-mobile',
   Events: 'events-mobile',
+  Teams: 'technical-teams',
   Projects: 'projects',
-  Teams: 'command-structure',
 };
 
 export default function Navbar() {
@@ -25,6 +28,19 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState('');
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, top: 0, width: 0, height: 0, opacity: 0 });
   const navRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string, item: string) => {
+    e.preventDefault();
+    const target = document.getElementById(targetId);
+    if (target) {
+      const yOffset = -120; // Offset for sticky navbar
+      const y = target.getBoundingClientRect().top + window.scrollY + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+    setActiveSection(item);
+    setMenuOpen(false);
+    window.history.pushState(null, '', `#${targetId}`);
+  };
 
   useEffect(() => {
     let frame = 0;
@@ -60,7 +76,15 @@ export default function Navbar() {
         const visibleEntry = entries.find((entry) => entry.isIntersecting);
         if (visibleEntry) {
           const id = visibleEntry.target.id;
-          const matchingItem = navItems.find((item) => item.toLowerCase() === id);
+          
+          if (id === 'hero' || id === 'sponsors') {
+            setActiveSection('');
+            return;
+          }
+
+          const matchingItem = navItems.find((item) => {
+            return item.toLowerCase() === id || desktopNavTargets[item] === id || mobileNavTargets[item] === id;
+          });
           if (matchingItem) setActiveSection(matchingItem);
         }
       },
@@ -69,7 +93,21 @@ export default function Navbar() {
 
     const timeout = setTimeout(() => {
       navItems.forEach((item) => {
-        const el = document.getElementById(item.toLowerCase());
+        const idsToObserve = [
+            item.toLowerCase(),
+            desktopNavTargets[item],
+            mobileNavTargets[item]
+        ].filter(Boolean);
+        
+        Array.from(new Set(idsToObserve)).forEach(id => {
+            const el = document.getElementById(id as string);
+            if (el) observer.observe(el);
+        });
+      });
+      
+      // Observe boundary sections to clear active state
+      ['hero', 'sponsors'].forEach(id => {
+        const el = document.getElementById(id);
         if (el) observer.observe(el);
       });
     }, 100);
@@ -210,7 +248,7 @@ export default function Navbar() {
                   navRefs.current[index] = el;
                 }}
                 href={`#${desktopNavTargets[item] ?? item.toLowerCase()}`}
-                onClick={() => setActiveSection(item)}
+                onClick={(e) => scrollToSection(e, desktopNavTargets[item] ?? item.toLowerCase(), item)}
                 className={`group relative z-10 px-2.5 py-1.5 transition-colors duration-200 xl:px-3 ${
                   isActive ? 'text-white' : 'hover:text-white/80'
                 }`}
@@ -236,6 +274,14 @@ export default function Navbar() {
         {/* CTA */}
         <Link
           href="#about"
+          onClick={(e) => {
+            e.preventDefault();
+            const target = document.getElementById('about');
+            if (target) {
+              const y = target.getBoundingClientRect().top + window.scrollY - 120;
+              window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+          }}
           style={heroChromeStyle}
           className={`hidden justify-self-end border border-white/16 bg-white/[0.04] px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/90 transition-all duration-300 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] ${isScrolled ? 'sm:hidden' : 'sm:inline-flex'}`}
         >
@@ -315,10 +361,7 @@ export default function Navbar() {
                 <Link
                   key={item}
                   href={`#${mobileNavTargets[item] ?? item.toLowerCase()}`}
-                  onClick={() => {
-                    setMenuOpen(false);
-                    setActiveSection(item);
-                  }}
+                  onClick={(e) => scrollToSection(e, mobileNavTargets[item] ?? item.toLowerCase(), item)}
                   className={`group relative border-b border-white/10 px-1 py-4 transition-colors ${
                     isActive
                       ? 'text-white'
@@ -340,7 +383,15 @@ export default function Navbar() {
           <div className="mt-auto border-t border-white/10 pt-5">
             <Link
               href="#about"
-              onClick={() => setMenuOpen(false)}
+              onClick={(e) => {
+                e.preventDefault();
+                const target = document.getElementById('about');
+                if (target) {
+                  const y = target.getBoundingClientRect().top + window.scrollY - 120;
+                  window.scrollTo({ top: y, behavior: 'smooth' });
+                }
+                setMenuOpen(false);
+              }}
               className="flex items-center justify-between border border-white/12 bg-white/[0.035] px-4 py-3 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-white/82 transition-colors hover:bg-white/[0.07] hover:text-white"
             >
               <span>Join the Club</span>

@@ -42,7 +42,7 @@ export default function Hero() {
   }, [logoAssembled, fullSubtitleText]);
 
   return (
-    <div className="relative z-10 flex flex-1 flex-col items-center justify-start gap-4 px-5 pb-0 pt-22 sm:px-8 sm:pt-24 md:px-12 lg:mx-auto lg:w-full lg:max-w-[1600px] lg:flex-row lg:justify-between lg:gap-12 lg:px-24 lg:pb-0 lg:pt-0">
+    <div id="hero" className="relative z-10 flex flex-1 flex-col items-center justify-start gap-4 px-5 pb-0 pt-22 sm:px-8 sm:pt-24 md:px-12 lg:mx-auto lg:w-full lg:max-w-[1600px] lg:flex-row lg:justify-between lg:gap-12 lg:px-24 lg:pb-0 lg:pt-0">
 
       {/* LEFT SIDE: Text Container */}
       <div className="relative z-20 flex w-full flex-col items-center justify-center pt-0 text-center pointer-events-auto lg:w-[60%] lg:items-start lg:text-left">

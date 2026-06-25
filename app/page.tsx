@@ -7,6 +7,9 @@ import Hero from '@/components/Hero';
 import About from '@/components/About';
 import Domains from '@/components/Domains';
 import Events from "@/components/Events";
+import TechnicalTeams from '@/components/Teams';
+import Projects from '@/components/Projects';
+import Sponsors from '@/components/Sponsors';
 import Memories from '@/components/Memories';
 import TeamRoster from '@/components/TeamRoster';
 
@@ -96,7 +99,9 @@ export default function Page() {
         <Domains />
       </div>
       <Events />
-
+      <TechnicalTeams />
+      <Projects />
+      <Sponsors />
       <Memories />
 
       <div className="relative z-20">
