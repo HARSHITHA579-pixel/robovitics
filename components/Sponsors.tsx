@@ -50,71 +50,108 @@ function SponsorCard({ sponsor, isHovered, onHoverChange }: {
 }) {
     const ref = useRef<HTMLDivElement>(null);
     return (
-        <motion.div ref={ref} className="cursor-pointer"
-            whileHover={{ y: -8 }}
+        <motion.div ref={ref} className="cursor-pointer group relative w-full h-full transition-transform duration-500 ease-out"
+            style={{ willChange: 'transform' }}
+            whileHover={{ y: -6 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
             onMouseEnter={() => onHoverChange(true, ref.current?.getBoundingClientRect() ?? null)}
             onMouseLeave={() => onHoverChange(false, null)}>
-            <div className="rounded px-4 py-5 sm:px-5 sm:py-6 flex flex-col items-center relative overflow-hidden"
+            
+            <div className="relative h-full overflow-hidden rounded-[4px] transition-all duration-500 group-hover:shadow-[0_0_25px_rgba(79,174,243,0.18)]"
                 style={{
-                    background: 'rgba(15,20,30,0.6)',
-                    border: `1px solid ${isHovered ? 'rgba(79,174,243,0.3)' : 'rgba(100,160,220,0.12)'}`,
-                    boxShadow: isHovered ? '0 8px 32px rgba(79,174,243,0.15), 0 0 20px rgba(79,174,243,0.08)' : 'none',
-                    transition: 'all 0.3s ease',
+                    padding: 'clamp(14px, 1.4vw, 18px) clamp(12px, 1.3vw, 16px) clamp(13px, 1.3vw, 17px)',
+                    // 1. FROSTED GLASS BASE LAYER
+                    background: 'rgba(12, 15, 20, 0.25)', 
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.08)',
                 }}>
-                {/* Abstract Corner Accents */}
-                <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#4FAEF3] opacity-30" />
-                <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#4FAEF3] opacity-30" />
-
-                {/* ── ONLY a plain rectangle ── */}
-                <div className="w-20 h-12 sm:w-24 sm:h-14 mb-4 rounded"
+                
+                {/* 2. THE GRID PATTERN OVERLAY */}
+                <div className="absolute pointer-events-none transition-all duration-500"
                     style={{
-                        border: `1.5px solid ${isHovered ? 'rgba(79,174,243,0.3)' : 'rgba(100,160,220,0.15)'}`,
-                        background: isHovered ? 'rgba(79,174,243,0.04)' : 'transparent',
-                        transition: 'all 0.3s ease',
+                        top: -1, right: -1, bottom: -1, left: -1,
+                        borderRadius: '4px',
+                        background: `
+                            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+                            linear-gradient(165deg, rgba(255,255,255,0.11), rgba(255,255,255,0.01) 38%, transparent)
+                        `,
+                        backgroundSize: '18px 18px, 18px 18px, auto, auto',
+                        border: isHovered ? '1px solid rgba(79,174,243,0.4)' : '1px solid rgba(235,238,242,0.28)',
                     }} />
-                <h3 className="font-sans text-xs sm:text-sm font-bold tracking-wider uppercase text-center mb-1"
-                    style={{ color: isHovered ? '#fff' : 'rgba(255,255,255,0.65)', transition: 'color 0.3s' }}>
-                    {sponsor.name}
-                </h3>
-                <p className="font-mono text-[9px] sm:text-[10px] tracking-[0.12em] uppercase"
-                    style={{ color: isHovered ? 'rgba(79,174,243,0.7)' : 'rgba(100,160,220,0.35)', transition: 'color 0.3s' }}>
-                    {sponsor.tier}
-                </p>
+
+             
+                {/* Cyan top/bottom highlight lines */}
+                <div className="absolute inset-0 pointer-events-none z-10">
+                    <span style={{ position: 'absolute', top: '-1px', left: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.6)' }} />
+                    <span style={{ position: 'absolute', bottom: '-1px', right: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.35)' }} />
+                </div>
+
+                <div className="relative z-30 flex h-full flex-col items-center justify-center">
+                    {/* Glowing Logo Placeholder Box */}
+                    <div style={{
+                        margin: '6px auto 14px',
+                        width: 'clamp(46px, 5.4vw, 68px)',
+                        height: 'clamp(46px, 5.4vw, 68px)',
+                        borderRadius: '4px',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        background: isHovered ? 'rgba(79,174,243,0.15)' : 'linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))',
+                        boxShadow: isHovered ? 'inset 0 0 22px rgba(79,174,243,0.25), inset 0 0 0 1px rgba(79,174,243,0.4)' : 'inset 0 0 22px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.08)',
+                        border: '1px solid rgba(235,238,242,0.18)',
+                        transition: 'all 0.4s ease'
+                    }}>
+                        <span className="font-mono text-[10px] text-[rgba(255,255,255,0.4)]">LOGO</span>
+                    </div>
+
+                    <h3 className="text-center font-sans font-black uppercase tracking-[0.06em] text-white transition-all duration-500 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]"
+                        style={{ margin: '0 0 7px', fontSize: 'clamp(11px, 1vw, 14px)', lineHeight: 1.15 }}>
+                        {sponsor.name}
+                    </h3>
+                    <p className="text-center font-mono uppercase tracking-[0.1em] transition-all duration-500"
+                        style={{ margin: '0 0 10px', fontSize: 'clamp(7px, 0.55vw, 9px)', color: 'rgba(79,174,243,0.85)' }}>
+                        {sponsor.tier}
+                    </p>
+
+                    <div style={{
+                        height: '1px', margin: '0 6px 10px', width: 'calc(100% - 12px)',
+                        background: 'linear-gradient(90deg, transparent, rgba(79,174,243,0.4) 30%, rgba(79,174,243,0.4) 70%, transparent)',
+                        boxShadow: '0 0 10px rgba(79,174,243,0.2)',
+                    }} />
+                </div>
             </div>
         </motion.div>
     );
 }
 
-// ─── HEADER ─────────────────────────────────────────────────────────────────
+// ─── HEADER (UPGRADED TO MATCH DOMAINS HUD) ─────────────────────────────────
 function Header() {
-    const [b, setB] = useState(true);
-    useEffect(() => { const iv = setInterval(() => setB(v => !v), 1200); return () => clearInterval(iv); }, []);
     return (
-        <div className="flex flex-col items-center mb-12 sm:mb-16 md:mb-20">
-            <div className="font-mono text-gray-500 text-[11px] sm:text-sm tracking-widest uppercase mb-6 sm:mb-8 self-start">
-                <span className="font-bold mr-2 text-white">01.5</span> System.Logs // Sponsors
-            </div>
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.6 }}>
-                <h2 className="text-center font-black uppercase tracking-tighter leading-none text-white"
-                    style={{ fontSize: 'clamp(28px, 5vw, 64px)', fontFamily: '"Inter","Arial Black",var(--font-geist-sans),sans-serif' }}>
-                    OUR <span style={{ color: '#4FAEF3' }}>SPONSORS</span>
-                </h2>
-            </motion.div>
-            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-                viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.5, delay: 0.3 }}
-                className="flex items-center gap-2 mt-3 sm:mt-4">
-                <div className="h-[1px] w-8 sm:w-12" style={{ background: 'linear-gradient(90deg,transparent,rgba(79,174,243,0.4))' }} />
-                <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.25em] uppercase" style={{ color: 'rgba(79,174,243,0.7)' }}>
-          // [SYS STATUS: <span style={{ color: b ? '#4FAEF3' : 'rgba(79,174,243,0.3)', transition: 'color 0.3s', textShadow: b ? '0 0 8px rgba(79,174,243,0.5)' : 'none' }}>NOMINAL</span>]
-                </span>
-                <div className="h-[1px] w-8 sm:w-12" style={{ background: 'linear-gradient(90deg,rgba(79,174,243,0.4),transparent)' }} />
-            </motion.div>
-            <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
-                viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="mt-4 sm:mt-6 origin-center"
-                style={{ width: 'min(80%,400px)', height: '1px', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)' }} />
+        <div className="z-20 mb-12 sm:mb-16 flex flex-col items-center text-center pointer-events-none w-full relative">
+            <span style={{
+                fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
+                fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase',
+            }}>
+                ▶ PARTNERSHIPS // SPONSORS
+            </span>
+            <motion.h2 
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.6 }}
+                style={{
+                    margin: 0, fontSize: 'clamp(32px,5.5vw,72px)', fontWeight: '900',
+                    color: '#ffffff', letterSpacing: '-0.01em',
+                    fontFamily: '"Inter", "Arial Black", sans-serif',
+                    textTransform: 'uppercase', lineHeight: 1,
+            }}>
+                OUR <span style={{ color: '#4FAEF3', fontWeight: 900 }}>SPONSORS.</span>
+            </motion.h2>
+            <motion.div 
+                initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
+                viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                style={{
+                    marginTop: '14px', width: '30%', height: '1px',
+                    background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)',
+            }} />
         </div>
     );
 }
@@ -238,7 +275,6 @@ export default function Sponsors() {
                 const h1 = BH_START[i] / 2;
                 const h2 = BH_END[i] / 2;
 
-                // Main structural tapered beam — graphite metal gradient
                 const bm = e[`bm${i}`] as SVGPolygonElement;
                 let bmPoints = '';
                 if (bm) {
@@ -247,15 +283,12 @@ export default function Sponsors() {
                     bm.setAttribute('transform', xf); bm.setAttribute('stroke', cBS); bm.setAttribute('fill', 'url(#beamMetal)'); bm.style.filter = glow;
                 }
 
-                // Depth shading overlay — same geometry as bm, diagonal light/shadow sweep
                 const bmD = e[`bmDepth${i}`] as SVGPolygonElement;
                 if (bmD && bmPoints) { bmD.setAttribute('points', bmPoints); bmD.setAttribute('transform', xf); }
 
-                // Fine wireframe grid texture overlay — same geometry as bm
                 const bmG = e[`bmGrid${i}`] as SVGPolygonElement;
                 if (bmG && bmPoints) { bmG.setAttribute('points', bmPoints); bmG.setAttribute('transform', xf); bmG.setAttribute('opacity', '0.6'); }
 
-                // Beveled top-edge highlight (light catching the rim)
                 const bv = e[`bmBevel${i}`] as SVGLineElement;
                 if (bv) {
                     bv.setAttribute('x1', '2'); bv.setAttribute('y1', (-h1 + 1.5).toFixed(1));
@@ -264,7 +297,6 @@ export default function Sponsors() {
                     bv.setAttribute('stroke', `rgba(255,255,255,${lv(.08, .18, t).toFixed(3)})`);
                 }
 
-                // Recessed inner panel — subtle carbon-fiber weave
                 const pn = e[`pn${i}`] as SVGPolygonElement;
                 if (pn) {
                     const ins = 16;
@@ -275,7 +307,6 @@ export default function Sponsors() {
                     }
                 }
 
-                // Heavy Hydraulic Piston on Link 1 — metallic barrel, subtle breathing extend/retract
                 if (i === 0) {
                     const cy = e['hydC'] as SVGRectElement;
                     const rd = e['hydR'] as SVGRectElement;
@@ -294,7 +325,6 @@ export default function Sponsors() {
                     }
                 }
 
-                // Warning hash marks (decals)
                 const mx = len / 2;
                 for (let d = 0; d < 3; d++) {
                     const hk = e[`hk${i}${d}`] as SVGLineElement;
@@ -330,26 +360,21 @@ export default function Sponsors() {
                 const sa = (j < NJ - 1 ? angOf(s.joints[j], s.joints[Math.min(j + 1, NJ - 1)]) : angOf(s.joints[j - 1], s.joints[j]));
                 const sd = sa * D;
 
-                // Motor bump (offset circle for 3D illusion) — metallic
                 const jm = e[`jM${j}`] as SVGCircleElement;
                 if (jm) {
                     jm.setAttribute('cx', (jt.x - 4).toFixed(1)); jm.setAttribute('cy', (jt.y + 4).toFixed(1));
                     jm.setAttribute('stroke', cJS); jm.setAttribute('fill', 'url(#jointMetal)');
                 }
 
-                // Outer servo housing — metallic
                 const jh = e[`jH${j}`] as SVGCircleElement;
                 if (jh) { jh.setAttribute('cx', jt.x.toFixed(1)); jh.setAttribute('cy', jt.y.toFixed(1)); jh.setAttribute('stroke', cJS); jh.setAttribute('fill', 'url(#jointMetal)'); jh.style.filter = glow; }
 
-                // Depth shading — rim light + shadow over the housing
                 const jD = e[`jDepth${j}`] as SVGCircleElement;
                 if (jD) { jD.setAttribute('cx', jt.x.toFixed(1)); jD.setAttribute('cy', jt.y.toFixed(1)); jD.setAttribute('r', JR[j].toString()); }
 
-                // Fine wireframe grid texture over the housing
                 const jGr = e[`jGrid${j}`] as SVGCircleElement;
                 if (jGr) { jGr.setAttribute('cx', jt.x.toFixed(1)); jGr.setAttribute('cy', jt.y.toFixed(1)); jGr.setAttribute('r', (JR[j] - 2).toString()); }
 
-                // Beveled rim highlight ring
                 const jBv = e[`jBevel${j}`] as SVGCircleElement;
                 if (jBv) {
                     jBv.setAttribute('cx', jt.x.toFixed(1)); jBv.setAttribute('cy', jt.y.toFixed(1));
@@ -357,7 +382,6 @@ export default function Sponsors() {
                     jBv.setAttribute('stroke', `rgba(79,174,243,${lv(.15, .35, t).toFixed(3)})`);
                 }
 
-                // Gear ring (thick dashed circle simulating teeth) — cyan accent, slow rotation
                 const jg = e[`jG${j}`] as SVGCircleElement;
                 if (jg) {
                     jg.setAttribute('cx', jt.x.toFixed(1)); jg.setAttribute('cy', jt.y.toFixed(1));
@@ -366,21 +390,17 @@ export default function Sponsors() {
                     jg.setAttribute('transform', `rotate(${gearSpin.toFixed(1)} ${jt.x.toFixed(1)} ${jt.y.toFixed(1)})`);
                 }
 
-                // Inner ring — cyan accent
                 const ji = e[`jI${j}`] as SVGCircleElement;
                 if (ji) { ji.setAttribute('cx', jt.x.toFixed(1)); ji.setAttribute('cy', jt.y.toFixed(1)); ji.setAttribute('stroke', cJI); ji.setAttribute('fill', 'none'); }
 
-                // Shaft pin — cyan accent
                 const js = e[`jS${j}`] as SVGCircleElement;
                 if (js) { js.setAttribute('cx', jt.x.toFixed(1)); js.setAttribute('cy', jt.y.toFixed(1)); js.setAttribute('fill', cSH); }
 
-                // Crosshair lines inside housing
                 const chH = e[`cH${j}`] as SVGLineElement;
                 const chV = e[`cV${j}`] as SVGLineElement;
                 if (chH) { const r = JIR[j]; chH.setAttribute('x1', (jt.x - r).toFixed(1)); chH.setAttribute('y1', jt.y.toFixed(1)); chH.setAttribute('x2', (jt.x + r).toFixed(1)); chH.setAttribute('y2', jt.y.toFixed(1)); chH.setAttribute('stroke', cJI); }
                 if (chV) { const r = JIR[j]; chV.setAttribute('x1', jt.x.toFixed(1)); chV.setAttribute('y1', (jt.y - r).toFixed(1)); chV.setAttribute('x2', jt.x.toFixed(1)); chV.setAttribute('y2', (jt.y + r).toFixed(1)); chV.setAttribute('stroke', cJI); }
 
-                // Multi-flange mounts — metallic
                 for (let f = 0; f < 3; f++) {
                     const fg = e[`jF${j}${f}`] as SVGRectElement;
                     if (fg) {
@@ -390,7 +410,6 @@ export default function Sponsors() {
                     }
                 }
 
-                // Bolts — cyan accent
                 if (j >= 1 && j <= 2) {
                     for (let bi = 0; bi < 8; bi++) {
                         const bolt = e[`jB${j}${bi}`] as SVGCircleElement;
@@ -404,7 +423,6 @@ export default function Sponsors() {
                     }
                 }
 
-                // Status LED — small, soft pulse, no flashing
                 const led = e[`jLed${j}`] as SVGCircleElement;
                 if (led) {
                     const pulse = 0.45 + 0.25 * Math.sin(Date.now() / 900 + j * 1.3) + t * 0.25;
@@ -419,35 +437,31 @@ export default function Sponsors() {
             const la = angOf(wr, ee), ld = la * D;
             const xfE = `translate(${ee.x.toFixed(1)},${ee.y.toFixed(1)}) rotate(${ld.toFixed(1)})`;
 
-            // Angled Wrist Base (Polygon) — metallic
             const wb = e['wB'] as SVGPolygonElement;
             if (wb) {
                 wb.setAttribute('points', '-10,-18 10,-12 10,12 -10,18');
                 wb.setAttribute('transform', xfE); wb.setAttribute('stroke', cGS); wb.setAttribute('fill', 'url(#jointMetal)'); wb.style.filter = glow;
             }
 
-            // Depth overlay on wrist base — same geometry as wb
             const wbD = e['wBDepth'] as SVGPolygonElement;
             if (wbD) { wbD.setAttribute('points', '-10,-18 10,-12 10,12 -10,18'); wbD.setAttribute('transform', xfE); }
 
-            // Complex angled fingers — metallic
-            const openAng = 20 * s.grip; // degrees of opening
+            const openAng = 20 * s.grip;
 
-            const fgT = e['fG_T'] as SVGPathElement; // Top finger
+            const fgT = e['fG_T'] as SVGPathElement;
             if (fgT) {
                 fgT.setAttribute('transform', `translate(${ee.x.toFixed(1)},${ee.y.toFixed(1)}) rotate(${(ld - openAng).toFixed(1)})`);
                 fgT.setAttribute('d', 'M 5,-8 L 25,-18 L 40,-12 L 40,-2 L 25,-8 Z');
                 fgT.setAttribute('stroke', cGS); fgT.setAttribute('fill', 'url(#beamMetal)');
             }
 
-            const fgB = e['fG_B'] as SVGPathElement; // Bottom finger
+            const fgB = e['fG_B'] as SVGPathElement;
             if (fgB) {
                 fgB.setAttribute('transform', `translate(${ee.x.toFixed(1)},${ee.y.toFixed(1)}) rotate(${(ld + openAng).toFixed(1)})`);
                 fgB.setAttribute('d', 'M 5,8 L 25,18 L 40,12 L 40,2 L 25,8 Z');
                 fgB.setAttribute('stroke', cGS); fgB.setAttribute('fill', 'url(#beamMetal)');
             }
 
-            // Internal clamping pads — cyan accent (energy conduit feel)
             const pdT = e['pD_T'] as SVGPathElement;
             if (pdT) {
                 pdT.setAttribute('transform', `translate(${ee.x.toFixed(1)},${ee.y.toFixed(1)}) rotate(${(ld - openAng).toFixed(1)})`);
@@ -510,46 +524,58 @@ export default function Sponsors() {
     }, [measure]);
 
     return (
-        <section ref={secRef} id="sponsors" className="relative z-40 w-full overflow-hidden" style={{ background: '#0a0a0a' }}>
-            {/* BG Grid */}
-            <div className="absolute inset-0 pointer-events-none z-0" style={{ backgroundImage: 'linear-gradient(rgba(79,174,243,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(79,174,243,0.03) 1px,transparent 1px)', backgroundSize: '48px 48px' }} />
+        <section ref={secRef} id="sponsors" className="relative z-40 w-full overflow-hidden bg-[#0d0d0d]">
+            
+            {/* MATCHING EVENTS / DOMAINS BACKGROUND GRID */}
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        backgroundImage: `
+                            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                            linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)
+                        `,
+                        backgroundSize: "40px 40px",
+                    }}
+                />
+            </div>
             <div className="absolute inset-0 pointer-events-none z-0" style={{ background: 'radial-gradient(ellipse 60% 40% at 50% 30%,rgba(79,174,243,0.04),transparent 70%)' }} />
-            <div className="w-full h-[1px]" style={{ background: 'linear-gradient(90deg,transparent 5%,rgba(255,255,255,0.06) 30%,rgba(79,174,243,0.12) 50%,rgba(255,255,255,0.06) 70%,transparent 95%)' }} />
+
+            {/* DOMAINS SYSTEM LOG OVERLAY TOP-LEFT */}
+            <div className="absolute top-[10%] left-[6%] z-20 pointer-events-none hidden md:block">
+                <span style={{
+                    fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
+                    color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
+                }}>
+                    <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>03.</span>
+                    SYSTEM.LOGS // SPONSORS
+                </span>
+            </div>
 
             {/* ═══════════ SVG ROBOTIC ARM ═══════════ */}
-            <svg ref={svgRef} className="absolute inset-0 w-full h-full z-[1] pointer-events-none hidden md:block" viewBox="0 0 1400 900" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
-
+<svg ref={svgRef} className="absolute inset-0 w-full h-full z-[30] pointer-events-none hidden md:block" viewBox="0 0 1400 900" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
                 <defs>
-                    {/* Graphite metal gradient for beams / fingers */}
                     <linearGradient id="beamMetal" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#3a3f47" />
                         <stop offset="45%" stopColor="#23262b" />
                         <stop offset="55%" stopColor="#1c1e22" />
                         <stop offset="100%" stopColor="#0d0e10" />
                     </linearGradient>
-
-                    {/* Joint housing — radial beveled metal disc */}
                     <radialGradient id="jointMetal" cx="35%" cy="30%" r="75%">
                         <stop offset="0%" stopColor="#454a52" />
                         <stop offset="55%" stopColor="#262a30" />
                         <stop offset="100%" stopColor="#0a0b0d" />
                     </radialGradient>
-
-                    {/* Hydraulic piston / base pedestal barrel */}
                     <linearGradient id="pistonMetal" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#34383e" />
                         <stop offset="50%" stopColor="#1a1c1f" />
                         <stop offset="100%" stopColor="#0a0b0c" />
                     </linearGradient>
-
-                    {/* Subtle carbon-fiber weave, low contrast */}
                     <pattern id="carbonFiber" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
                         <rect width="6" height="6" fill="#15171a" />
                         <path d="M0 0H3V3H0Z" fill="#1b1e22" />
                         <path d="M3 3H6V6H3Z" fill="#1b1e22" />
                     </pattern>
-
-                    {/* Cheap soft glow for cyan accents */}
                     <filter id="edgeGlow" x="-50%" y="-50%" width="200%" height="200%">
                         <feGaussianBlur stdDeviation="1.4" result="b" />
                         <feMerge>
@@ -557,28 +583,20 @@ export default function Sponsors() {
                             <feMergeNode in="SourceGraphic" />
                         </feMerge>
                     </filter>
-
-                    {/* Depth gradient — diagonal light-to-shadow sweep for beams/panels */}
                     <linearGradient id="beamDepth" x1="0" y1="0" x2="1" y2="1">
                         <stop offset="0%" stopColor="#ffffff" stopOpacity="0.10" />
                         <stop offset="35%" stopColor="#ffffff" stopOpacity="0" />
                         <stop offset="70%" stopColor="#000000" stopOpacity="0" />
                         <stop offset="100%" stopColor="#000000" stopOpacity="0.35" />
                     </linearGradient>
-
-                    {/* Joint depth — rim light top-left, shadow bottom-right */}
                     <radialGradient id="jointDepth" cx="32%" cy="28%" r="80%">
                         <stop offset="0%" stopColor="#ffffff" stopOpacity="0.12" />
                         <stop offset="50%" stopColor="#ffffff" stopOpacity="0" />
                         <stop offset="100%" stopColor="#000000" stopOpacity="0.4" />
                     </radialGradient>
-
-                    {/* Fine wireframe grid — very low opacity design texture */}
                     <pattern id="wireGrid" width="14" height="14" patternUnits="userSpaceOnUse">
                         <path d="M0 0H14M0 0V14" stroke="#4FAEF3" strokeWidth="0.4" strokeOpacity="0.10" />
                     </pattern>
-
-                    {/* Finer wireframe grid for joints / circular housings */}
                     <pattern id="wireGridFine" width="9" height="9" patternUnits="userSpaceOnUse">
                         <path d="M0 0H9M0 0V9" stroke="#4FAEF3" strokeWidth="0.35" strokeOpacity="0.08" />
                     </pattern>
@@ -586,10 +604,8 @@ export default function Sponsors() {
 
                 {/* Reach radius */}
                 <circle ref={ref('rc')} fill="none" strokeWidth="1" strokeDasharray="16 12" />
-
                 {/* Cables / Hoses */}
                 {[0, 1, 2].map(i => <path key={`cb${i}`} ref={ref(`cb${i}`)} fill="none" strokeWidth="2.5" strokeDasharray="7 6" strokeLinecap="round" />)}
-
                 {/* Heavy Base pedestal */}
                 <rect ref={ref('bP')} x={-90} y={-5} width={180} height={25} rx={4} strokeWidth="3" />
                 <polygon ref={ref('bC')} points="-45,-45 45,-45 60,-5 -60,-5" strokeWidth="2.5" />
@@ -599,12 +615,9 @@ export default function Sponsors() {
                 {[0, 1, 2].map(i => (
                     <g key={`s${i}`}>
                         <polygon ref={ref(`bm${i}`)} strokeWidth="3" strokeLinejoin="round" />
-                        {/* Depth shading sweep over the metal */}
                         <polygon ref={ref(`bmDepth${i}`)} fill="url(#beamDepth)" stroke="none" />
-                        {/* Fine wireframe grid texture */}
                         <polygon ref={ref(`bmGrid${i}`)} fill="url(#wireGrid)" stroke="none" />
                         <polygon ref={ref(`pn${i}`)} strokeWidth="1.5" strokeLinejoin="round" />
-                        {/* Beveled top highlight edge */}
                         <line ref={ref(`bmBevel${i}`)} strokeWidth="1" strokeLinecap="round" />
                         <line ref={ref(`hk${i}0`)} />
                         <line ref={ref(`hk${i}1`)} />
@@ -619,20 +632,13 @@ export default function Sponsors() {
                 {/* Joints with depth, wireframe grid, and beveled rim */}
                 {[0, 1, 2, 3].map(j => (
                     <g key={`j${j}`}>
-                        {/* Multiple mounting flanges */}
                         <rect ref={ref(`jF${j}0`)} x={JR[j] - 4} y={-6} width={14} height={12} rx={2} strokeWidth="2" />
                         <rect ref={ref(`jF${j}1`)} x={JR[j] - 4} y={-6} width={14} height={12} rx={2} strokeWidth="2" />
                         <rect ref={ref(`jF${j}2`)} x={JR[j] - 4} y={-6} width={14} height={12} rx={2} strokeWidth="2" />
-
-                        {/* Offset Motor Bump */}
                         <circle ref={ref(`jM${j}`)} r={JR[j] * 0.85} strokeWidth="2" />
-
                         <circle ref={ref(`jH${j}`)} r={JR[j]} strokeWidth="3" />
-                        {/* Depth shading — rim light + shadow */}
                         <circle ref={ref(`jDepth${j}`)} fill="url(#jointDepth)" stroke="none" />
-                        {/* Fine wireframe grid texture */}
                         <circle ref={ref(`jGrid${j}`)} fill="url(#wireGridFine)" stroke="none" opacity="0.5" />
-                        {/* Beveled rim highlight */}
                         <circle ref={ref(`jBevel${j}`)} fill="none" strokeWidth="1" strokeDasharray="3 2" />
                         <circle ref={ref(`jG${j}`)} r={JR[j] - 4} strokeWidth="4" strokeDasharray="6 4" />
                         <circle ref={ref(`jI${j}`)} r={JIR[j]} strokeWidth="2" />
@@ -640,8 +646,6 @@ export default function Sponsors() {
                         <line ref={ref(`cH${j}`)} strokeWidth="1.5" />
                         <line ref={ref(`cV${j}`)} strokeWidth="1.5" />
                         {j >= 1 && j <= 2 && [0, 1, 2, 3, 4, 5, 6, 7].map(bi => <circle key={`jB${j}${bi}`} ref={ref(`jB${j}${bi}`)} r={2} />)}
-
-                        {/* Tiny status LED */}
                         <circle ref={ref(`jLed${j}`)} r={2.2} fill="#4FAEF3" filter="url(#edgeGlow)" />
                     </g>
                 ))}
@@ -653,8 +657,6 @@ export default function Sponsors() {
                 <path ref={ref('fG_B')} strokeWidth="2.5" strokeLinejoin="round" />
                 <path ref={ref('pD_T')} strokeWidth="1.5" strokeLinejoin="round" />
                 <path ref={ref('pD_B')} strokeWidth="1.5" strokeLinejoin="round" />
-
-                {/* End-effector pulse */}
                 <circle ref={ref('pl')} fill="none" strokeWidth="2" />
 
                 {/* Angle annotations */}
@@ -666,26 +668,27 @@ export default function Sponsors() {
                 <Header />
                 <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}
                     variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 md:gap-7">
+                    className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
                     {SPONSORS.map(sp => (
                         <motion.div key={sp.id} variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } } }}>
                             <SponsorCard sponsor={sp} isHovered={hId === sp.id} onHoverChange={onCard(sp.id)} />
                         </motion.div>
                     ))}
                 </motion.div>
+
+                {/* Status Telemetry */}
                 <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.8 }}
-                    className="mt-12 sm:mt-16 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+                    className="mt-12 sm:mt-16 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 pointer-events-none">
                     {[{ l: 'IK_JOINTS', v: `${NJ}` }, { l: 'COVERAGE', v: '100%' }, { l: 'ARM_STATUS', v: hId ? 'LOCKED' : 'TRACKING' }].map(x => (
                         <div key={x.l} className="flex items-center gap-2">
-                            <div className="w-1 h-1 rounded-full" style={{ background: '#4FAEF3', boxShadow: '0 0 4px rgba(79,174,243,0.5)' }} />
-                            <span className="font-mono text-[9px] sm:text-[10px] tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.25)' }}>
-                                {x.l}: <span style={{ color: 'rgba(79,174,243,0.6)' }}>{x.v}</span>
+                            <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#4FAEF3', boxShadow: '0 0 6px rgba(79,174,243,0.5)' }} />
+                            <span className="font-mono text-[9px] sm:text-[10px] tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                                {x.l}: <span style={{ color: '#ffffff', fontWeight: 'bold' }}>{x.v}</span>
                             </span>
                         </div>
                     ))}
                 </motion.div>
             </div>
-            <div className="w-full h-[1px]" style={{ background: 'linear-gradient(90deg,transparent 5%,rgba(255,255,255,0.06) 30%,rgba(79,174,243,0.12) 50%,rgba(255,255,255,0.06) 70%,transparent 95%)' }} />
         </section>
     );
 }

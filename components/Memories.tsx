@@ -159,7 +159,7 @@ export default function MemoryWarpTunnel() {
     let VH = window.innerHeight;
     const isMobile = window.matchMedia('(max-width: 700px)').matches;
     const activeDebrisCount = isMobile ? 8 : DEBRIS_COUNT;
-    const scrollUnits = isMobile ? 8 : 14;
+    const scrollUnits = isMobile ? 12 : 14;
     const maxPixelRatio = isMobile ? 1.25 : 2;
 
     // ── Renderer ──────────────────────────────────────────────
@@ -341,8 +341,7 @@ export default function MemoryWarpTunnel() {
         const seqP = clamp((p - 0.32) / 0.38, 0, 1);
         targetT = seqP * (MEMORIES.length + 5.8);
       }
-      displayT += (targetT - displayT) * (dt * 0.004);
-
+displayT += (targetT - displayT) * (dt * (isMobile ? 0.002 : 0.004));
       const targetPortalProgress = clamp((p - 0.72) / 0.22, 0, 1);
       portalProgress += (targetPortalProgress - portalProgress) * (dt * 0.003);
       const portalT = easeBox(portalProgress);
@@ -556,7 +555,7 @@ export default function MemoryWarpTunnel() {
           box-shadow: 0 0 8px rgba(255,255,255,0.2);
         }
         @media (max-width: 700px) {
-          .mwt-wrap { height: 900vh; }
+          .mwt-wrap { height: 1300vh; }
           .mwt-label { left: 20px; top: 22px; font-size: 9px; }
           .mwt-grid { background-size: 32px 32px; }
           .mwt-rtext {
