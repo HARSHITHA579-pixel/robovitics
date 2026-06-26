@@ -13,6 +13,7 @@ import Sponsors from '@/components/Sponsors';
 import Memories from '@/components/Memories';
 import TeamRoster from '@/components/TeamRoster';
 import Footer from '@/components/Footer';
+import Achievements from '@/components/Achievements';
 
 export default function Page() {
   const domainsRef = useRef<HTMLDivElement>(null);
@@ -99,8 +100,10 @@ export default function Page() {
       <div ref={domainsRef}>
         <Domains />
       </div>
-      <Events />
+      
       <TechnicalTeams />
+      <Events />
+      <Achievements />
       <Projects />
       <Sponsors />
       <Memories />
