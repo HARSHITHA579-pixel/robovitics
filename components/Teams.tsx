@@ -4,15 +4,14 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-// Assumes you have your data here:
-import { teamsData } from '../data/clubData'; 
+import { teamsData } from '../data/clubData';
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Shared Background 
+// Shared Background
 // ─────────────────────────────────────────────────────────────────────────────
 function SectionBackground() {
     return (
@@ -21,9 +20,9 @@ function SectionBackground() {
                 className="absolute inset-0"
                 style={{
                     backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-            linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)
-          `,
+                        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                        linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)
+                    `,
                     backgroundSize: '40px 40px',
                 }}
             />
@@ -97,7 +96,7 @@ function ArrowBtn({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Team Slide Card (Upgraded for Mobile & HUD visuals)
+// Team Slide Card
 // ─────────────────────────────────────────────────────────────────────────────
 function TeamSlide({
     team, isActive,
@@ -123,7 +122,7 @@ function TeamSlide({
                     border: '1px solid rgba(255,255,255,0.08)',
                 }}
             >
-                {/* Inner texture overlay matching Domains */}
+                {/* Inner texture overlay */}
                 <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
@@ -160,12 +159,12 @@ function TeamSlide({
                     <span style={{ position: 'absolute', bottom: '-1px', right: '30px', width: '60px', height: '1px', background: accent.replace('0.9', '0.35') }} />
                 </div>
 
-                {/* Photo pane (3D Flip Card with Screen Framing) */}
-                <div 
+                {/* Photo pane (3D Flip Card) */}
+                <div
                     className="group relative h-48 sm:h-64 md:h-auto md:w-[45%] flex-shrink-0 cursor-pointer border-b md:border-b-0 md:border-r border-white/10"
                     style={{ perspective: '1200px', background: 'rgba(5,5,5,0.5)' }}
                 >
-                    <div 
+                    <div
                         className="absolute inset-4 transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:[transform:rotateY(180deg)]"
                         style={{ transformStyle: 'preserve-3d' }}
                     >
@@ -179,7 +178,6 @@ function TeamSlide({
                                 className="object-cover opacity-80 mix-blend-screen"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                             />
-                            {/* HUD Scanline & Glow Overlay */}
                             <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_51%)] bg-[length:100%_4px] opacity-20" />
                             <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 40px rgba(0,0,0,0.8), inset 0 0 0 1px ${accent.replace('0.9', '0.2')}` }} />
                         </div>
@@ -194,7 +192,6 @@ function TeamSlide({
                                 className="object-cover opacity-70 sepia-[0.2] hue-rotate-[-10deg]"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                             />
-                            {/* HUD Scanline & Glow Overlay */}
                             <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_51%)] bg-[length:100%_4px] opacity-20" />
                             <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 40px rgba(0,0,0,0.9), inset 0 0 0 1px ${accent.replace('0.9', '0.2')}` }} />
                         </div>
@@ -213,7 +210,7 @@ function TeamSlide({
                 <div className="flex flex-col justify-center px-6 py-8 sm:px-8 sm:py-10 md:px-12 md:py-14 md:w-[55%] z-20 bg-gradient-to-br from-transparent to-black/40">
                     <span
                         className="font-mono uppercase tracking-[0.3em] mb-2 sm:mb-3"
-                        style={{ fontSize: 'clamp(9px, 1vw, 11px)', color: accent, textShadow: `0 0 8px ${accent.replace('0.9','0.4')}` }}
+                        style={{ fontSize: 'clamp(9px, 1vw, 11px)', color: accent, textShadow: `0 0 8px ${accent.replace('0.9', '0.4')}` }}
                     >
                         {team.id}
                     </span>
@@ -254,6 +251,28 @@ function TeamSlide({
                     >
                         {team.description}
                     </p>
+
+                    {/* Member count badges */}
+                    <div className="mt-6 flex items-center gap-4">
+                        <div
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-[3px]"
+                            style={{ border: `1px solid ${accent.replace('0.9', '0.25')}`, background: accent.replace('0.9', '0.06') }}
+                        >
+                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: accent, boxShadow: `0 0 6px ${accent}`, display: 'inline-block', flexShrink: 0 }} />
+                            <span className="font-mono uppercase tracking-[0.2em]" style={{ fontSize: '9px', color: accent }}>
+                                12 Senior Board
+                            </span>
+                        </div>
+                        <div
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-[3px]"
+                            style={{ border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)' }}
+                        >
+                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,0.4)', display: 'inline-block', flexShrink: 0 }} />
+                            <span className="font-mono uppercase tracking-[0.2em]" style={{ fontSize: '9px', color: 'rgba(255,255,255,0.4)' }}>
+                                18 Core Board
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -306,12 +325,11 @@ export default function TechnicalTeams() {
             gsap.from(
                 [labelRef.current, titleRef.current, carouselRef.current, controlsRef.current].filter(Boolean),
                 {
-                    opacity: 0, 
-                    y: 30, 
-                    duration: 0.8, 
-                    ease: 'power3.out', 
-                    stagger: 0.15, 
-                    // removed immediateRender: false so GSAP hides it instantly on mount
+                    opacity: 0,
+                    y: 30,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                    stagger: 0.15,
                     scrollTrigger: {
                         trigger: sectionRef.current,
                         start: 'top 80%',
@@ -351,7 +369,11 @@ export default function TechnicalTeams() {
                 {/* Section header */}
                 <div className="mb-10 sm:mb-14 flex flex-col items-center text-center pointer-events-none">
                     <div ref={labelRef}>
-                        <span style={{ fontSize: '9px', sm: '10px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: 12, display: 'block', textTransform: 'uppercase' }}>
+                        {/* ✅ Fixed: moved fontSize to className, removed invalid sm: from style */}
+                        <span
+                            className="text-[9px] sm:text-[10px]"
+                            style={{ letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: 12, display: 'block', textTransform: 'uppercase' }}
+                        >
                             ▶ UNIT_MANIFEST // TECH_TEAMS
                         </span>
                     </div>
@@ -364,10 +386,10 @@ export default function TechnicalTeams() {
                     </div>
                 </div>
 
-                {/* Carousel (Changed height logic to prevent overflow on mobile) */}
+                {/* Carousel */}
                 <div
                     ref={carouselRef}
-                    className="relative w-full overflow-hidden min-h-[520px] sm:min-h-[460px] md:h-[480px]"
+                    className="relative w-full overflow-hidden min-h-[580px] sm:min-h-[500px] md:h-[520px]"
                     onMouseEnter={() => { isHovering.current = true; }}
                     onMouseLeave={() => { isHovering.current = false; }}
                     onTouchStart={handleTouchStart}
@@ -401,11 +423,16 @@ export default function TechnicalTeams() {
                 </div>
 
                 {/* Index counter */}
+                {/* ✅ Fixed: moved fontSize to className, removed invalid sm: from style */}
                 <div className="mt-4 sm:mt-5 flex justify-center pointer-events-none">
-                    <span className="font-mono uppercase tracking-[0.25em]" style={{ fontSize: '9px', sm: '10px', color: 'rgba(255,255,255,0.25)' }}>
+                    <span
+                        className="font-mono uppercase tracking-[0.25em] text-[9px] sm:text-[10px]"
+                        style={{ color: 'rgba(255,255,255,0.25)' }}
+                    >
                         {String(activeIndex + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
                     </span>
                 </div>
+
             </div>
         </section>
     );
