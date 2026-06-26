@@ -206,7 +206,6 @@ export default function Footer() {
 
         <div className="mt-4 flex flex-col gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/35 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 RoboVITics, VIT Vellore.</p>
-          <p>Built by the Web/App Domain.</p>
         </div>
 
       </div>

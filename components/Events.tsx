@@ -19,12 +19,15 @@ type DeckItem = {
 
 type Mode = "events" | "outreach";
 
+// Replace the events array — add the 6th entry:
 const events: DeckItem[] = [
   { id: "MODULE_03", name: "MACHINE DESIGN", type: "FUSION 360 WORKSHOP", date: "PRE-GRAVITAS 2025 · 150 ATTENDEES", desc: "Hands-on CAD across modeling, joints, rendering, and simulation — plus real-time physics in PyBullet.", status: "OPEN", img: "/equinox.png", details: "A two-day deep dive into Fusion 360 held on 23–24 Sept 2025, covering 2D/3D modeling, joint assembly, animation, rendering, and simulation. Participants were introduced to PyBullet, a real-time physics engine, to test and validate their digital models against motion, collisions, and constraints. Practical, beyond-curriculum design projects sharpened both technical skill and industry readiness." },
   { id: "MODULE_02", name: "HANDS ON ROBOTICS", type: "WORKSHOP · HARDWARE + SOFTWARE", date: "PRE-GRAVITAS 2025 · 240+ ATTENDEES", desc: "Two days, zero prior experience needed. Sensors, microcontrollers, MicroPython, and live WebSocket-controlled robots.", status: "OPEN", img: "/hands-on.png", details: "Sponsored by Module143 and run on 22–23 Sept 2025, this two-day workshop took ~240 students from zero to building functional robotic systems. Sessions covered sensors, microcontrollers, and IoT-enabled devices, alongside MicroPython for efficient firmware. Participants also built web-based control systems using real-time communication and WebSocket integration — bridging embedded hardware, firmware, and browser-based control in one working pipeline." },
   { id: "MODULE_01", name: "ROBOWARS", type: "COMBAT ROBOTICS", date: "FLAGSHIP · GRAVITAS 2025", desc: "3 weight classes. ₹3L prize pool. One of India's largest combat arenas — Team Orcus fought across all categories.", status: "FLAGSHIP", img: "/robowars.png", details: "Held 26–28 Sept 2025 and sponsored by Siemens and Analog Devices, RoboWars brought elite teams from across the country into one of India's largest and safest combat robotics arenas. Matches spanned 8kg, 15kg, and 60kg weight categories, testing mechanical design, electronics, and strategy under pressure. Our own Team Orcus competed in every category. Winners: Team Dot Robotics (8kg), Team Black Diamonds (15kg), and Team Shadow (60kg)." },
   { id: "MODULE_04", name: "VORTEX 360", type: "72H CAD DESIGN-A-THON", date: "POWERED BY AUTODESK · FEB 2025", desc: "~1,300 participants. 3 days, real-world problem tracks, ₹1L prize pool, and direct access to Autodesk experts.", status: "FLAGSHIP", img: "/vortex.png", details: "A 72-hour CAD modeling design-a-thon sponsored by Autodesk, drawing nearly 1,300 students in teams of 3–5. Day 1 focused on problem understanding and brainstorming, Day 2 on refining designs and prototyping in Fusion 360, and Day 3 on final pitches before judges and industry experts. Beyond the ₹1L prize pool, the event offered direct networking with Autodesk professionals and industry leaders." },
   { id: "MODULE_05", name: "CRUISE THE WEB3VERSE", type: "WEB3 EVENT", date: "2 DAYS · ENDED IN A LIVE AUCTION", desc: "A two-day dive into Web3 concepts and tooling, closing out with a live auction finale.", status: "UPCOMING", img: "/equinox.png", details: "A two-day Web3-focused event exploring decentralized concepts and tooling, designed for curious builders and newcomers alike. The event culminated in a live auction, turning theory into a tangible, competitive finale that brought the whole cohort together for one last high-energy session." },
+  // ← NEW 6th event — replace with your actual data:
+  { id: "MODULE_06", name: "YOUR EVENT NAME", type: "EVENT TYPE", date: "DATE · ATTENDEES", desc: "Short description of the event shown on the card face.", status: "OPEN", img: "/your-image.png", details: "Full description shown in the modal detail view." },
 ];
 
 const outreach: DeckItem[] = [
@@ -90,28 +93,39 @@ export default function Events() {
   const baseShadow = "inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.75), 0 0 0 1px rgba(0,0,0,0.75), 8px 10px 20px rgba(0,0,0,0.55)";
   const glowShadow = `${baseShadow}, 0 0 40px rgba(255,255,255,0.12), 0 0 90px rgba(255,255,255,0.07), 0 0 160px rgba(200,220,255,0.05)`;
 
-  const getGridPositions = useCallback((count: number) => {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const offsetX = Math.min(vw * 0.26, Math.max(vw / 2 - 175, 170));
-    const offsetY = Math.min(vh * 0.24, Math.max(vh / 2 - 155, 125));
+const getGridPositions = useCallback((count: number) => {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const offsetX = Math.min(vw * 0.28, Math.max(vw / 2 - 160, 180));
+  const offsetY = Math.min(vh * 0.22, Math.max(vh / 2 - 160, 120));
 
-    if (count === 3) {
-      return [
-        { x: -offsetX * 0.8, y: -offsetY * 0.55 },
-        { x: offsetX * 0.8, y: -offsetY * 0.55 },
-        { x: 0, y: offsetY * 0.65 },
-      ];
-    }
-
+  if (count === 6) {
     return [
-      { x: -offsetX, y: -offsetY },
-      { x: offsetX, y: -offsetY },
-      { x: 0, y: 0 },
-      { x: -offsetX, y: offsetY },
-      { x: offsetX, y: offsetY },
+      { x: -offsetX, y: -offsetY },  // top-left
+      { x: 0,        y: -offsetY },  // top-center
+      { x:  offsetX, y: -offsetY },  // top-right
+      { x: -offsetX, y:  offsetY },  // bottom-left
+      { x: 0,        y:  offsetY },  // bottom-center
+      { x:  offsetX, y:  offsetY },  // bottom-right
     ];
-  }, []);
+  }
+
+  if (count === 3) {
+    return [
+      { x: -offsetX * 0.8, y: -offsetY * 0.55 },
+      { x:  offsetX * 0.8, y: -offsetY * 0.55 },
+      { x: 0,              y:  offsetY * 0.65  },
+    ];
+  }
+
+  return [
+    { x: -offsetX, y: -offsetY },
+    { x:  offsetX, y: -offsetY },
+    { x: 0,        y: 0        },
+    { x: -offsetX, y:  offsetY },
+    { x:  offsetX, y:  offsetY },
+  ];
+}, []);
 
   const prepStack = useCallback((cards: HTMLDivElement[]) => {
     cards.forEach((card, i) => {
@@ -126,37 +140,39 @@ export default function Events() {
     });
   }, [baseShadow]);
 
-  const revealCards = useCallback((cards: HTMLDivElement[], direction: "left" | "right" = "left") => {
-    const positions = getGridPositions(cards.length);
-    const vw = window.innerWidth;
-    const startX = direction === "left" ? vw * 0.92 : -vw * 0.92;
-    const tl = gsap.timeline({ onComplete: () => { isSwappingRef.current = false; } });
+const revealCards = useCallback((cards: HTMLDivElement[], direction: "left" | "right" = "left") => {
+  const positions = getGridPositions(cards.length);
+  const vw = window.innerWidth;
+  const startX = direction === "left" ? vw * 0.92 : -vw * 0.92;
+  const tl = gsap.timeline({ onComplete: () => { isSwappingRef.current = false; } });
 
-    cards.forEach((card, i) => {
-      const pos = positions[i];
-      const t = (cards.length - 1 - i) * 0.07;
-      gsap.set(card, { x: startX, y: pos.y, rotateX: 0, scale: 0.86, opacity: 1, zIndex: i + 1, pointerEvents: "auto" });
-      
-      const styledBg = card.querySelector<HTMLElement>(".ev-styled-bg");
-      const highlights = card.querySelector<HTMLElement>(".ev-highlights");
-      const inner = card.querySelector<HTMLElement>(".ev-inner");
-      const flash = card.querySelector<HTMLElement>(".ev-flash");
-      if (styledBg) gsap.set(styledBg, { opacity: 0, boxShadow: baseShadow });
-      if (highlights) gsap.set(highlights, { opacity: 0 });
-      if (inner) gsap.set(inner, { opacity: 0 });
+  cards.forEach((card, i) => {
+    const pos = positions[i];
+    gsap.set(card, { x: startX, y: pos.y, rotateX: 0, scale: 0.86, opacity: 1, zIndex: i + 1, pointerEvents: "auto" });
 
-      tl.to(card, { x: pos.x, y: pos.y, scale: 1, duration: 0.42, ease: "power3.out" }, t);
-      tl.to(card, { y: pos.y + 8, duration: 0.06, ease: "power1.out" }, t + 0.36);
-      tl.to(card, { y: pos.y, duration: 0.06, ease: "power1.in" }, t + 0.42);
-      if (styledBg) {
-        tl.to(styledBg, { opacity: 1, duration: 0.16, ease: "power2.inOut" }, t + 0.08);
-        tl.to(styledBg, { boxShadow: glowShadow, duration: 0.28, ease: "power2.out" }, t + 0.26);
-      }
-      if (highlights) tl.to(highlights, { opacity: 1, duration: 0.16 }, t + 0.12);
-      if (inner) tl.to(inner, { opacity: 1, duration: 0.14, ease: "power1.out" }, t + 0.22);
-      if (flash) tl.fromTo(flash, { opacity: 0.75 }, { opacity: 0, duration: 0.14, ease: "power2.out" }, t + 0.26);
-    });
-  }, [baseShadow, getGridPositions, glowShadow]);
+    const styledBg  = card.querySelector<HTMLElement>(".ev-styled-bg");
+    const highlights = card.querySelector<HTMLElement>(".ev-highlights");
+    const inner      = card.querySelector<HTMLElement>(".ev-inner");
+    const flash      = card.querySelector<HTMLElement>(".ev-flash");
+    if (styledBg)   gsap.set(styledBg,   { opacity: 0, boxShadow: baseShadow });
+    if (highlights) gsap.set(highlights, { opacity: 0 });
+    if (inner)      gsap.set(inner,      { opacity: 0 });
+
+    // All cards fly in together at t=0, tiny i*0.018 stagger is barely perceptible
+    const t = i * 0.018;
+    tl.to(card, { x: pos.x, y: pos.y, scale: 1, duration: 0.44, ease: "power3.out" }, t);
+    tl.to(card, { y: pos.y + 8, duration: 0.06, ease: "power1.out" }, t + 0.38);
+    tl.to(card, { y: pos.y,     duration: 0.06, ease: "power1.in"  }, t + 0.44);
+
+    if (styledBg) {
+      tl.to(styledBg, { opacity: 1,                 duration: 0.18, ease: "power2.inOut" }, t + 0.10);
+      tl.to(styledBg, { boxShadow: glowShadow,      duration: 0.28, ease: "power2.out"   }, t + 0.28);
+    }
+    if (highlights) tl.to(highlights, { opacity: 1, duration: 0.16 }, t + 0.14);
+    if (inner)      tl.to(inner,      { opacity: 1, duration: 0.14, ease: "power1.out" }, t + 0.24);
+    if (flash) tl.fromTo(flash, { opacity: 0.75 }, { opacity: 0,   duration: 0.14, ease: "power2.out" }, t + 0.28);
+  });
+}, [baseShadow, getGridPositions, glowShadow]);
 
   // Close modal logic
   const handleCloseModal = () => {
@@ -321,117 +337,124 @@ export default function Events() {
     const tl = gsap.timeline({ paused: true });
     tl.to(title, { opacity: 0, y: -28, duration: 0.08, ease: "power2.in" }, 0.12);
 
-    const peelOrder = [...cards.keys()].reverse();
-    peelOrder.forEach((cardIdx, peelStep) => {
-      const card = cards[cardIdx];
-      const pos = getGridPositions(cards.length)[cardIdx];
-      const t = 0.2 + peelStep * 0.16;
-      
-      const depth = cards.length - 1 - cardIdx;
+    // Top row cards (indices 0,1,2) all go at t=0.2
+    // Bottom row cards (indices 3,4,5) all go at t=0.38
+    const topRow    = [0, 1, 2];
+    const bottomRow = [3, 4, 5];
+    [...topRow, ...bottomRow].forEach((cardIdx) => {
+      const card  = cards[cardIdx];
+      const pos   = getGridPositions(cards.length)[cardIdx];
+      const t     = topRow.includes(cardIdx) ? 0.2 : 0.38;
+      const depth  = cards.length - 1 - cardIdx;
       const startY = depth * 12;
 
-      // Safe scrub fix: Use tl.set and absolute positional calculations
       tl.set(card, { zIndex: 20 + cardIdx }, t);
-      tl.to(card, { rotateX: 18, y: startY - 60, duration: 0.06, ease: "power2.in" }, t);
+      tl.to(card, { rotateX: 18, y: startY - 60, duration: 0.06, ease: "power2.in"  }, t);
       tl.to(card, { x: pos.x, y: pos.y, rotateX: 0, scale: 1, duration: 0.11, ease: "power3.out" }, t + 0.06);
-      
       tl.to(card, { y: pos.y + 8, duration: 0.025, ease: "power1.out" }, t + 0.15);
-      tl.to(card, { y: pos.y, duration: 0.025, ease: "power1.in" }, t + 0.175);
+      tl.to(card, { y: pos.y,     duration: 0.025, ease: "power1.in"  }, t + 0.175);
 
-      const styledBg = card.querySelector<HTMLElement>(".ev-styled-bg");
+      const styledBg   = card.querySelector<HTMLElement>(".ev-styled-bg");
       const highlights = card.querySelector<HTMLElement>(".ev-highlights");
-      const inner = card.querySelector<HTMLElement>(".ev-inner");
+      const inner      = card.querySelector<HTMLElement>(".ev-inner");
 
       if (styledBg) {
-        tl.to(styledBg, { opacity: 1, duration: 0.13, ease: "power2.inOut" }, t + 0.04);
-        tl.to(styledBg, { boxShadow: glowShadow, duration: 0.26, ease: "power2.out" }, t + 0.18);
+        tl.to(styledBg, { opacity: 1,            duration: 0.13, ease: "power2.inOut" }, t + 0.04);
+        tl.to(styledBg, { boxShadow: glowShadow, duration: 0.26, ease: "power2.out"   }, t + 0.18);
       }
       if (highlights) tl.to(highlights, { opacity: 1, duration: 0.13 }, t + 0.08);
-      if (inner) tl.to(inner, { opacity: 1, duration: 0.07, ease: "power1.out" }, t + 0.18);
+      if (inner)      tl.to(inner,      { opacity: 1, duration: 0.07, ease: "power1.out" }, t + 0.18);
 
       const flash = card.querySelector<HTMLElement>(".ev-flash");
       if (flash) tl.fromTo(flash, { opacity: 0.9 }, { opacity: 0, duration: 0.1, ease: "power2.out" }, t + 0.15);
     });
 
-    if (toggleRef.current) {
-      tl.to(toggleRef.current, { opacity: 1, y: 0, duration: 0.12, ease: "power2.out" }, 0.96);
-    }
+    // Toggle appears exactly when bottom row lands: 0.38 + 0.175 + small fade = ~0.57
+   if (toggleRef.current) {
+  tl.to(toggleRef.current, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.57);
+}
 
-    stRef.current = ScrollTrigger.create({
-      trigger: section,
-      start: "top top",
-      end: () => `+=${window.innerHeight * 5}`,
+// Add this exact line. Increase the "0.8" if you want it to stay locked even longer.
+tl.set({}, {}, "+=0.8"); 
+
+stRef.current = ScrollTrigger.create({
+  trigger: section,
+  start: "top top",
+  end: () => `+=${window.innerHeight * 4}`, // Matches the 400vh
       scrub: 1.2,
       animation: tl,
       onUpdate: (self) => {
-        syncToggleInteractivity();
+  syncToggleInteractivity();
 
-        // ── Reverse: Fade outreach and let events scrub naturally ──────
-        if (self.direction < 0 && introDoneRef.current && modeRef.current !== "events" && !isSwappingRef.current) {
-          isSwappingRef.current = true;
-          const outreachCards = outreachCardsRef.current.filter(Boolean) as HTMLDivElement[];
-          const vw = window.innerWidth;
-          
-          gsap.to(outreachCards, {
-            x: vw * 0.92,
-            scale: 0.84,
-            opacity: 0,
-            duration: 0.28,
-            stagger: 0.04,
-            ease: "power3.in",
-            onComplete: () => {
-              modeRef.current = "events";
-              if (labelRef.current) labelRef.current.textContent = "SYSTEM.LOGS // EVENTS";
-              setSelectedEvent(null);
-              
-              // Snap the permanent events DOM nodes back to spread layout. 
-              // Because we didn't unmount them, GSAP will scrub them beautifully.
-              const eventsCards = eventsCardsRef.current.filter(Boolean) as HTMLDivElement[];
-              const positions = getGridPositions(eventsCards.length);
-              
-              eventsCards.forEach((card, i) => {
-                const pos = positions[i];
-                gsap.set(card, { x: pos.x, y: pos.y, scale: 1, rotateX: 0, opacity: 1, zIndex: i + 1, pointerEvents: "auto" });
-                const styledBg = card.querySelector<HTMLElement>(".ev-styled-bg");
-                const highlights = card.querySelector<HTMLElement>(".ev-highlights");
-                const inner = card.querySelector<HTMLElement>(".ev-inner");
-                if (styledBg) gsap.set(styledBg, { opacity: 1, boxShadow: glowShadow });
-                if (highlights) gsap.set(highlights, { opacity: 1 });
-                if (inner) gsap.set(inner, { opacity: 1 });
-              });
-
-              isSwappingRef.current = false;
-              setMode("events");
-            },
-          });
-        }
-
-        if (self.progress < 0.06 && introDoneRef.current) {
-          introDoneRef.current = false;
-          isSwappingRef.current = false;
-          flippedRef.current = cards.map(() => false);
-          setIntroDone(false);
-          setSelectedEvent(null);
-          if (toggleRef.current) toggleRef.current.style.pointerEvents = "none";
-        }
-
-        if (!self.isActive || self.direction < 0) return;
-        peelOrder.forEach((cardIdx, peelStep) => {
-          const t = 0.2 + peelStep * 0.16;
-          const landTime = t + 0.3;
-          if (tl.time() >= landTime && !flippedRef.current[cardIdx]) {
-            flippedRef.current[cardIdx] = true;
-            if (events[cardIdx]?.id === "MODULE_01") {
-              const hintFlipper = eventsCardsRef.current[cardIdx]?.querySelector(".ev-hint-flipper");
-              if (hintFlipper) {
-                gsap.timeline()
-                  .to(hintFlipper, { rotateY: 180, duration: 0.4, ease: "power2.out" })
-                  .to(hintFlipper, { rotateY: 0, duration: 0.4, ease: "power2.inOut", delay: 0.15 });
-              }
-            }
-          }
+  // ── Reverse: Fade outreach and let events scrub naturally ──────
+  if (self.direction < 0 && introDoneRef.current && modeRef.current !== "events" && !isSwappingRef.current) {
+    isSwappingRef.current = true;
+    const outreachCards = outreachCardsRef.current.filter(Boolean) as HTMLDivElement[];
+    const vw = window.innerWidth;
+    
+    gsap.to(outreachCards, {
+      x: vw * 0.92,
+      scale: 0.84,
+      opacity: 0,
+      duration: 0.28,
+      stagger: 0.04,
+      ease: "power3.in",
+      onComplete: () => {
+        modeRef.current = "events";
+        if (labelRef.current) labelRef.current.textContent = "SYSTEM.LOGS // EVENTS";
+        setSelectedEvent(null);
+        
+        const eventsCards = eventsCardsRef.current.filter(Boolean) as HTMLDivElement[];
+        const positions = getGridPositions(eventsCards.length);
+        
+        eventsCards.forEach((card, i) => {
+          const pos = positions[i];
+          gsap.set(card, { x: pos.x, y: pos.y, scale: 1, rotateX: 0, opacity: 1, zIndex: i + 1, pointerEvents: "auto" });
+          const styledBg  = card.querySelector<HTMLElement>(".ev-styled-bg");
+          const highlights = card.querySelector<HTMLElement>(".ev-highlights");
+          const inner      = card.querySelector<HTMLElement>(".ev-inner");
+          if (styledBg)   gsap.set(styledBg,   { opacity: 1, boxShadow: glowShadow });
+          if (highlights) gsap.set(highlights, { opacity: 1 });
+          if (inner)      gsap.set(inner,       { opacity: 1 });
         });
+
+        isSwappingRef.current = false;
+        setMode("events");
       },
+    });
+  }
+
+  if (self.progress < 0.06 && introDoneRef.current) {
+    introDoneRef.current = false;
+    isSwappingRef.current = false;
+    flippedRef.current = cards.map(() => false);
+    setIntroDone(false);
+    setSelectedEvent(null);
+    if (toggleRef.current) toggleRef.current.style.pointerEvents = "none";
+  }
+
+  if (!self.isActive || self.direction < 0) return;
+
+  // All cards land at the same timestamp now
+  const landTime = 0.38 + 0.3;
+  if (tl.time() >= landTime) {
+    // topRow and bottomRow variables are not in this scope, but peelOrder was removed. 
+    // We can just iterate over all cards.
+    cards.forEach((card, cardIdx) => {
+      if (!flippedRef.current[cardIdx]) {
+        flippedRef.current[cardIdx] = true;
+        if (events[cardIdx]?.id === "MODULE_01") {
+          const hintFlipper = eventsCardsRef.current[cardIdx]?.querySelector(".ev-hint-flipper");
+          if (hintFlipper) {
+            gsap.timeline()
+              .to(hintFlipper, { rotateY: 180, duration: 0.4, ease: "power2.out" })
+              .to(hintFlipper, { rotateY: 0,   duration: 0.4, ease: "power2.inOut", delay: 0.15 });
+          }
+        }
+      }
+    });
+  }
+},
       onRefresh: () => {
         syncToggleInteractivity();
         if (!introDoneRef.current) return;
@@ -708,8 +731,7 @@ export default function Events() {
       </div>
     </section>
 
-    <section id="events" ref={sectionRef} className="relative hidden h-[600vh] bg-[#0d0d0d] md:block">
-      <span id="events-desktop" className="pointer-events-none absolute top-[480vh] h-px w-px" aria-hidden="true" />
+<section id="events" ref={sectionRef} className="relative hidden h-[400vh] bg-[#0d0d0d] md:block">    <span id="events-desktop" className="pointer-events-none absolute top-[480vh] h-px w-px" aria-hidden="true" />
       <div ref={pinRef} className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
         <EventsBackground />
 
