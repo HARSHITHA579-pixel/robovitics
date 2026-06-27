@@ -61,8 +61,8 @@ function Stamp() {
         <div
             className="stamp absolute z-40 pointer-events-none"
             style={{
-                top: 16, right: 16,
-                width: 52, height: 52,
+                top: 12, right: 12,
+                width: 44, height: 44,
                 opacity: 0,
                 rotate: '12deg',
             }}
@@ -108,12 +108,12 @@ function ProjectCard({
     return (
         <div
             ref={cardRef}
-            className="project-card absolute flex-shrink-0"
+            className="project-card flex-shrink-0"
             style={{
-                width: 'clamp(260px, 22vw, 320px)',
-                top: 0,
-                left: 0,
-                opacity: 0,
+                // On mobile: fill viewport width minus 48px (24px each side) so
+                // text never clips, while hinting at the next card.
+                // On desktop: clamp between 340–440px as before.
+                width: 'clamp(260px, calc(100vw - 48px), 440px)',
                 willChange: 'transform',
             }}
         >
@@ -151,12 +151,16 @@ function ProjectCard({
                     background: CYAN_DIM,
                 }}/>
 
-                <div className="relative w-full overflow-hidden" style={{ height: 160 }}>
+                {/* Image — shorter on mobile so body text fits in viewport */}
+                <div
+                    className="relative w-full overflow-hidden"
+                    style={{ height: 'clamp(130px, 25vw, 220px)' }}
+                >
                     <Image
                         src={project.imagePath}
                         alt={project.title}
                         fill
-                        sizes="320px"
+                        sizes="(max-width: 640px) calc(100vw - 48px), 440px"
                         className="object-cover"
                         priority={index === 0}
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -167,10 +171,11 @@ function ProjectCard({
                     />
                 </div>
 
-                <div className="px-5 pt-4 pb-5 flex flex-col gap-2.5">
+                {/* Card body — tighter padding on mobile */}
+                <div className="px-5 pt-4 pb-5 flex flex-col gap-2.5 sm:px-7 sm:pt-6 sm:pb-7 sm:gap-3.5">
                     <span
                         className="font-mono uppercase"
-                        style={{ fontSize: 8, letterSpacing: '0.28em', color: CYAN_DIM }}
+                        style={{ fontSize: 9, letterSpacing: '0.28em', color: CYAN_DIM }}
                     >
                         {project.id} // BUILD_LOG
                     </span>
@@ -179,7 +184,7 @@ function ProjectCard({
                         className="font-black uppercase text-white leading-tight"
                         style={{
                             fontFamily: '"Inter","Arial Black",sans-serif',
-                            fontSize: 'clamp(13px,1.1vw,16px)',
+                            fontSize: 'clamp(14px, 1.6vw, 21px)',
                             letterSpacing: '-0.01em',
                         }}
                     >
@@ -188,7 +193,7 @@ function ProjectCard({
 
                     <p
                         className="font-mono uppercase"
-                        style={{ fontSize: 8, letterSpacing: '0.12em', color: CYAN }}
+                        style={{ fontSize: 10, letterSpacing: '0.12em', color: CYAN }}
                     >
                         {project.tagline}
                     </p>
@@ -201,7 +206,7 @@ function ProjectCard({
                     <p
                         className="leading-relaxed"
                         style={{
-                            fontSize: 11,
+                            fontSize: 12,
                             color: 'rgba(255,255,255,0.48)',
                             display: '-webkit-box',
                             WebkitLineClamp: 3,
@@ -216,7 +221,7 @@ function ProjectCard({
                     <Link
                         href={project.readMoreLink}
                         className="group/link mt-1 inline-flex items-center gap-2 font-mono uppercase"
-                        style={{ fontSize: 8, letterSpacing: '0.2em', color: CYAN }}
+                        style={{ fontSize: 10, letterSpacing: '0.2em', color: CYAN }}
                     >
                         <span className="group-hover/link:underline">READ MORE</span>
                         <span className="transition-transform duration-300 group-hover/link:translate-x-1">→</span>
@@ -228,7 +233,7 @@ function ProjectCard({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Projects — Assembly Line
+// Projects — Horizontal Filmstrip
 // ─────────────────────────────────────────────────────────────────────────────
 export default function Projects() {
     const sectionRef  = useRef<HTMLElement>(null);
@@ -237,145 +242,114 @@ export default function Projects() {
     const titleRef    = useRef<HTMLDivElement>(null);
     const cardsRef    = useRef<(HTMLDivElement | null)[]>([]);
     const stRef       = useRef<ScrollTrigger | null>(null);
+    const cardSTsRef  = useRef<ScrollTrigger[]>([]);
 
     const total = projectsData.length;
 
     // ── FRAMER MOTION: Global Mechanics ──────────────────────────────────────
     const { scrollYProgress } = useScroll({
         target: sectionRef,
-        offset: ["start end", "end start"] 
+        offset: ["start end", "end start"]
     });
 
-    const rawGearX = useTransform(scrollYProgress, [0, 0.10], [120, -120]); 
+    const rawGearX   = useTransform(scrollYProgress, [0, 0.10], [120, -120]);
     const rawGearRot = useTransform(scrollYProgress, [0, 0.10], [0, -360]);
 
     const springConfig = { stiffness: 32, damping: 38, restDelta: 0.001 };
-    
-    const smoothGearX = useSpring(rawGearX, springConfig);
+
+    const smoothGearX   = useSpring(rawGearX,   springConfig);
     const smoothGearRot = useSpring(rawGearRot, springConfig);
 
     const gearX = useTransform(smoothGearX, x => `${x}vw`);
 
-    // ── GSAP: Assembly Line Mechanics ─────────────────────────────────────────
+    // ── GSAP: Horizontal Filmstrip ───────────────────────────────────────────
     useEffect(() => {
         const section = sectionRef.current;
         const pin     = pinRef.current;
-        const belt    = beltRef.current;
-        if (!section || !pin || !belt) return;
+        const track   = beltRef.current;
+        if (!section || !pin || !track) return;
 
         const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
         if (cards.length === 0) return;
 
-        const cardW   = cards[0].offsetWidth;
-        const gap     = 32; 
-        const beltW   = pin.offsetWidth;
+        const RIGHT_PAD = 80;
 
-        const rightPadding = 60; 
-        const startX  = beltW - cardW - rightPadding;
-
-        // ── Initial positions ───────────────────────────────────────────────
-        cards.forEach((card) => {
-            gsap.set(card, {
-                x: startX,
-                y: -pin.offsetHeight * 1.2, 
-                rotation: 0,
-                opacity: 1, 
-            });
-        });
-
+        // ── Initial state ───────────────────────────────────────────────────
         gsap.set(titleRef.current, { y: 40, opacity: 0 });
 
-        // ── GSAP Timeline ────────────────────────────────────────────────────
+        cards.forEach((card) => {
+            const stamp    = card.querySelector<HTMLElement>('.stamp');
+            const innerBox = card.querySelector<HTMLElement>(':scope > div');
+            gsap.set(stamp,    { opacity: 0, scale: 2.2, rotation: 25 });
+            gsap.set(innerBox, { boxShadow: '0 0 0 0px rgba(79,174,243,0)' });
+        });
+
+        // Track starts entirely off-screen to the right
+        gsap.set(track, { x: () => pin.offsetWidth });
+
+        // ── Master timeline ─────────────────────────────────────────────────
         const tl = gsap.timeline({ paused: true });
 
         tl.to(titleRef.current, {
             y: 0,
             opacity: 1,
-            duration: 0.4,
-            ease: 'back.out(1.5)'
+            duration: 0.15,
+            ease: 'back.out(1.5)',
         }, 0);
 
-        cards.forEach((card, i) => {
-            const stamp = card.querySelector<HTMLElement>('.stamp');
-            const landX = startX;
-            const segStart = i * 1.0 + 0.4; 
+        tl.fromTo(
+            track,
+            { x: () => pin.offsetWidth },
+            {
+                x: () => -(track.scrollWidth - pin.offsetWidth) + RIGHT_PAD,
+                ease: 'none',
+                duration: 1,
+            },
+            0.05
+        );
 
-            tl.to(card, {
-                y: pin.offsetHeight * 0.18, 
-                x: landX,
-                rotation: gsap.utils.random(-2, 2), 
-                duration: 0.28,
-                ease: 'power3.in', 
-            }, segStart);
-
-            tl.to(card, {
-                scaleY: 0.93,
-                scaleX: 1.04,
-                rotation: 0,
-                duration: 0.06,
-                ease: 'power2.out',
-            }, segStart + 0.28);
-
-            tl.to(card, {
-                scaleY: 1,
-                scaleX: 1,
-                duration: 0.1,
-                ease: 'elastic.out(1.2, 0.5)',
-            }, segStart + 0.34);
-
-            tl.fromTo(
-                card.querySelector<HTMLElement>('div'),
-                { boxShadow: `0 0 0 1px ${CYAN}, 0 0 24px ${CYAN_GLOW}` },
-                { boxShadow: `0 0 0 0px rgba(79,174,243,0)`, duration: 0.35, ease: 'power2.out' },
-                segStart + 0.28
-            );
-
-            if (stamp) {
-                tl.fromTo(stamp,
-                    { opacity: 0, scale: 2.2, rotation: 25 },
-                    {
-                        opacity: 1,
-                        scale: 1,
-                        rotation: 12,
-                        duration: 0.18,
-                        ease: 'back.out(2)',
-                    },
-                    segStart + 0.38 
-                );
-            }
-
-            tl.to({}, { duration: 0.22 }, segStart + 0.55);
-
-            if (i < total - 1) {
-                for (let j = 0; j <= i; j++) {
-                    const prevCard = cards[j];
-                    const targetX  = startX - (i - j + 1) * (cardW + gap);
-                    tl.to(prevCard, {
-                        x: targetX,
-                        duration: 0.3,
-                        ease: 'power2.inOut',
-                    }, segStart + 0.75);
-                }
-            }
-        });
-
-        tl.to({}, { duration: 0.1 });
-
-        // ── ScrollTrigger ─────────────────────────────────────────────────────
-        // NOTE: no more `pin` / `anticipatePin`. The sticky `pinRef` div handles
-        // the "staying in place" visually via CSS. GSAP only drives timeline
-        // progress against scroll — same fix as Domains/Events.
+        // ── Pinned scroll driver ────────────────────────────────────────────
         stRef.current = ScrollTrigger.create({
             trigger: section,
             start: 'top top',
-            end: `+=${window.innerHeight * total}`, 
-            scrub: 1,
+            end: `+=${window.innerHeight * total * 0.72}`,
+            scrub: 0.65,
             animation: tl,
+            invalidateOnRefresh: true,
+        });
+
+        // ── Per-card stamp + glow ───────────────────────────────────────────
+        cardSTsRef.current = cards.map((card) => {
+            const stamp    = card.querySelector<HTMLElement>('.stamp');
+            const innerBox = card.querySelector<HTMLElement>(':scope > div');
+
+            return ScrollTrigger.create({
+                trigger: card,
+                containerAnimation: tl,
+                start: 'left 65%',
+                end:   'left 35%',
+                onEnter: () => {
+                    gsap.to(stamp, { opacity: 1, scale: 1, rotation: 12, duration: 0.3, ease: 'back.out(2)' });
+                    gsap.fromTo(
+                        innerBox,
+                        { boxShadow: `0 0 0 1px ${CYAN}, 0 0 24px ${CYAN_GLOW}` },
+                        { boxShadow: '0 0 0 0px rgba(79,174,243,0)', duration: 0.5, ease: 'power2.out' }
+                    );
+                },
+                onEnterBack: () => {
+                    gsap.to(stamp, { opacity: 1, scale: 1, rotation: 12, duration: 0.2, ease: 'power2.out' });
+                },
+                onLeaveBack: () => {
+                    gsap.to(stamp, { opacity: 0, scale: 2.2, rotation: 25, duration: 0.2, ease: 'power2.in' });
+                },
+            });
         });
 
         return () => {
             stRef.current?.kill();
             stRef.current = null;
+            cardSTsRef.current.forEach((st) => st.kill());
+            cardSTsRef.current = [];
             tl.kill();
         };
     }, [total]);
@@ -385,46 +359,61 @@ export default function Projects() {
             id="projects"
             ref={sectionRef}
             className="relative bg-[#0d0d0d]"
-            style={{ height: `${(total + 1) * 100}vh` }}
+            style={{ height: `${(total * 0.72 + 1.1) * 100}vh` }}
         >
+            {/* Gear — desktop only */}
             <motion.div
-    style={{ x: gearX, rotate: smoothGearRot }}
-    className="hidden md:block fixed -bottom-32 z-10 opacity-[0.16] pointer-events-none lg:-bottom-40 lg:opacity-20"
->
-                <svg className="h-[460px] w-[460px] lg:h-[600px] lg:w-[600px]" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="3" stroke="#ffffff"></circle>
-                    <path stroke="#ffffff" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                style={{ x: gearX, rotate: smoothGearRot }}
+                className="hidden md:block fixed -bottom-32 z-10 opacity-[0.16] pointer-events-none lg:-bottom-40 lg:opacity-20"
+            >
+                <svg
+                    className="h-[460px] w-[460px] lg:h-[600px] lg:w-[600px]"
+                    viewBox="0 0 24 24" fill="none"
+                    stroke="#ffffff" strokeWidth="0.5"
+                    strokeLinecap="round" strokeLinejoin="round"
+                >
+                    <circle cx="12" cy="12" r="3" stroke="#ffffff"/>
+                    <path stroke="#ffffff" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                 </svg>
             </motion.div>
 
-            <div
-                ref={pinRef}
-                className="sticky top-0 h-screen w-full overflow-hidden"
-            >
+            {/* ── Sticky viewport ── */}
+            <div ref={pinRef} className="sticky top-0 h-screen w-full overflow-hidden">
                 <SectionBackground />
 
-                <div className="absolute left-10 top-8 z-30 pointer-events-none">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/30">
+                {/* Top-left label */}
+                <div className="absolute left-4 top-6 z-30 pointer-events-none sm:left-10 sm:top-8">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/30 sm:text-[10px]">
                         <span className="font-bold text-white mr-2">04.</span>
-                        SYSTEM.LOGS // PROJECTS
+                        {/* Full label on sm+, short on mobile */}
+                        <span className="hidden sm:inline">SYSTEM.LOGS // PROJECTS</span>
+                        <span className="sm:hidden">PROJECTS</span>
                     </span>
                 </div>
 
-                <div className="absolute right-10 top-8 z-30 pointer-events-none">
+                {/* Top-right label — hidden on mobile to prevent overlap */}
+                <div className="hidden sm:block absolute right-10 top-8 z-30 pointer-events-none">
                     <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/20">
                         ▶ ASSEMBLY_LINE // BUILD_LOG
                     </span>
                 </div>
 
-                <div ref={titleRef} className="absolute top-[14%] left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.35em] text-white/20 mb-3">
+                {/* Title block */}
+                <div
+                    ref={titleRef}
+                    className="absolute left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center w-full px-4"
+                    style={{ top: 'clamp(12%, 16%, 16%)' }}
+
+                >
+                    {/* Sub-label hidden on mobile */}
+                    <p className="hidden sm:block font-mono text-[9px] uppercase tracking-[0.35em] text-white/20 mb-3">
                         ▶ BUILD_LOG // PROJECTS
                     </p>
                     <h2
                         className="font-black uppercase text-white leading-none"
                         style={{
                             fontFamily: '"Inter","Arial Black",sans-serif',
-                            fontSize: 'clamp(28px,4vw,56px)',
+                            fontSize: 'clamp(22px, 4vw, 56px)',
                             letterSpacing: '-0.01em',
                         }}
                     >
@@ -432,15 +421,30 @@ export default function Projects() {
                         <span style={{ color: '#4FAEF3' }}>BUILT.</span>
                     </h2>
                     <div style={{
-                        marginTop: 12, height: 1, width: '100%',
+                        marginTop: 10,
+                        height: 1,
+                        width: '100%',
                         background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)',
                     }}/>
                 </div>
 
+                {/* ── Card belt ── */}
+                {/*
+                    top-[58%] on mobile  — cards sit well below the title
+                    sm:top-[32%]         — original desktop position
+                    paddingLeft: 16px mobile / 40px desktop — card starts with a small margin
+                    gap: tighter on mobile
+                    paddingRight: room for the last card to breathe
+                */}
                 <div
                     ref={beltRef}
-                    className="absolute inset-0"
-                    style={{ top: '20%' }}
+                    className="absolute left-0 flex items-start top-[38%] sm:top-[32%]"
+
+                    style={{
+                        gap:          'clamp(12px, 2vw, 32px)',
+                        paddingLeft:  'clamp(16px, 2.5vw, 40px)',
+                        paddingRight: 'clamp(40px, 5vw, 80px)',
+                    }}
                 >
                     {projectsData.map((project, index) => (
                         <ProjectCard
@@ -452,9 +456,10 @@ export default function Projects() {
                     ))}
                 </div>
 
+                {/* Bottom hint */}
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
                     <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20">
-                        &gt;  
+                        &gt;
                     </span>
                 </div>
             </div>

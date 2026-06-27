@@ -108,9 +108,12 @@ function ProjectCard({
     return (
         <div
             ref={cardRef}
-            className="project-card flex-shrink-0"
+            className="project-card absolute flex-shrink-0"
             style={{
-                width: 'clamp(340px, 30vw, 440px)',
+                width: 'clamp(260px, 22vw, 320px)',
+                top: 0,
+                left: 0,
+                opacity: 0,
                 willChange: 'transform',
             }}
         >
@@ -148,12 +151,12 @@ function ProjectCard({
                     background: CYAN_DIM,
                 }}/>
 
-                <div className="relative w-full overflow-hidden" style={{ height: 220 }}>
+                <div className="relative w-full overflow-hidden" style={{ height: 160 }}>
                     <Image
                         src={project.imagePath}
                         alt={project.title}
                         fill
-                        sizes="440px"
+                        sizes="320px"
                         className="object-cover"
                         priority={index === 0}
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -164,10 +167,10 @@ function ProjectCard({
                     />
                 </div>
 
-                <div className="px-7 pt-6 pb-7 flex flex-col gap-3.5">
+                <div className="px-5 pt-4 pb-5 flex flex-col gap-2.5">
                     <span
                         className="font-mono uppercase"
-                        style={{ fontSize: 9, letterSpacing: '0.28em', color: CYAN_DIM }}
+                        style={{ fontSize: 8, letterSpacing: '0.28em', color: CYAN_DIM }}
                     >
                         {project.id} // BUILD_LOG
                     </span>
@@ -176,7 +179,7 @@ function ProjectCard({
                         className="font-black uppercase text-white leading-tight"
                         style={{
                             fontFamily: '"Inter","Arial Black",sans-serif',
-                            fontSize: 'clamp(16px,1.6vw,21px)',
+                            fontSize: 'clamp(13px,1.1vw,16px)',
                             letterSpacing: '-0.01em',
                         }}
                     >
@@ -185,7 +188,7 @@ function ProjectCard({
 
                     <p
                         className="font-mono uppercase"
-                        style={{ fontSize: 10, letterSpacing: '0.12em', color: CYAN }}
+                        style={{ fontSize: 8, letterSpacing: '0.12em', color: CYAN }}
                     >
                         {project.tagline}
                     </p>
@@ -198,7 +201,7 @@ function ProjectCard({
                     <p
                         className="leading-relaxed"
                         style={{
-                            fontSize: 13,
+                            fontSize: 11,
                             color: 'rgba(255,255,255,0.48)',
                             display: '-webkit-box',
                             WebkitLineClamp: 3,
@@ -213,7 +216,7 @@ function ProjectCard({
                     <Link
                         href={project.readMoreLink}
                         className="group/link mt-1 inline-flex items-center gap-2 font-mono uppercase"
-                        style={{ fontSize: 10, letterSpacing: '0.2em', color: CYAN }}
+                        style={{ fontSize: 8, letterSpacing: '0.2em', color: CYAN }}
                     >
                         <span className="group-hover/link:underline">READ MORE</span>
                         <span className="transition-transform duration-300 group-hover/link:translate-x-1">→</span>
@@ -225,20 +228,19 @@ function ProjectCard({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Projects — Horizontal Filmstrip
+// Projects — Assembly Line
 // ─────────────────────────────────────────────────────────────────────────────
 export default function Projects() {
     const sectionRef  = useRef<HTMLElement>(null);
     const pinRef      = useRef<HTMLDivElement>(null);
-    const beltRef     = useRef<HTMLDivElement>(null); // horizontal track of cards
+    const beltRef     = useRef<HTMLDivElement>(null);
     const titleRef    = useRef<HTMLDivElement>(null);
     const cardsRef    = useRef<(HTMLDivElement | null)[]>([]);
     const stRef       = useRef<ScrollTrigger | null>(null);
-    const cardSTsRef  = useRef<ScrollTrigger[]>([]);
 
     const total = projectsData.length;
 
-    // ── FRAMER MOTION: Global Mechanics (UNCHANGED) ──────────────────────────
+    // ── FRAMER MOTION: Global Mechanics ──────────────────────────────────────
     const { scrollYProgress } = useScroll({
         target: sectionRef,
         offset: ["start end", "end start"] 
@@ -254,98 +256,126 @@ export default function Projects() {
 
     const gearX = useTransform(smoothGearX, x => `${x}vw`);
 
-    // ── GSAP: Horizontal Filmstrip Mechanics ──────────────────────────────────
+    // ── GSAP: Assembly Line Mechanics ─────────────────────────────────────────
     useEffect(() => {
         const section = sectionRef.current;
         const pin     = pinRef.current;
-        const track   = beltRef.current;
-        if (!section || !pin || !track) return;
+        const belt    = beltRef.current;
+        if (!section || !pin || !belt) return;
 
         const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
         if (cards.length === 0) return;
 
-        const RIGHT_PAD = 80;
+        const cardW   = cards[0].offsetWidth;
+        const gap     = 32; 
+        const beltW   = pin.offsetWidth;
 
-        // ── Initial state ───────────────────────────────────────────────────
-        gsap.set(titleRef.current, { y: 40, opacity: 0 });
+        const rightPadding = 60; 
+        const startX  = beltW - cardW - rightPadding;
 
+        // ── Initial positions ───────────────────────────────────────────────
         cards.forEach((card) => {
-            const stamp = card.querySelector<HTMLElement>('.stamp');
-            const innerBox = card.querySelector<HTMLElement>(':scope > div');
-            gsap.set(stamp, { opacity: 0, scale: 2.2, rotation: 25 });
-            gsap.set(innerBox, { boxShadow: '0 0 0 0px rgba(79,174,243,0)' });
+            gsap.set(card, {
+                x: startX,
+                y: -pin.offsetHeight * 1.2, 
+                rotation: 0,
+                opacity: 1, 
+            });
         });
 
-        // Track starts entirely off-screen to the right of the viewport.
-        gsap.set(track, { x: () => pin.offsetWidth });
+        gsap.set(titleRef.current, { y: 40, opacity: 0 });
 
-        // ── Master timeline: title fade-in + horizontal pull-left ──────────
+        // ── GSAP Timeline ────────────────────────────────────────────────────
         const tl = gsap.timeline({ paused: true });
 
         tl.to(titleRef.current, {
             y: 0,
             opacity: 1,
-            duration: 0.15,
-            ease: 'back.out(1.5)',
+            duration: 0.4,
+            ease: 'back.out(1.5)'
         }, 0);
 
-        // Drag the whole row from off-screen right to its resting position
-        // (last card settled with RIGHT_PAD of breathing room on the right).
-        tl.fromTo(
-            track,
-            { x: () => pin.offsetWidth },
-            {
-                x: () => -(track.scrollWidth - pin.offsetWidth) + RIGHT_PAD,
-                ease: 'none',
-                duration: 1,
-            },
-            0.05
-        );
+        cards.forEach((card, i) => {
+            const stamp = card.querySelector<HTMLElement>('.stamp');
+            const landX = startX;
+            const segStart = i * 1.0 + 0.4; 
 
-        // ── Pinned scroll driver (sticky CSS handles "staying in place";
-        //    GSAP/ScrollTrigger only drives timeline progress — same fix
-        //    pattern as Domains/Events/Achievements). ────────────────────────
+            tl.to(card, {
+                y: pin.offsetHeight * 0.18, 
+                x: landX,
+                rotation: gsap.utils.random(-2, 2), 
+                duration: 0.28,
+                ease: 'power3.in', 
+            }, segStart);
+
+            tl.to(card, {
+                scaleY: 0.93,
+                scaleX: 1.04,
+                rotation: 0,
+                duration: 0.06,
+                ease: 'power2.out',
+            }, segStart + 0.28);
+
+            tl.to(card, {
+                scaleY: 1,
+                scaleX: 1,
+                duration: 0.1,
+                ease: 'elastic.out(1.2, 0.5)',
+            }, segStart + 0.34);
+
+            tl.fromTo(
+                card.querySelector<HTMLElement>('div'),
+                { boxShadow: `0 0 0 1px ${CYAN}, 0 0 24px ${CYAN_GLOW}` },
+                { boxShadow: `0 0 0 0px rgba(79,174,243,0)`, duration: 0.35, ease: 'power2.out' },
+                segStart + 0.28
+            );
+
+            if (stamp) {
+                tl.fromTo(stamp,
+                    { opacity: 0, scale: 2.2, rotation: 25 },
+                    {
+                        opacity: 1,
+                        scale: 1,
+                        rotation: 12,
+                        duration: 0.18,
+                        ease: 'back.out(2)',
+                    },
+                    segStart + 0.38 
+                );
+            }
+
+            tl.to({}, { duration: 0.22 }, segStart + 0.55);
+
+            if (i < total - 1) {
+                for (let j = 0; j <= i; j++) {
+                    const prevCard = cards[j];
+                    const targetX  = startX - (i - j + 1) * (cardW + gap);
+                    tl.to(prevCard, {
+                        x: targetX,
+                        duration: 0.3,
+                        ease: 'power2.inOut',
+                    }, segStart + 0.75);
+                }
+            }
+        });
+
+        tl.to({}, { duration: 0.1 });
+
+        // ── ScrollTrigger ─────────────────────────────────────────────────────
+        // NOTE: no more `pin` / `anticipatePin`. The sticky `pinRef` div handles
+        // the "staying in place" visually via CSS. GSAP only drives timeline
+        // progress against scroll — same fix as Domains/Events.
         stRef.current = ScrollTrigger.create({
             trigger: section,
             start: 'top top',
-            end: `+=${window.innerHeight * total * 0.72}`,
-            scrub: 0.65,
+            end: `+=${window.innerHeight * total}`, 
+            scrub: 1,
             animation: tl,
-            invalidateOnRefresh: true,
-        });
-
-        // ── Per-card "verified" stamp + glow, keyed to each card crossing
-        //    the centre of the viewport as the track is dragged past it. ────
-        cardSTsRef.current = cards.map((card) => {
-            const stamp = card.querySelector<HTMLElement>('.stamp');
-            const innerBox = card.querySelector<HTMLElement>(':scope > div');
-
-            return ScrollTrigger.create({
-                trigger: card,
-                containerAnimation: tl,
-                start: 'left 65%',
-                end: 'left 35%',
-                onEnter: () => {
-                    gsap.to(stamp, { opacity: 1, scale: 1, rotation: 12, duration: 0.3, ease: 'back.out(2)' });
-                    gsap.fromTo(innerBox,
-                        { boxShadow: `0 0 0 1px ${CYAN}, 0 0 24px ${CYAN_GLOW}` },
-                        { boxShadow: '0 0 0 0px rgba(79,174,243,0)', duration: 0.5, ease: 'power2.out' }
-                    );
-                },
-                onEnterBack: () => {
-                    gsap.to(stamp, { opacity: 1, scale: 1, rotation: 12, duration: 0.2, ease: 'power2.out' });
-                },
-                onLeaveBack: () => {
-                    gsap.to(stamp, { opacity: 0, scale: 2.2, rotation: 25, duration: 0.2, ease: 'power2.in' });
-                },
-            });
         });
 
         return () => {
             stRef.current?.kill();
             stRef.current = null;
-            cardSTsRef.current.forEach((st) => st.kill());
-            cardSTsRef.current = [];
             tl.kill();
         };
     }, [total]);
@@ -355,7 +385,7 @@ export default function Projects() {
             id="projects"
             ref={sectionRef}
             className="relative bg-[#0d0d0d]"
-            style={{ height: `${(total * 0.72 + 1.1) * 100}vh` }}
+            style={{ height: `${(total + 1) * 100}vh` }}
         >
             <motion.div
     style={{ x: gearX, rotate: smoothGearRot }}
@@ -409,8 +439,8 @@ export default function Projects() {
 
                 <div
                     ref={beltRef}
-                    className="absolute left-0 flex items-start"
-                    style={{ top: '32%', gap: 32, paddingLeft: 40, paddingRight: 80 }}
+                    className="absolute inset-0"
+                    style={{ top: '20%' }}
                 >
                     {projectsData.map((project, index) => (
                         <ProjectCard
