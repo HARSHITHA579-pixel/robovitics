@@ -209,14 +209,13 @@ function ProfileCard({
               alt={person.name}
               style={{
                 width: '100%', height: '100%', objectFit: 'cover',
-                filter: 'grayscale(1)',
                 opacity: 0.85,
                 transition: 'opacity 0.6s ease',
               }}
             />
           </div>
 
-          {/* ROBOT — shown on hover: large, greyscale, fills card */}
+          {/* ROBOT — shown on hover: large, fills card */}
           <div
             style={{
               position: 'absolute', inset: 0,
@@ -231,7 +230,6 @@ function ProfileCard({
               alt={`${person.name} robot`}
               style={{
                 width: '100%', height: '100%', objectFit: 'cover',
-                filter: 'grayscale(1) brightness(0.9)',
                 transform: isActive ? 'scale(1.0)' : 'scale(1.08)',
                 transition: 'transform 0.5s ease',
               }}
