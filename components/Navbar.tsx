@@ -174,7 +174,7 @@ export default function Navbar() {
     <header className="fixed left-0 right-0 top-0 z-[80] px-3 pt-3 sm:px-6 md:px-10">
       <div
         style={navShellStyle}
-        className={`relative ml-auto grid w-fit items-center gap-3 overflow-hidden border text-white transition-all duration-300 ease-out md:mx-auto md:backdrop-blur-2xl md:backdrop-saturate-150 md:border-white/[0.14] md:bg-black/65 md:shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] ${
+        className={`relative ml-auto flex md:grid justify-end w-fit items-center gap-3 overflow-hidden border text-white transition-all duration-300 ease-out md:mx-auto md:backdrop-blur-2xl md:backdrop-saturate-150 md:border-white/[0.14] md:bg-black/65 md:shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] ${
           isScrolled
             ? 'max-md:mr-0 max-md:w-fit max-md:border-transparent max-md:bg-transparent max-md:p-0 max-md:shadow-none md:w-fit md:px-3 md:py-2'
             : 'border-transparent bg-transparent p-0 shadow-none md:w-auto md:px-4 md:py-2.5'

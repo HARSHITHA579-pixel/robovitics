@@ -116,7 +116,8 @@ function TeamSlide({
             }}
         >
             <div
-                className="relative w-full h-full sm:h-auto sm:min-h-[460px] overflow-hidden rounded-[4px] flex flex-col md:flex-row transition-all duration-500 shadow-[0_0_25px_rgba(0,0,0,0.5)] hover:shadow-[0_0_35px_rgba(0,0,0,0.8)]"
+                // Reduced sm:min-h from 460px to 400px to account for removed badges
+                className="relative w-full h-full sm:h-auto sm:min-h-[400px] overflow-hidden rounded-[4px] flex flex-col md:flex-row transition-all duration-500 shadow-[0_0_25px_rgba(0,0,0,0.5)] hover:shadow-[0_0_35px_rgba(0,0,0,0.8)]"
                 style={{
                     background: '#0a0a0a',
                     border: '1px solid rgba(255,255,255,0.08)',
@@ -252,28 +253,6 @@ function TeamSlide({
                     >
                         {team.description}
                     </p>
-
-                    {/* Member count badges */}
-                    <div className="mt-4 sm:mt-6 flex flex-wrap items-center gap-2 sm:gap-4">
-                        <div
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-[3px]"
-                            style={{ border: `1px solid ${accent.replace('0.9', '0.25')}`, background: accent.replace('0.9', '0.06') }}
-                        >
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: accent, boxShadow: `0 0 6px ${accent}`, display: 'inline-block', flexShrink: 0 }} />
-                            <span className="font-mono uppercase tracking-[0.2em]" style={{ fontSize: '9px', color: accent }}>
-                                12 Senior Board
-                            </span>
-                        </div>
-                        <div
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-[3px]"
-                            style={{ border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)' }}
-                        >
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,0.4)', display: 'inline-block', flexShrink: 0 }} />
-                            <span className="font-mono uppercase tracking-[0.2em]" style={{ fontSize: '9px', color: 'rgba(255,255,255,0.4)' }}>
-                                18 Core Board
-                            </span>
-                        </div>
-                    </div>
                 </div>
 
             </div>
@@ -387,14 +366,15 @@ export default function TechnicalTeams() {
                 </div>
 
                 {/* Carousel */}
-                <div
-                    ref={carouselRef}
-                    className="relative w-full overflow-hidden min-h-[440px] sm:min-h-[500px] md:h-[520px]"
-                    onMouseEnter={() => { isHovering.current = true; }}
-                    onMouseLeave={() => { isHovering.current = false; }}
-                    onTouchStart={handleTouchStart}
-                    onTouchEnd={handleTouchEnd}
-                >
+<div
+    ref={carouselRef}
+    // Change md:h-[460px] to md:h-[400px] or md:h-[420px]
+    className="relative w-full overflow-hidden min-h-[380px] sm:min-h-[440px] md:h-[400px]"
+    onMouseEnter={() => { isHovering.current = true; }}
+    onMouseLeave={() => { isHovering.current = false; }}
+    onTouchStart={handleTouchStart}
+    onTouchEnd={handleTouchEnd}
+>
                     {teamsData.map((team, i) => (
                         <TeamSlide key={team.id} team={team} isActive={i === activeIndex} />
                     ))}
