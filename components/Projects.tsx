@@ -113,7 +113,7 @@ function ProjectCard({
                 // On mobile: fill viewport width minus 48px (24px each side) so
                 // text never clips, while hinting at the next card.
                 // On desktop: clamp between 340–440px as before.
-                width: 'clamp(260px, calc(100vw - 48px), 440px)',
+width: 'clamp(230px, calc(100vw - 80px), 440px)',
                 willChange: 'transform',
             }}
         >
@@ -125,6 +125,18 @@ function ProjectCard({
                     boxShadow: `0 0 0 0px ${CYAN_GLOW}`,
                 }}
             >
+                {/* Shared card texture */}
+                <div
+                    className="pointer-events-none absolute inset-0 z-0"
+                    style={{
+                        background: `
+                            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+                            linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.35))
+                        `,
+                        backgroundSize: '18px 18px, 18px 18px, auto',
+                    }}
+                />
                 <Stamp />
 
                 {(['tl','tr','bl','br'] as const).map((pos) => (
@@ -252,7 +264,6 @@ export default function Projects() {
         offset: ["start end", "end start"]
     });
 
-    // Gear rotation only — scroll controlled, spring lagged
     const rawGearRot    = useTransform(scrollYProgress, [0, 1], [0, -720]);
     const springConfig  = { stiffness: 60, damping: 20, restDelta: 0.001 };
     const smoothGearRot = useSpring(rawGearRot, springConfig);
@@ -268,8 +279,6 @@ export default function Projects() {
         const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
         if (cards.length === 0) return;
 
-        const RIGHT_PAD = 80;
-
         // ── Initial state ───────────────────────────────────────────────────
         gsap.set(titleRef.current, { y: 40, opacity: 0 });
 
@@ -280,39 +289,70 @@ export default function Projects() {
             gsap.set(innerBox, { boxShadow: '0 0 0 0px rgba(79,174,243,0)' });
         });
 
-        // Track starts entirely off-screen to the right
         gsap.set(track, { x: () => pin.offsetWidth });
 
-        // ── Master timeline ─────────────────────────────────────────────────
-        const tl = gsap.timeline({ paused: true });
+       // ── Master timeline ─────────────────────────────────────────────────
+const tl = gsap.timeline({ paused: true });
 
-        tl.to(titleRef.current, {
-            y: 0,
-            opacity: 1,
-            duration: 0.15,
-            ease: 'back.out(1.5)',
-        }, 0);
+tl.to(titleRef.current, {
+    y: 0,
+    opacity: 1,
+    duration: 0.15,
+    ease: 'back.out(1.5)',
+}, 0);
 
-        tl.fromTo(
-            track,
-            { x: () => pin.offsetWidth },
-            {
-                x: () => -(track.scrollWidth - pin.offsetWidth) + RIGHT_PAD,
-                ease: 'none',
-                duration: 1,
-            },
-            0.05
-        );
+tl.fromTo(
+    track,
+    { x: () => pin.offsetWidth },
+    {
+        x: () => {
+            const lastCard = cards[cards.length - 1];
+            const cardW    = lastCard?.offsetWidth ?? 400;
+            const viewW    = pin.offsetWidth;
+            const isMobile = viewW < 768;
+            const stopX = isMobile
+                ? -(track.scrollWidth - viewW / 2 - cardW / 2)
+                : -(track.scrollWidth - viewW - 40);
+            return stopX;
+        },
+        ease: 'none',
+        duration: 1,
+    },
+    0.05
+);
 
-        // ── Pinned scroll driver ────────────────────────────────────────────
-        stRef.current = ScrollTrigger.create({
-            trigger: section,
-            start: 'top top',
-            end: `+=${window.innerHeight * total * 0.72}`,
-            scrub: 0.65,
-            animation: tl,
-            invalidateOnRefresh: true,
-        });
+// ── Pinned scroll driver ────────────────────────────────────────────
+const getScrollDistance = () => {
+    const lastCard = cards[cards.length - 1];
+    const cardW    = lastCard?.offsetWidth ?? 400;
+    const viewW    = pin.offsetWidth;
+    const isMobile = viewW < 768;
+    const travel   = isMobile
+        ? track.scrollWidth - viewW / 2 - cardW / 2 - viewW
+        : track.scrollWidth - viewW - 40 - viewW;
+    return Math.max(travel, window.innerHeight * total * 0.5);
+};
+
+// Set section height dynamically before creating ScrollTrigger
+const scrollDist = getScrollDistance();
+if (sectionRef.current) {
+    sectionRef.current.style.height = `${scrollDist + window.innerHeight}px`;
+}
+
+stRef.current = ScrollTrigger.create({
+    trigger: section,
+    start: 'top top',
+    end: () => `+=${getScrollDistance()}`,
+    scrub: 0.65,
+    animation: tl,
+    invalidateOnRefresh: true,
+    onRefresh: () => {
+        const dist = getScrollDistance();
+        if (sectionRef.current) {
+            sectionRef.current.style.height = `${dist + window.innerHeight}px`;
+        }
+    },
+});
 
         // ── Per-card stamp + glow ───────────────────────────────────────────
         cardSTsRef.current = cards.map((card) => {
@@ -351,12 +391,12 @@ export default function Projects() {
     }, [total]);
 
     return (
-        <section
-            id="projects"
-            ref={sectionRef}
-            className="relative bg-[#0d0d0d]"
-            style={{ height: `${(total * 0.72 + 1.1) * 100}vh` }}
-        >
+        // AFTER
+<section
+    id="projects"
+    ref={sectionRef}
+    className="relative bg-[#0d0d0d]"
+>
             {/* ── Sticky viewport ── */}
             <div ref={pinRef} className="sticky top-0 h-screen w-full overflow-hidden">
                 <SectionBackground />
@@ -365,13 +405,12 @@ export default function Projects() {
                 <div className="absolute left-4 top-6 z-30 pointer-events-none sm:left-10 sm:top-8">
                     <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/30 sm:text-[10px]">
                         <span className="font-bold text-white mr-2">04.</span>
-                        {/* Full label on sm+, short on mobile */}
                         <span className="hidden sm:inline">SYSTEM.LOGS // PROJECTS</span>
                         <span className="sm:hidden">PROJECTS</span>
                     </span>
                 </div>
 
-                {/* Top-right label — hidden on mobile to prevent overlap */}
+                {/* Top-right label */}
                 <div className="hidden sm:block absolute right-10 top-8 z-30 pointer-events-none">
                     <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/20">
                         ▶ ASSEMBLY_LINE // BUILD_LOG
@@ -384,7 +423,6 @@ export default function Projects() {
                     className="absolute left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center w-full px-4"
                     style={{ top: 'clamp(12%, 16%, 16%)' }}
                 >
-                    {/* Sub-label hidden on mobile */}
                     <p className="hidden sm:block font-mono text-[9px] uppercase tracking-[0.35em] text-white/20 mb-3">
                         ▶ BUILD_LOG // PROJECTS
                     </p>
@@ -412,18 +450,25 @@ export default function Projects() {
                     ref={beltRef}
                     className="absolute left-0 flex items-center top-[28%] sm:top-[32%]"
                     style={{
-                        gap:          'clamp(12px, 2vw, 32px)',
-                        paddingLeft:  'clamp(16px, 2.5vw, 40px)',
-                        paddingRight: 'clamp(40px, 5vw, 80px)',
+                        // ↑ gap floor bumped 12→20px for mobile breathing room
+                        gap:          'clamp(28px, 2vw, 32px)',
+paddingLeft:  'clamp(20px, 2.5vw, 40px)',
+paddingRight: 'clamp(60px, 5vw, 80px)',
                     }}
                 >
-                    {/* Gear sits in the blank space before the first card, rides the belt */}
+                    {/* Gear — now visible on mobile, scaled down */}
                     <motion.div
-                        style={{ rotate: smoothGearRot, opacity: gearOpacity, width: 360, height: 360 }}
-                        className="hidden md:flex flex-shrink-0 items-center justify-center pointer-events-none"
+                        style={{
+                            rotate:  smoothGearRot,
+                            opacity: gearOpacity,
+                            // clamp: 200px on mobile → 360px on desktop
+                            width:  'clamp(180px, 30vw, 360px)',
+                            height: 'clamp(180px, 30vw, 360px)',
+                        }}
+                        className="flex flex-shrink-0 items-center justify-center pointer-events-none"
                     >
                         <svg
-                            style={{ width: 360, height: 360 }}
+                            style={{ width: '100%', height: '100%' }}
                             viewBox="0 0 24 24" fill="none"
                             stroke="#ffffff" strokeWidth="0.5"
                             strokeLinecap="round" strokeLinejoin="round"

@@ -116,25 +116,25 @@ function TeamSlide({
             }}
         >
             <div
-                // Reduced sm:min-h from 460px to 400px to account for removed badges
-                className="relative w-full h-full sm:h-auto sm:min-h-[400px] overflow-hidden rounded-[4px] flex flex-col md:flex-row transition-all duration-500 shadow-[0_0_25px_rgba(0,0,0,0.5)] hover:shadow-[0_0_35px_rgba(0,0,0,0.8)]"
-                style={{
-                    background: '#0a0a0a',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                }}
-            >
+    className="relative w-full h-auto sm:min-h-[460px] overflow-hidden rounded-[4px] flex flex-col md:flex-row transition-all duration-500 shadow-[0_0_25px_rgba(0,0,0,0.5)] hover:shadow-[0_0_35px_rgba(0,0,0,0.8)]"
+    style={{
+        background: '#0a0a0a',
+        border: '1px solid rgba(255,255,255,0.08)',
+    }}
+>
                 {/* Inner texture overlay */}
-                <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                        background: `
-                            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-                            linear-gradient(165deg, rgba(255,255,255,0.09), rgba(255,255,255,0.01) 40%, rgba(0,0,0,0.4))
-                        `,
-                        backgroundSize: '18px 18px, 18px 18px, auto',
-                    }}
-                />
+                {/* Inner texture overlay */}
+<div
+    className="absolute inset-0 pointer-events-none"
+    style={{
+        background: `
+            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+            linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.35))
+        `,
+        backgroundSize: '18px 18px, 18px 18px, auto',
+    }}
+/>
 
                 {/* Corner brackets */}
                 {['tl', 'tr', 'bl', 'br'].map((pos) => (
@@ -162,7 +162,7 @@ function TeamSlide({
 
                 {/* Photo pane (3D Flip Card) */}
                 <div
-                    className="group relative h-36 sm:h-64 md:h-auto md:w-[45%] flex-shrink-0 cursor-pointer border-b md:border-b-0 md:border-r border-white/10"
+                    className="group relative h-48 sm:h-64 md:h-auto md:w-[45%] flex-shrink-0 cursor-pointer border-b md:border-b-0 md:border-r border-white/10"
                     style={{ perspective: '1200px', background: 'rgba(5,5,5,0.5)' }}
                 >
                     <div
@@ -208,16 +208,16 @@ function TeamSlide({
                 </div>
 
                 {/* Text pane */}
-                <div className="flex flex-col justify-center px-4 py-5 sm:px-8 sm:py-10 md:px-12 md:py-14 md:w-[55%] z-20 bg-gradient-to-br from-transparent to-black/40">
+                <div className="flex flex-col justify-center px-6 py-8 sm:px-8 sm:py-10 md:px-12 md:py-14 md:w-[55%] z-20 bg-gradient-to-br from-transparent to-black/40">
                     <span
-                        className="font-mono uppercase tracking-[0.3em] mb-1 sm:mb-3"
+                        className="font-mono uppercase tracking-[0.3em] mb-2 sm:mb-3"
                         style={{ fontSize: 'clamp(9px, 1vw, 11px)', color: accent, textShadow: `0 0 8px ${accent.replace('0.9', '0.4')}` }}
                     >
                         {team.id}
                     </span>
 
                     <h3
-                        className="font-black uppercase text-white leading-tight mb-1 sm:mb-2"
+                        className="font-black uppercase text-white leading-tight mb-2"
                         style={{
                             fontFamily: '"Inter", "Arial Black", sans-serif',
                             fontSize: 'clamp(22px, 3vw, 36px)',
@@ -228,31 +228,32 @@ function TeamSlide({
                     </h3>
 
                     <p
-                        className="font-mono uppercase tracking-[0.15em] mb-3 sm:mb-6"
+                        className="font-mono uppercase tracking-[0.15em] mb-5 sm:mb-6"
                         style={{ fontSize: 'clamp(8.5px, 0.7vw, 11px)', color: 'rgba(255,255,255,0.4)' }}
                     >
                         {team.tagline}
                     </p>
 
                     <div
-                        className="mb-3 sm:mb-5 w-[80%]"
                         style={{
-                            height: '1px', 
+                            height: '1px', marginBottom: '20px', width: '80%',
                             background: `linear-gradient(90deg, ${accent.replace('0.9', '0.5')} 0%, transparent 100%)`,
                             boxShadow: `0 0 10px ${accent.replace('0.9', '0.2')}`,
                         }}
                     />
 
                     <p
-                        className="leading-snug sm:leading-relaxed font-light tracking-wide"
+                        className="leading-relaxed font-light tracking-wide"
                         style={{
-                            fontSize: 'clamp(12px, 1vw, 15px)',
+                            fontSize: 'clamp(13px, 1vw, 15px)',
                             color: 'rgba(255,255,255,0.65)',
                             maxWidth: '46ch',
                         }}
                     >
                         {team.description}
                     </p>
+
+                    
                 </div>
 
             </div>
@@ -333,7 +334,7 @@ export default function TechnicalTeams() {
     const activeAccent = teamsData[activeIndex].accentColor;
 
     return (
-        <section ref={sectionRef} id="technical-teams" className="relative w-full overflow-hidden py-10 sm:py-24 md:py-32">
+        <section ref={sectionRef} id="technical-teams" className="relative w-full overflow-hidden py-20 sm:py-24 md:py-32">
             <SectionBackground />
 
             {/* Top-left section label */}
@@ -347,8 +348,9 @@ export default function TechnicalTeams() {
             <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-8 md:px-12">
 
                 {/* Section header */}
-                <div className="mb-6 sm:mb-14 flex flex-col items-center text-center pointer-events-none">
+                <div className="mb-10 sm:mb-14 flex flex-col items-center text-center pointer-events-none">
                     <div ref={labelRef}>
+                        {/* ✅ Fixed: moved fontSize to className, removed invalid sm: from style */}
                         <span
                             className="text-[9px] sm:text-[10px]"
                             style={{ letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: 12, display: 'block', textTransform: 'uppercase' }}
@@ -368,13 +370,12 @@ export default function TechnicalTeams() {
                 {/* Carousel */}
 <div
     ref={carouselRef}
-    // Change md:h-[460px] to md:h-[400px] or md:h-[420px]
-    className="relative w-full overflow-hidden min-h-[380px] sm:min-h-[440px] md:h-[400px]"
+    className="relative w-full overflow-hidden min-h-[460px] sm:min-h-[500px] md:h-[520px]"
     onMouseEnter={() => { isHovering.current = true; }}
-    onMouseLeave={() => { isHovering.current = false; }}
-    onTouchStart={handleTouchStart}
-    onTouchEnd={handleTouchEnd}
->
+                    onMouseLeave={() => { isHovering.current = false; }}
+                    onTouchStart={handleTouchStart}
+                    onTouchEnd={handleTouchEnd}
+                >
                     {teamsData.map((team, i) => (
                         <TeamSlide key={team.id} team={team} isActive={i === activeIndex} />
                     ))}
@@ -403,6 +404,7 @@ export default function TechnicalTeams() {
                 </div>
 
                 {/* Index counter */}
+                {/* ✅ Fixed: moved fontSize to className, removed invalid sm: from style */}
                 <div className="mt-4 sm:mt-5 flex justify-center pointer-events-none">
                     <span
                         className="font-mono uppercase tracking-[0.25em] text-[9px] sm:text-[10px]"

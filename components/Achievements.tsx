@@ -3,9 +3,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-/* ------------------------------------------------------------------ */
-/* Background
-/* ------------------------------------------------------------------ */
 function AchievementsBackground() {
   return (
     <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-[#0d0d0d]">
@@ -36,9 +33,6 @@ function AchievementsBackground() {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Toggle (Condensed for Mobile)
-/* ------------------------------------------------------------------ */
 type View = 'club' | 'individual';
 
 function ViewToggle({ view, setView }: { view: View; setView: (v: View) => void }) {
@@ -76,29 +70,44 @@ function ViewToggle({ view, setView }: { view: View; setView: (v: View) => void 
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Club Achievement Plaque (Tightened for Mobile)
-/* ------------------------------------------------------------------ */
 function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: string }) {
   return (
-    <div className="group relative h-auto min-h-[300px] w-full overflow-hidden rounded-2xl transition-all duration-500 border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:bg-white/[0.03] hover:border-white/10 hover:shadow-[0_16px_48px_rgba(79,174,243,0.1)]">
+    <div
+      className="group relative h-auto min-h-[300px] w-full overflow-hidden transition-all duration-500 hover:shadow-[0_16px_48px_rgba(79,174,243,0.1)]"
+      style={{
+        background: '#0a0a0a',
+        border: '1px solid rgba(255,255,255,0.1)',
+      }}
+    >
+      {/* Shared card texture */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `
+            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+            linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.35))
+          `,
+          backgroundSize: '18px 18px, 18px 18px, auto',
+        }}
+      />
 
-      {/* Soft Top Highlight */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#4FAEF3]/30 to-transparent opacity-50" />
-
+      {/* Content — restored flex wrapper */}
       <div className="relative z-20 flex h-full flex-col gap-6 p-5 sm:p-10 md:p-12 lg:flex-row lg:items-center lg:gap-16">
 
         {/* Left Side: Typography */}
         <div className="flex min-w-0 flex-1 flex-col justify-center text-left order-2 lg:order-1">
-
           <div className="mb-3 sm:mb-6 inline-flex items-center gap-3">
-             <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#4FAEF3] shadow-[0_0_8px_#4FAEF3]" />
-             <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-[#4FAEF3]/80">
-               ACHIEVEMENT_LOG // 01
-             </span>
+            <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#4FAEF3] shadow-[0_0_8px_#4FAEF3]" />
+            <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-[#4FAEF3]/80">
+              ACHIEVEMENT_LOG // 01
+            </span>
           </div>
 
-          <h3 className="mb-2 sm:mb-4 font-sans uppercase leading-[1.05] text-white" style={{ fontSize: 'clamp(26px, 7vw, 52px)', fontWeight: 900, letterSpacing: '-0.02em' }}>
+          <h3
+            className="mb-2 sm:mb-4 font-sans uppercase leading-[1.05] text-white"
+            style={{ fontSize: 'clamp(26px, 7vw, 52px)', fontWeight: 900, letterSpacing: '-0.02em' }}
+          >
             BEST CLUB <br className="hidden sm:block" />
             <span className="text-[#4FAEF3] md:text-white md:bg-clip-text md:text-transparent md:bg-gradient-to-r md:from-[#4FAEF3] md:to-[#2b8cd6]">
               ELITE CATEGORY
@@ -109,7 +118,6 @@ function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: 
             RECORDED TENURE // 2024 TO 2025
           </p>
 
-          {/* Grouped Description Block with Left Border */}
           <div className="relative border-l-2 border-[#4FAEF3]/20 pl-4 sm:pl-6 space-y-4 sm:space-y-5">
             <p className="max-w-xl text-[12px] leading-[1.6] sm:leading-[1.8] text-gray-300 md:text-[15px] font-light tracking-wide">
               Awarded for exceptional technical innovation, sustained ecosystem impact, and engineering excellence across the university network.
@@ -118,16 +126,12 @@ function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: 
               Anchored by <span className="text-[#4FAEF3] font-medium">Robowars</span>, the premier combat robotics league, solidifying a legacy of dominance.
             </p>
           </div>
-
         </div>
 
         {/* Right Side: Trophy */}
         <div className="flex flex-shrink-0 flex-col items-center justify-center gap-2 sm:gap-6 order-1 lg:order-2">
           <div className="relative flex h-[90px] w-[90px] sm:h-[200px] sm:w-[200px] items-center justify-center lg:h-[260px] lg:w-[260px]">
-
-            {/* Soft glow behind the trophy */}
             <div className="absolute inset-0 rounded-full bg-[#4FAEF3]/10 blur-[20px] sm:blur-[55px] transition-all duration-700 group-hover:bg-[#4FAEF3]/20" />
-
             <svg
               viewBox="0 0 200 200"
               fill="none"
@@ -144,38 +148,18 @@ function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: 
                   <stop offset="100%" stopColor="#2b8cd6" stopOpacity="0.15" />
                 </linearGradient>
               </defs>
-
               <path d="M52 34 C16 34, 10 96, 58 92" fill="none" stroke="#4FAEF3" strokeWidth="4" strokeLinecap="round" />
               <path d="M148 34 C184 34, 190 96, 142 92" fill="none" stroke="#4FAEF3" strokeWidth="4" strokeLinecap="round" />
-
-              <path
-                d="M52 22 L148 22 L148 38 Q148 104 100 114 Q52 104 52 38 Z"
-                fill="url(#trophyCup)"
-                stroke="#4FAEF3"
-                strokeWidth="3.5"
-                strokeLinejoin="round"
-              />
-
+              <path d="M52 22 L148 22 L148 38 Q148 104 100 114 Q52 104 52 38 Z" fill="url(#trophyCup)" stroke="#4FAEF3" strokeWidth="3.5" strokeLinejoin="round" />
               <path d="M52 22 L148 22" stroke="#4FAEF3" strokeWidth="4" strokeLinecap="round" />
-
               <path d="M86 114 L86 142 L114 142 L114 114" fill="rgba(79,174,243,0.14)" stroke="#4FAEF3" strokeWidth="3" strokeLinejoin="round" />
-
               <path d="M66 142 L134 142 L148 166 L52 166 Z" fill="url(#trophyBase)" stroke="#4FAEF3" strokeWidth="3" strokeLinejoin="round" />
-
               <rect x="44" y="166" width="112" height="14" rx="2" fill="url(#trophyBase)" stroke="#4FAEF3" strokeWidth="3" />
-
-              <path
-                d="M100 44 L108 64 L130 68 L108 72 L100 92 L92 72 L70 68 L92 64 Z"
-                fill="#4FAEF3"
-                className="origin-center animate-pulse"
-              />
-
-              <text x="100" y="158" textAnchor="middle" fontSize="14" fontWeight="700" fill="#4FAEF3" fontFamily="monospace" opacity="0.85">
-                01
-              </text>
+              <path d="M100 44 L108 64 L130 68 L108 72 L100 92 L92 72 L70 68 L92 64 Z" fill="#4FAEF3" className="origin-center animate-pulse" />
+              <text x="100" y="158" textAnchor="middle" fontSize="14" fontWeight="700" fill="#4FAEF3" fontFamily="monospace" opacity="0.85">01</text>
             </svg>
           </div>
-
+         
           {certificateImageSrc && (
             <a
               href={certificateImageSrc}
@@ -194,15 +178,11 @@ function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: 
             </a>
           )}
         </div>
-
       </div>
     </div>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Individual Achievements
-/* ------------------------------------------------------------------ */
 interface IndividualAchievement {
   id: string;
   name: string;
@@ -230,40 +210,20 @@ function LogRow({ data }: { data: IndividualAchievement }) {
         className="absolute left-0 top-0 h-full w-[2px] scale-y-0 bg-[#4FAEF3] shadow-[0_0_8px_#4FAEF3] transition-transform duration-200 group-hover:scale-y-100"
         style={{ transformOrigin: 'center' }}
       />
-
       <div className="flex items-center justify-between sm:hidden w-full mb-0.5">
-          <div className="flex items-center gap-3">
-              <span className="w-5 flex-shrink-0 font-mono text-[9px] text-[#4FAEF3]/60">
-                {data.id}
-              </span>
-              <span className="flex-shrink-0 font-mono text-[8px] text-emerald-500/80 group-hover:text-emerald-400">
-                [OK]
-              </span>
-          </div>
-          <span className="flex-shrink-0 font-mono text-[8px] text-gray-500 group-hover:text-[#4FAEF3]/80 transition-colors">
-            {data.year}
-          </span>
+        <div className="flex items-center gap-3">
+          <span className="w-5 flex-shrink-0 font-mono text-[9px] text-[#4FAEF3]/60">{data.id}</span>
+          <span className="flex-shrink-0 font-mono text-[8px] text-emerald-500/80 group-hover:text-emerald-400">[OK]</span>
+        </div>
+        <span className="flex-shrink-0 font-mono text-[8px] text-gray-500 group-hover:text-[#4FAEF3]/80 transition-colors">{data.year}</span>
       </div>
-
-      <span className="hidden sm:block w-8 flex-shrink-0 font-mono text-[11px] text-[#4FAEF3]/60">
-        {data.id}
-      </span>
-      <span className="hidden sm:block w-12 flex-shrink-0 font-mono text-[10px] text-emerald-500/80 group-hover:text-emerald-400">
-        [OK]
-      </span>
-
+      <span className="hidden sm:block w-8 flex-shrink-0 font-mono text-[11px] text-[#4FAEF3]/60">{data.id}</span>
+      <span className="hidden sm:block w-12 flex-shrink-0 font-mono text-[10px] text-emerald-500/80 group-hover:text-emerald-400">[OK]</span>
       <div className="flex flex-col sm:flex-row sm:items-center min-w-0 flex-1">
-          <span className="truncate text-[12px] font-medium text-gray-200 tracking-wide sm:w-[150px] md:text-[13.5px]">
-            {data.name}
-          </span>
-          <span className="truncate text-[10px] sm:text-[11.5px] text-gray-400 md:text-[13px] group-hover:text-white transition-colors tracking-wide mt-0.5 sm:mt-0">
-            {data.achievement}
-          </span>
+        <span className="truncate text-[12px] font-medium text-gray-200 tracking-wide sm:w-[150px] md:text-[13.5px]">{data.name}</span>
+        <span className="truncate text-[10px] sm:text-[11.5px] text-gray-400 md:text-[13px] group-hover:text-white transition-colors tracking-wide mt-0.5 sm:mt-0">{data.achievement}</span>
       </div>
-
-      <span className="hidden sm:block flex-shrink-0 font-mono text-[10px] text-gray-500 group-hover:text-[#4FAEF3]/80 transition-colors">
-        {data.year}
-      </span>
+      <span className="hidden sm:block flex-shrink-0 font-mono text-[10px] text-gray-500 group-hover:text-[#4FAEF3]/80 transition-colors">{data.year}</span>
     </div>
   );
 }
@@ -274,44 +234,58 @@ function IndividualLogPanel() {
   const colB = INDIVIDUAL_ACHIEVEMENTS.slice(half);
 
   return (
-    <div className="relative flex h-auto max-h-[60vh] sm:max-h-[600px] w-full flex-col overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+    <div
+      className="relative flex h-auto max-h-[60vh] sm:max-h-[600px] w-full flex-col overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+      style={{
+        background: '#0a0a0a',
+        border: '1px solid rgba(255,255,255,0.1)',
+      }}
+    >
+      {/* Shared card texture */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `
+            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+            linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.35))
+          `,
+          backgroundSize: '18px 18px, 18px 18px, auto',
+        }}
+      />
 
-      <div className="flex flex-shrink-0 flex-row items-center justify-between border-b border-white/[0.05] bg-black/20 px-4 py-4 sm:px-8 sm:py-5">
+      <div className="relative z-10 flex flex-shrink-0 flex-row items-center justify-between border-b border-white/[0.05] bg-black/20 px-4 py-4 sm:px-8 sm:py-5">
         <div className="flex items-center gap-2 sm:gap-3">
-            <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-sm bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]" />
-            <span className="font-mono text-[8.5px] sm:text-[10px] uppercase tracking-[0.2em] text-gray-300 md:text-[11px]">
-              RECORDS.DAT
-            </span>
+          <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-sm bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]" />
+          <span className="font-mono text-[8.5px] sm:text-[10px] uppercase tracking-[0.2em] text-gray-300 md:text-[11px]">RECORDS.DAT</span>
         </div>
-        <span className="font-mono text-[8.5px] sm:text-[10px] tracking-[0.1em] text-[#4FAEF3]/80 md:text-[11px]">
-          10/10 LOADED
-        </span>
+        <span className="font-mono text-[8.5px] sm:text-[10px] tracking-[0.1em] text-[#4FAEF3]/80 md:text-[11px]">10/10 LOADED</span>
       </div>
 
-      <div className="hidden lg:grid grid-cols-2 divide-x divide-white/[0.05] border-b border-white/[0.05] bg-black/10 font-mono text-[9px] uppercase tracking-[0.2em] text-gray-500">
-          <div className="flex items-center gap-4 px-6 py-3">
-              <span className="w-8">ID</span>
-              <span className="w-12">STATUS</span>
-              <span className="w-[150px]">OPERATIVE</span>
-              <span className="flex-1">DIRECTIVE</span>
-              <span>CYCLE</span>
-          </div>
-          <div className="flex items-center gap-4 px-6 py-3">
-              <span className="w-8">ID</span>
-              <span className="w-12">STATUS</span>
-              <span className="w-[150px]">OPERATIVE</span>
-              <span className="flex-1">DIRECTIVE</span>
-              <span>CYCLE</span>
-          </div>
+      <div className="relative z-10 hidden lg:grid grid-cols-2 divide-x divide-white/[0.05] border-b border-white/[0.05] bg-black/10 font-mono text-[9px] uppercase tracking-[0.2em] text-gray-500">
+        <div className="flex items-center gap-4 px-6 py-3">
+          <span className="w-8">ID</span>
+          <span className="w-12">STATUS</span>
+          <span className="w-[150px]">OPERATIVE</span>
+          <span className="flex-1">DIRECTIVE</span>
+          <span>CYCLE</span>
+        </div>
+        <div className="flex items-center gap-4 px-6 py-3">
+          <span className="w-8">ID</span>
+          <span className="w-12">STATUS</span>
+          <span className="w-[150px]">OPERATIVE</span>
+          <span className="flex-1">DIRECTIVE</span>
+          <span>CYCLE</span>
+        </div>
       </div>
 
-      <div className="grid min-h-[300px] flex-1 grid-cols-1 divide-y divide-white/[0.05] overflow-y-auto lg:grid-cols-2 lg:divide-x lg:divide-y-0">
+      <div className="relative z-10 grid min-h-[300px] flex-1 grid-cols-1 divide-y divide-white/[0.05] overflow-y-auto lg:grid-cols-2 lg:divide-x lg:divide-y-0">
         <div className="flex flex-col">
           <div className="lg:hidden">
-              {INDIVIDUAL_ACHIEVEMENTS.map((item) => <LogRow key={item.id} data={item} />)}
+            {INDIVIDUAL_ACHIEVEMENTS.map((item) => <LogRow key={item.id} data={item} />)}
           </div>
           <div className="hidden lg:flex flex-col">
-             {colA.map((item) => <LogRow key={item.id} data={item} />)}
+            {colA.map((item) => <LogRow key={item.id} data={item} />)}
           </div>
         </div>
         <div className="hidden lg:flex flex-col">
@@ -319,10 +293,8 @@ function IndividualLogPanel() {
         </div>
       </div>
 
-      <div className="flex flex-shrink-0 items-center justify-center gap-2 border-t border-white/[0.05] bg-black/20 py-3 sm:py-4">
-        <span className="font-mono text-[8.5px] sm:text-[10px] uppercase tracking-[0.2em] text-gray-500 md:text-[11px]">
-          EOF // END OF FILE
-        </span>
+      <div className="relative z-10 flex flex-shrink-0 items-center justify-center gap-2 border-t border-white/[0.05] bg-black/20 py-3 sm:py-4">
+        <span className="font-mono text-[8.5px] sm:text-[10px] uppercase tracking-[0.2em] text-gray-500 md:text-[11px]">EOF // END OF FILE</span>
         <motion.span
           animate={{ opacity: [1, 0] }}
           transition={{ repeat: Infinity, duration: 0.9, ease: 'linear' }}
@@ -333,9 +305,6 @@ function IndividualLogPanel() {
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Main export
-/* ------------------------------------------------------------------ */
 export default function Achievements({
   clubCertificateImageSrc = '/achievements/elite-club-2024.jpeg',
 }: {
@@ -351,30 +320,26 @@ export default function Achievements({
       <AchievementsBackground />
 
       <div className="relative z-10 flex flex-1 w-full flex-col mx-auto max-w-[1400px]">
-
-        {/* Header Block */}
         <div className="flex-shrink-0 mb-6 sm:mb-8 md:mb-10">
-            <div className="mb-4 sm:mb-6 flex items-start justify-between gap-4">
-              <div>
-                  <span className="mb-2 sm:mb-3 block font-mono text-[9px] uppercase tracking-[0.25em] text-gray-500 sm:text-[11px]">
-                  <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px sm:mr-[10px]' }}>06.</span>
-                  SYSTEM.LOGS // ACHIEVEMENTS
-                  </span>
-                  <h2
-                  className="font-sans uppercase text-white"
-                  style={{ fontSize: 'clamp(24px, 7vw, 64px)', fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1.05 }}
-                  >
-                  YEARS OF <span className="text-[#4FAEF3]">RECOGNITION.</span>
-                  </h2>
-              </div>
+          <div className="mb-4 sm:mb-6 flex items-start justify-between gap-4">
+            <div>
+              <span className="mb-2 sm:mb-3 block font-mono text-[9px] uppercase tracking-[0.25em] text-gray-500 sm:text-[11px]">
+                <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>06.</span>
+                SYSTEM.LOGS // ACHIEVEMENTS
+              </span>
+              <h2
+                className="font-sans uppercase text-white"
+                style={{ fontSize: 'clamp(24px, 7vw, 64px)', fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1.05 }}
+              >
+                YEARS OF <span className="text-[#4FAEF3]">RECOGNITION.</span>
+              </h2>
             </div>
-
-            <div className="flex w-full sm:w-auto">
-                <ViewToggle view={view} setView={setView} />
-            </div>
+          </div>
+          <div className="flex w-full sm:w-auto">
+            <ViewToggle view={view} setView={setView} />
+          </div>
         </div>
 
-        {/* Content Block */}
         <div className="flex flex-1 flex-col justify-start sm:justify-center">
           <AnimatePresence mode="wait">
             <motion.div
@@ -393,7 +358,6 @@ export default function Achievements({
             </motion.div>
           </AnimatePresence>
         </div>
-
       </div>
     </section>
   );
