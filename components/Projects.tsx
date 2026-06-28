@@ -329,7 +329,7 @@ const getScrollDistance = () => {
     const isMobile = viewW < 768;
     const travel   = isMobile
         ? track.scrollWidth - viewW / 2 - cardW / 2 - viewW
-        : track.scrollWidth - viewW - 40 - viewW;
+        : track.scrollWidth - viewW - 40;
     return Math.max(travel, window.innerHeight * total * 0.5);
 };
 
