@@ -400,6 +400,8 @@ stRef.current = ScrollTrigger.create({
             {/* ── Sticky viewport ── */}
             <div ref={pinRef} className="sticky top-0 h-screen w-full overflow-hidden">
                 <SectionBackground />
+                <span id="projects-mobile" className="pointer-events-none absolute top-0 h-px w-px md:hidden" aria-hidden="true" />
+
 
                 {/* Top-left label */}
                 <div className="absolute left-4 top-6 z-30 pointer-events-none sm:left-10 sm:top-8">

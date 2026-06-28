@@ -19,7 +19,7 @@ const mobileNavTargets: Record<string, string> = {
   Domains: 'domains-mobile',
   Teams: 'technical-teams',
   Events: 'events-mobile',
-  Projects: 'projects',
+  Projects: 'projects-mobile',
 };
 
 // 🛠️ NEW: Custom scroll offsets for each specific section
@@ -34,7 +34,9 @@ const sectionOffsets: Record<string, number> = {
   'events-mobile': 100,    
   
   // Moved from -70 to 0 (scrolls ~70px further down)
-  'projects': 500,          
+  'projects': 1300,  
+  'projects-mobile': 100,
+        
   
   // Moved from -120 to -50 (scrolls ~70px further down)
   'about': 0,            

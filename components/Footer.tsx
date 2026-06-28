@@ -95,9 +95,10 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative z-20 overflow-hidden bg-[#050607] px-5 pb-6 pt-12 text-white sm:px-8 md:px-12 lg:px-16">
+    <footer className="relative z-20 overflow-hidden bg-[#050607] pt-12 text-white">
       <div className="pointer-events-none absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-[#4FAEF3]/60 to-transparent" />
-      {/* Same grid background as hero — seamless continuation */}
+      
+      {/* Grid background */}
       <div
         className="pointer-events-none absolute inset-0 opacity-35"
         style={{
@@ -107,8 +108,9 @@ export default function Footer() {
         }}
       />
 
-      <div className="relative mx-auto w-full max-w-7xl">
-
+      {/* Main Content Wrapper - Paddings applied here instead of the footer tag */}
+      <div className="relative mx-auto w-full max-w-7xl px-5 pb-12 sm:px-8 md:px-12 lg:px-16">
+        
         {/* Top row */}
         <div className="grid gap-8 border-b border-white/8 pb-8 lg:grid-cols-[1fr_auto] lg:items-end">
           <section className="max-w-xl">
@@ -177,7 +179,6 @@ export default function Footer() {
               Est. 2010
             </span>
             <span className="hidden h-px w-8 bg-white/10 lg:block" />
-            {/* Matches "JOIN THE CLUB" button style from hero nav */}
             <Bracketed>
               <button
                 type="button"
@@ -192,23 +193,26 @@ export default function Footer() {
             </Bracketed>
           </div>
         </div>
-
-        {/* Logo — no divider line, just breathing room */}
-        <div className="relative mt-6 overflow-hidden pb-3 pt-8">
-          <Image
-            src="/robovitics-logo.png"
-            alt="roboVITics Logo"
-            width={1400}
-            height={380}
-            className="mx-auto h-auto w-full max-w-6xl object-contain opacity-90"
-          />
-        </div>
-
-        <div className="mt-4 flex flex-col gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/35 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 RoboVITics, VIT Vellore.</p>
-        </div>
-
       </div>
+
+      {/* Full Bleed Image Foundation (Outside max-w-7xl) */}
+      <div className="relative flex w-full justify-center leading-none">
+        <Image
+          src="/footer.jpg"
+          alt="RoboVITics Technical Landscape Foundation"
+          width={1920}
+          height={500}
+          className="h-auto w-full object-cover opacity-80"
+        />
+
+        {/* Copyright overlaid directly on the bottom edge of the image */}
+        <div className="absolute bottom-6 w-full px-5 sm:px-8 md:px-12 lg:px-16">
+          <div className="mx-auto flex w-full max-w-7xl flex-col gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/40 sm:flex-row sm:items-center sm:justify-between">
+            <p> </p>
+          </div>
+        </div>
+      </div>
+      
     </footer>
   );
 }
