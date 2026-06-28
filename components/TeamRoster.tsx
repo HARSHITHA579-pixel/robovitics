@@ -130,7 +130,9 @@ function ProfileCard({
       <div
         className={compact ? 'team-card-inner team-card-compact relative h-full overflow-hidden rounded-[4px] flex flex-col' : 'team-card-inner relative h-full overflow-hidden rounded-[4px] flex flex-col'}
         style={{
-          padding: compact ? 'clamp(9px, 0.8vw, 11px)' : facultyCompact ? 'clamp(10px, 0.95vw, 13px)' : 'clamp(12px, 1.2vw, 16px)',
+         padding: compact ? 'clamp(9px, 0.8vw, 11px)' : facultyCompact ? 'clamp(11px, 1vw, 13px)' : 'clamp(12px, 1.2vw, 16px)',
+
+
           background: '#0a0a0a',
           border: isActive ? '1px solid rgba(79,174,243,0.45)' : `1px solid rgba(255,255,255,${compact ? 0.055 : 0.08})`,
           boxShadow: isActive ? '0 0 20px rgba(79,174,243,0.13)' : 'none',
@@ -189,7 +191,7 @@ function ProfileCard({
         <div
           className="team-image relative w-full mb-4 overflow-hidden rounded-[2px] bg-[#111]"
           style={{
-            aspectRatio: compact ? '1/1' : '4/5',
+aspectRatio: compact || facultyCompact ? '1/1' : '4/5',
             marginBottom: compact ? '10px' : facultyCompact ? '12px' : '16px',
             border: isActive ? '1px solid rgba(79,174,243,0.5)' : '1px solid rgba(255,255,255,0.1)',
             boxShadow: isActive ? '0 0 15px rgba(79,174,243,0.2)' : 'none',
@@ -404,7 +406,8 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
 
       <div className="relative z-10 container mx-auto px-4 md:px-6 flex flex-col items-center">
         {/* ── FACULTY SECTION ── */}
-        <div id="team-faculty" className="w-full max-w-5xl scroll-mt-28 flex flex-col items-center mb-14 md:mb-24">
+        <div id="team-faculty" className="w-full max-w-4xl scroll-mt-28 flex flex-col items-center mb-14 md:mb-24">
+
           <SectionTitle
             eyebrow="▶ ACCESS_LEVEL // TIER_01"
             title="FACULTY"
