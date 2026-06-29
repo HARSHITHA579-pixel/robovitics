@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 const contactEmail = 'robovitics@vit.ac.in';
 const contactPhone = '+91 98765 43210';
@@ -43,17 +44,12 @@ const socialLinks = [
   },
 ];
 
-// Corner-bracket wrapper
 function Bracketed({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
     <div className={`relative ${className}`}>
-      {/* top-left */}
       <span className="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l border-t border-white/30" />
-      {/* top-right */}
       <span className="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r border-t border-white/30" />
-      {/* bottom-left */}
       <span className="pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b border-l border-white/30" />
-      {/* bottom-right */}
       <span className="pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b border-r border-white/30" />
       {children}
     </div>
@@ -77,7 +73,7 @@ function ContactChip({
         href={href}
         className="group flex min-h-14 items-center gap-3 border border-white/8 bg-white/[0.02] px-4 text-left transition-all duration-300 hover:border-[#4FAEF3]/40 hover:bg-white/[0.045] hover:shadow-[0_0_15px_rgba(79,174,243,0.15)]"
       >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-[#4FAEF3]/30 bg-[#4FAEF3]/10 text-[#8FD4FF] transition-colors group-hover:border-[#4FAEF3]/70 group-hover:text-white/90">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-white/15 bg-white/[0.04] text-white/50 transition-colors group-hover:border-[#4FAEF3]/50 group-hover:text-[#4FAEF3]">
           {icon}
         </span>
         <span className="min-w-0">
@@ -96,8 +92,9 @@ export default function Footer() {
 
   return (
     <footer className="relative z-20 overflow-hidden bg-[#050607] pt-12 text-white">
+      {/* Top border glow */}
       <div className="pointer-events-none absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-[#4FAEF3]/60 to-transparent" />
-      
+
       {/* Grid background */}
       <div
         className="pointer-events-none absolute inset-0 opacity-35"
@@ -108,21 +105,44 @@ export default function Footer() {
         }}
       />
 
+      {/* Noise texture overlay */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.025]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '128px 128px',
+        }}
+      />
+
       {/* Main Content Wrapper */}
       <div className="relative mx-auto w-full max-w-7xl px-5 pb-8 sm:px-8 md:px-12 lg:px-16">
-        
+
+        {/* System label */}
+        <div className="mb-6 flex items-center gap-3">
+          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/25">
+            SYSTEM.CONNECT //
+          </span>
+          <span className="h-px flex-1 bg-white/8" />
+        </div>
+
         {/* Top row */}
         <div className="grid gap-8 border-b border-white/8 pb-8 lg:grid-cols-[1fr_auto] lg:items-end">
-          
-          {/* Quick Links Section */}
-          <section className="flex gap-10 font-mono text-[11px] uppercase tracking-[0.15em] text-white/60 sm:pb-1">
-            <div className="flex flex-col gap-3">
-              <a href="/about" className="transition-colors hover:text-[#4FAEF3]">About Us</a>
-              <a href="/projects" className="transition-colors hover:text-[#4FAEF3]">Projects</a>
-            </div>
-            <div className="flex flex-col gap-3">
-              <a href="/events" className="transition-colors hover:text-[#4FAEF3]">Events</a>
-              <a href="/join" className="transition-colors hover:text-[#4FAEF3]">Contact Us</a>
+
+          {/* Quick Links */}
+          <section>
+            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/25">
+              Navigation
+            </p>
+            <div className="flex gap-10 font-mono text-[11px] uppercase tracking-[0.15em] text-white/60">
+              <div className="flex flex-col gap-3">
+                <a href="/about" className="transition-colors hover:text-[#4FAEF3]">About Us</a>
+                <a href="/projects" className="transition-colors hover:text-[#4FAEF3]">Projects</a>
+              </div>
+              <div className="flex flex-col gap-3">
+                <a href="/events" className="transition-colors hover:text-[#4FAEF3]">Events</a>
+                <a href="/join" className="transition-colors hover:text-[#4FAEF3]">Contact Us</a>
+              </div>
             </div>
           </section>
 
@@ -195,25 +215,57 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Copyright & Location - Text is now ABOVE the line */}
+        {/* Copyright & Location */}
         <div className="flex flex-col gap-2 border-b border-white/8 pb-6 font-mono text-[10px] uppercase tracking-[0.16em] text-white/40 sm:flex-row sm:items-center sm:justify-between">
-          <p>&copy; {new Date().getFullYear()} All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <span className="text-white/20">05. EOF</span>
+            <span className="h-px w-6 bg-white/15" />
+            <p>&copy; {new Date().getFullYear()} All rights reserved.</p>
+          </div>
           <p>VIT Vellore Campus, Tamil Nadu</p>
         </div>
 
+        {/* Logo */}
+        <motion.div
+                    className="relative z-20 mt-12 flex flex-col items-center justify-center sm:mt-20 md:mt-28"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: 'easeOut' }}
+          viewport={{ once: true }}
+        >
+          <Image
+            src="/robovitics-logo.png"
+            alt="RoboVITics Logo"
+            width={600}
+            height={200}
+            className="h-auto w-96 object-contain sm:w-[30rem] md:w-[38rem] lg:w-[46rem]"
+          />
+          <div className="mt-4 flex flex-col items-center gap-1.5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/50">
+              Official Robotics Club of VIT Vellore
+            </p>
+            <p className="font-mono text-[11px] text-white/30 tracking-wide text-center">
+              Student-led robotics, workshops, competitions, and engineering projects since 2010.
+            </p>
+          </div>
+        </motion.div>
+
       </div>
 
-      {/* Full Bleed Image Foundation - Purely decorative now */}
-      <div className="relative flex w-full justify-center leading-none">
+      {/* Full Bleed Image Foundation */}
+      <div className="pointer-events-none relative z-0 -mt-32 -mb-24 flex w-full justify-center leading-none sm:-mt-56 sm:-mb-28 md:-mt-80 md:-mb-40 lg:-mt-[26rem] lg:-mb-52">
+
         <Image
-          src="/footer.jpg"
+          src="/footer.png"
           alt="RoboVITics Technical Landscape Foundation"
           width={1920}
           height={500}
-          className="h-auto w-full object-cover opacity-80"
+          className="h-auto w-full object-cover object-[center_25%] opacity-80"
+
+
         />
       </div>
-      
+
     </footer>
   );
 }
