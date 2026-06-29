@@ -127,7 +127,7 @@ export default function Footer() {
         </div>
 
         {/* Top row */}
-        <div className="grid gap-8 border-b border-white/8 pb-8 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div className="grid gap-6 border-b border-white/8 pb-8 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-8">
 
           {/* Quick Links */}
           <section>
@@ -146,8 +146,8 @@ export default function Footer() {
             </div>
           </section>
 
-          {/* Contact Chips */}
-          <section className="grid gap-3 sm:grid-cols-2 lg:min-w-[480px]">
+          {/* Contact Chips — stacked on mobile, side by side on sm+ */}
+          <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:min-w-[480px]">
             <ContactChip
               label="Email"
               value={contactEmail}
@@ -178,7 +178,7 @@ export default function Footer() {
         </div>
 
         {/* Social + back to top row */}
-        <div className="grid gap-5 pb-8 pt-6 md:grid-cols-[1fr_auto] md:items-center">
+        <div className="flex flex-col gap-4 pb-8 pt-6 sm:flex-row sm:items-center sm:justify-between md:grid md:grid-cols-[1fr_auto] md:gap-5 md:items-center">
           <div className="flex flex-wrap items-center gap-3">
             <p className="mr-1 font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
               Connect
@@ -199,7 +199,7 @@ export default function Footer() {
             ))}
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 md:justify-end">
+          <div className="flex items-center sm:justify-end">
             <Bracketed>
               <button
                 type="button"
@@ -225,9 +225,9 @@ export default function Footer() {
           <p>VIT Vellore Campus, Tamil Nadu</p>
         </div>
 
-        {/* Logo */}
+        {/* Logo + tagline — sits above the scene image */}
         <motion.div
-                    className="relative z-20 mt-12 flex flex-col items-center justify-center sm:mt-20 md:mt-28"
+          className="relative z-20 mt-4 flex flex-col items-center justify-center sm:mt-20 md:mt-28"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: 'easeOut' }}
@@ -238,13 +238,13 @@ export default function Footer() {
             alt="RoboVITics Logo"
             width={600}
             height={200}
-            className="h-auto w-96 object-contain sm:w-[30rem] md:w-[38rem] lg:w-[46rem]"
+            className="h-auto w-full max-w-[260px] object-contain sm:max-w-[30rem] md:max-w-[38rem] lg:max-w-[46rem]"
           />
-          <div className="mt-4 flex flex-col items-center gap-1.5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/50">
+          <div className="mt-3 flex flex-col items-center gap-2 px-4">
+            <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/50 sm:text-[10px] sm:tracking-[0.3em]">
               Official Robotics Club of VIT Vellore
             </p>
-            <p className="font-mono text-[11px] text-white/30 tracking-wide text-center">
+            <p className="max-w-xs text-center font-mono text-[9px] leading-relaxed text-white/35 sm:max-w-none sm:text-[10px]">
               Student-led robotics, workshops, competitions, and engineering projects since 2010.
             </p>
           </div>
@@ -253,7 +253,9 @@ export default function Footer() {
       </div>
 
       {/* Full Bleed Image Foundation */}
-      <div className="pointer-events-none relative z-0 -mt-32 -mb-24 flex w-full justify-center leading-none sm:-mt-56 sm:-mb-28 md:-mt-80 md:-mb-40 lg:-mt-[26rem] lg:-mb-52">
+      {/* Desktop: negative margins overlap logo section for cinematic blend */}
+      {/* Mobile: no negative top margin so image sits below text without overlap */}
+            <div className="pointer-events-none relative z-0 -mt-4 flex w-full justify-center leading-none sm:-mt-56 sm:-mb-28 md:-mt-80 md:-mb-40 lg:-mt-[26rem] lg:-mb-52">
 
         <Image
           src="/footer.png"
@@ -261,8 +263,6 @@ export default function Footer() {
           width={1920}
           height={500}
           className="h-auto w-full object-cover object-[center_25%] opacity-80"
-
-
         />
       </div>
 
