@@ -188,16 +188,18 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
               />
             </label>
 
-            <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
-              <p className={`min-h-5 font-mono text-[10px] uppercase tracking-[0.14em] ${
-                submitState === 'success' ? 'text-[#4FAEF3]/85' : submitState === 'error' ? 'text-red-300/85' : 'text-white/30'
-              }`}>
-                {statusMessage || 'Secure relay enabled'}
-              </p>
+            <div className="flex flex-col items-center gap-3 pt-2">
+              {statusMessage && (
+                <p className={`font-mono text-[10px] uppercase tracking-[0.14em] ${
+                  submitState === 'success' ? 'text-[#4FAEF3]/85' : 'text-red-300/85'
+                }`}>
+                  {statusMessage}
+                </p>
+              )}
               <button
                 type="submit"
                 disabled={submitState === 'sending'}
-                className="border border-[#4FAEF3]/55 bg-[#4FAEF3]/10 px-5 py-3 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[#4FAEF3] transition-all hover:bg-[#4FAEF3]/15 hover:shadow-[0_0_18px_rgba(79,174,243,0.28)] disabled:cursor-wait disabled:opacity-55"
+                className="w-full max-w-[260px] border border-[#4FAEF3]/55 bg-[#4FAEF3]/10 px-6 py-3.5 text-center font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[#4FAEF3] transition-all hover:bg-[#4FAEF3]/15 hover:shadow-[0_0_18px_rgba(79,174,243,0.28)] disabled:cursor-wait disabled:opacity-55"
               >
                 {submitState === 'sending' ? 'Sending...' : 'Send Message'}
               </button>
