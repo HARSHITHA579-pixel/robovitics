@@ -705,7 +705,7 @@ export default function Sponsors() {
             const held = heldIdRef.current;
             const heldEl = held ? cardEls.current[held] : null;
             const origin = held ? cardOrigins.current[held] : null;
-            if (heldEl && origin) {
+            if (held && heldEl && origin) {
                 const clawPoint = {
                     x: ee.x + Math.cos(la) * 42,
                     y: ee.y + Math.sin(la) * 42,
