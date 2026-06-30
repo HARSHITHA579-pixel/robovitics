@@ -20,6 +20,8 @@ type DeckItem = {
 
 type Mode = "events" | "outreach";
 
+const DESKTOP_SCROLL_UNITS = 2.8;
+
 // Replace the events array — add the 6th entry:
 const events: DeckItem[] = [
   { id: "MODULE_03", name: "MACHINE DESIGN", type: "FUSION 360 WORKSHOP", date: "PRE-GRAVITAS 2025 · 150 ATTENDEES", desc: "Hands-on CAD across modeling, joints, rendering, and simulation — plus real-time physics in PyBullet.", status: "OPEN", img: "/equinox.png", details: "A two-day deep dive into Fusion 360 held on 23–24 Sept 2025, covering 2D/3D modeling, joint assembly, animation, rendering, and simulation. Participants were introduced to PyBullet, a real-time physics engine, to test and validate their digital models against motion, collisions, and constraints. Practical, beyond-curriculum design projects sharpened both technical skill and industry readiness." },
@@ -346,7 +348,7 @@ const revealCards = useCallback((cards: HTMLDivElement[], direction: "left" | "r
     };
 
     const tl = gsap.timeline({ paused: true });
-    tl.to(title, { opacity: 0, y: -28, duration: 0.08, ease: "power2.in" }, 0.12);
+    tl.to(title, { opacity: 0, y: -28, duration: 0.16, ease: "sine.inOut" }, 0.08);
 
     // Top row cards (indices 0,1,2) all go at t=0.2
     // Bottom row cards (indices 3,4,5) all go at t=0.38
@@ -360,40 +362,38 @@ const revealCards = useCallback((cards: HTMLDivElement[], direction: "left" | "r
       const startY = depth * 12;
 
       tl.set(card, { zIndex: 20 + cardIdx }, t);
-      tl.to(card, { rotateX: 18, y: startY - 60, duration: 0.06, ease: "power2.in"  }, t);
-      tl.to(card, { x: pos.x, y: pos.y, rotateX: 0, scale: 1, duration: 0.11, ease: "power3.out" }, t + 0.06);
-      tl.to(card, { y: pos.y + 8, duration: 0.025, ease: "power1.out" }, t + 0.15);
-      tl.to(card, { y: pos.y,     duration: 0.025, ease: "power1.in"  }, t + 0.175);
+      tl.to(card, { rotateX: 10, y: startY - 36, duration: 0.12, ease: "sine.inOut" }, t);
+      tl.to(card, { x: pos.x, y: pos.y, rotateX: 0, scale: 1, duration: 0.3, ease: "sine.inOut" }, t + 0.06);
 
       const styledBg   = card.querySelector<HTMLElement>(".ev-styled-bg");
       const highlights = card.querySelector<HTMLElement>(".ev-highlights");
       const inner      = card.querySelector<HTMLElement>(".ev-inner");
 
       if (styledBg) {
-        tl.to(styledBg, { opacity: 1,            duration: 0.13, ease: "power2.inOut" }, t + 0.04);
-        tl.to(styledBg, { boxShadow: glowShadow, duration: 0.26, ease: "power2.out"   }, t + 0.18);
+        tl.to(styledBg, { opacity: 1,            duration: 0.2, ease: "sine.inOut" }, t + 0.04);
+        tl.to(styledBg, { boxShadow: glowShadow, duration: 0.3, ease: "sine.out"   }, t + 0.2);
       }
-      if (highlights) tl.to(highlights, { opacity: 1, duration: 0.13 }, t + 0.08);
-      if (inner)      tl.to(inner,      { opacity: 1, duration: 0.07, ease: "power1.out" }, t + 0.18);
+      if (highlights) tl.to(highlights, { opacity: 1, duration: 0.18, ease: "sine.out" }, t + 0.08);
+      if (inner)      tl.to(inner,      { opacity: 1, duration: 0.16, ease: "sine.out" }, t + 0.2);
 
       const flash = card.querySelector<HTMLElement>(".ev-flash");
-      if (flash) tl.fromTo(flash, { opacity: 0.9 }, { opacity: 0, duration: 0.1, ease: "power2.out" }, t + 0.15);
+      if (flash) tl.fromTo(flash, { opacity: 0.7 }, { opacity: 0, duration: 0.18, ease: "sine.out" }, t + 0.2);
     });
 
     // Toggle appears exactly when bottom row lands: 0.38 + 0.175 + small fade = ~0.57
-   if (toggleRef.current) {
-  tl.to(toggleRef.current, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.57);
-}
+    if (toggleRef.current) {
+      tl.to(toggleRef.current, { opacity: 1, y: 0, duration: 0.16, ease: "sine.out" }, 0.67);
+    }
 
-// Add this exact line. Increase the "0.8" if you want it to stay locked even longer.
-tl.set({}, {}, "+=0.8"); 
+    tl.to({}, { duration: 0.22 }); 
 
-stRef.current = ScrollTrigger.create({
-  trigger: section,
-  start: "top top",
-  end: () => `+=${window.innerHeight * 4}`, // Matches the 400vh
-      scrub: 1.2,
+    stRef.current = ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      end: () => `+=${window.innerHeight * DESKTOP_SCROLL_UNITS}`,
+      scrub: 0.85,
       animation: tl,
+      invalidateOnRefresh: true,
       onUpdate: (self) => {
   syncToggleInteractivity();
 
@@ -730,7 +730,13 @@ stRef.current = ScrollTrigger.create({
       </div>
     </section>
 
-<section id="events" ref={sectionRef} className="relative hidden h-[400vh] bg-[#0d0d0d] md:block">    <span id="events-desktop" className="pointer-events-none absolute top-[480vh] h-px w-px" aria-hidden="true" />
+    <section
+      id="events"
+      ref={sectionRef}
+      className="relative hidden bg-[#0d0d0d] md:block"
+      style={{ height: `calc(100vh + ${DESKTOP_SCROLL_UNITS * 100}vh)` }}
+    >
+      <span id="events-desktop" className="pointer-events-none absolute top-[260vh] h-px w-px" aria-hidden="true" />
       <div ref={pinRef} className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
         <EventsBackground />
 

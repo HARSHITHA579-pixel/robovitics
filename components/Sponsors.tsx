@@ -504,10 +504,7 @@ export default function Sponsors() {
                 if (bb) { bb.setAttribute('cx', (s.base.x + (i - 2.5) * 22).toFixed(1)); bb.setAttribute('cy', (s.base.y + 6).toFixed(1)); bb.setAttribute('fill', cBL); }
             }
 
-            // ══════════ REACH & PULSE ══════════
-            const rc = e['rc'] as SVGCircleElement;
-            if (rc) { rc.setAttribute('cx', s.base.x.toFixed(1)); rc.setAttribute('cy', s.base.y.toFixed(1)); rc.setAttribute('r', s.lens.reduce((a, b) => a + b, 0).toFixed(1)); rc.setAttribute('stroke', `rgba(79,174,243,${lv(.05, .15, t).toFixed(3)})`); }
-
+            // ══════════ PULSE ══════════
             const pl = e['pl'] as SVGCircleElement;
             if (pl) {
                 const pt2 = (Date.now() % 1200) / 1200;
@@ -691,12 +688,6 @@ export default function Sponsors() {
                     </pattern>
 
                 </defs>
-
-
-
-                {/* Reach radius */}
-
-                <circle ref={ref('rc')} fill="none" strokeWidth="1" strokeDasharray="16 12" />
 
                 {/* Cables / Hoses */}
 

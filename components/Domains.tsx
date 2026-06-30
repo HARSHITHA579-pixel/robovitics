@@ -216,6 +216,7 @@ function DomainCardMobile({ domain }: { domain: (typeof DOMAINS)[0] }) {
 }
 
 const BRIDGE_TEXT = "WE DON'T JUST STUDY THESE DOMAINS. WE SOLDER THE CIRCUITS, WRITE THE ALGORITHMS, AND MACHINE THE PARTS. AWAITING EVENT DEPLOYMENT...";
+const DESKTOP_SCROLL_DISTANCE = 3300;
 
 function HUDTextBridge() {
   const words = BRIDGE_TEXT.split(' ');
@@ -316,66 +317,51 @@ export default function Domains() {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top top',
-            end: '+=5000',
-            scrub: 0.8,
-            fastScrollEnd: true,
-            onUpdate: (self) => {
-              const p = self.progress;
-              let intensity = 0;
-              if (p >= 0.35 && p < 0.65) {
-                intensity = (p - 0.35) / 0.30;
-              } else if (p >= 0.65 && p < 0.82) {
-                intensity = 1 - ((p - 0.65) / 0.17);
-              }
-              cardsRef.current.forEach((card) => {
-                if (!card) return;
-                card.style.boxShadow = intensity > 0.01
-                  ? `
-                    0 0 ${intensity * 40}px rgba(255,255,255,${intensity * 0.12}),
-                    0 0 ${intensity * 90}px rgba(255,255,255,${intensity * 0.07}),
-                    0 0 ${intensity * 160}px rgba(200,220,255,${intensity * 0.05})
-                  `
-                  : '';
-              });
-            },
+            end: `+=${DESKTOP_SCROLL_DISTANCE}`,
+            scrub: 0.7,
+            invalidateOnRefresh: true,
           },
         });
 
         // Cards fade in and scale up at the start of the scroll
         tl.to(cardsRef.current, {
           opacity: 1, scale: 0.78, y: '6vh',
-          duration: 0.4,
-          ease: 'power2.out', force3D: true,
+          duration: 0.22,
+          ease: 'sine.out', force3D: true,
         }, 0);
 
         // Title group scales up and fades in EXACTLY with the cards
         tl.to(titleGroupRef.current, {
           opacity: 1, scale: 1, y: 0,
-          duration: 0.4,
-          ease: 'power2.out',
+          duration: 0.22,
+          ease: 'sine.out',
         }, 0);
 
         tl.to(cardsRef.current, {
           x: (i) => patternX[i],
           y: (i) => patternY[i],
-          scale: 0.95, duration: 0.9,
-          ease: 'power2.inOut', force3D: true,
+          scale: 0.95, duration: 0.62,
+          ease: 'sine.inOut', force3D: true,
         });
+
+        tl.to({}, { duration: 0.12 });
 
         tl.to(cardsRef.current, {
           x: (i) => circleX[i],
           y: (i) => circleY[i],
           scale: 0.84,
-          duration: 1.9,
-          ease: 'none',
+          duration: 0.95,
+          ease: 'sine.inOut',
           force3D: true,
         });
 
         tl.to(titleGroupRef.current, {
           y: -80,
-          duration: 1.9,
-          ease: 'none',
+          duration: 0.95,
+          ease: 'sine.inOut',
         }, '<');
+
+        tl.to({}, { duration: 0.14 });
 
         tl.addLabel('cardsZoomInStart');
 
@@ -383,8 +369,8 @@ export default function Domains() {
           x: (i) => expandedCircleX[i],
           y: (i) => expandedCircleY[i],
           scale: 1.18,
-          duration: 1.05,
-          ease: 'none',
+          duration: 0.5,
+          ease: 'sine.inOut',
           force3D: true,
         });
 
@@ -392,33 +378,33 @@ export default function Domains() {
         tl.to(titleGroupRef.current, {
           opacity: 0,
           y: -120,
-          duration: 0.35,
-          ease: 'power2.inOut',
+          duration: 0.24,
+          ease: 'sine.inOut',
         }, 'cardsZoomInStart+=0.05');
 
         tl.to(sectionLabelRef.current, {
           opacity: 0,
           y: -30,
-          duration: 0.35,
-          ease: 'power2.inOut',
+          duration: 0.24,
+          ease: 'sine.inOut',
         }, 'cardsZoomInStart+=0.05');
 
         tl.to(cardsRef.current, {
           x: (i) => zoomX[i],
           y: (i) => zoomY[i],
           scale: 5.2,
-          duration: 1.75,
-          ease: 'none',
+          duration: 0.82,
+          ease: 'sine.in',
           force3D: true,
         });
 
-        tl.to('.bridge-terminal-header', { opacity: 1, duration: 0.5, ease: 'power2.out' }, '-=1.2');
+        tl.to('.bridge-terminal-header', { opacity: 1, duration: 0.24, ease: 'sine.out' }, '-=0.58');
 
         tl.to(wordElements, {
           opacity: 1, z: 0, x: 0, y: 0, rotationX: 0, rotationY: 0, rotationZ: 0,
-          duration: 2.0,
-          stagger: { each: 0.04, from: 'random' },
-          ease: 'power3.out', force3D: true,
+          duration: 0.9,
+          stagger: { each: 0.018, from: 'random' },
+          ease: 'sine.out', force3D: true,
         }, '<');
 
       });
@@ -464,7 +450,8 @@ export default function Domains() {
       <section
         id="domains"
         ref={sectionRef}
-        className="relative hidden h-[calc(100vh+5000px)] w-full bg-transparent md:block"
+        className="relative hidden w-full bg-transparent md:block"
+        style={{ height: `calc(100vh + ${DESKTOP_SCROLL_DISTANCE}px)` }}
       >
         <span id="domains-desktop" className="pointer-events-none absolute top-[900px] h-px w-px" aria-hidden="true" />
         <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
