@@ -350,37 +350,15 @@ function SectionTitle({
   align?: 'center' | 'left';
 }) {
   return (
-    <div className={`flex flex-col ${align === 'center' ? 'items-center text-center' : 'items-start text-left'} mb-8 md:mb-10`}>
-      <span style={{
-        fontSize: '10px',
-        letterSpacing: '0.35em',
-        color: 'rgba(255,255,255,0.2)',
-        fontFamily: 'monospace',
-        marginBottom: '12px',
-        display: 'block',
-        textTransform: 'uppercase',
-      }}>
+    <div className={`rv-section-header ${align === 'left' ? 'sm:items-start sm:text-left' : ''} mb-8 md:mb-10`}>
+      <span className="rv-section-kicker sm:text-[10px]">
         {eyebrow}
       </span>
-      <h2 style={{
-        margin: 0,
-        fontSize: 'clamp(30px, 4.4vw, 58px)',
-        fontWeight: '900',
-        color: '#ffffff',
-        letterSpacing: '-0.01em',
-        fontFamily: '"Inter", "Arial Black", sans-serif',
-        textTransform: 'uppercase',
-        lineHeight: 1,
-      }}>
+      <h2 className="rv-section-title" style={{ '--rv-section-title-desktop': 'clamp(30px, 4.4vw, 58px)' } as React.CSSProperties}>
         {title}{accent ? ' ' : ''}
         {accent && <span style={{ color: '#4FAEF3' }}>{accent}</span>}
       </h2>
-      <div style={{
-        marginTop: '16px',
-        width: align === 'center' ? '120px' : '88px',
-        height: '1px',
-        background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)',
-      }} />
+      <div className="rv-section-rule" />
     </div>
   );
 }
@@ -395,11 +373,8 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
 
       {/* Top Left Label */}
       <div className="absolute top-6 left-6 md:top-10 md:left-10 z-20 pointer-events-none">
-        <span style={{
-          fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
-          color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
-        }}>
-          <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>05.</span>
+        <span className="rv-section-log">
+          <span className="rv-section-log-number">09.</span>
           SYSTEM.LOGS // COMMAND_STRUCTURE
         </span>
       </div>

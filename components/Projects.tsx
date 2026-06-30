@@ -118,25 +118,9 @@ width: 'clamp(230px, calc(100vw - 80px), 440px)',
             }}
         >
             <div
-                className="relative overflow-hidden"
-                style={{
-                    background: '#0a0a0a',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    boxShadow: `0 0 0 0px ${CYAN_GLOW}`,
-                }}
+                className="rv-card-surface rv-card-surface--lifted"
+                style={{ boxShadow: `0 18px 45px rgba(0,0,0,0.36), 0 0 30px rgba(79,174,243,0.055), 0 0 0 0px ${CYAN_GLOW}` }}
             >
-                {/* Shared card texture */}
-                <div
-                    className="pointer-events-none absolute inset-0 z-0"
-                    style={{
-                        background: `
-                            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-                            linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.35))
-                        `,
-                        backgroundSize: '18px 18px, 18px 18px, auto',
-                    }}
-                />
                 <Stamp />
 
                 {(['tl','tr','bl','br'] as const).map((pos) => (
@@ -165,7 +149,7 @@ width: 'clamp(230px, calc(100vw - 80px), 440px)',
 
                 {/* Image — shorter on mobile so body text fits in viewport */}
                 <div
-                    className="relative w-full overflow-hidden"
+                    className="relative z-10 w-full overflow-hidden"
                     style={{ height: 'clamp(130px, 25vw, 220px)' }}
                 >
                     <Image
@@ -179,17 +163,17 @@ width: 'clamp(230px, calc(100vw - 80px), 440px)',
                     />
                     <div
                         className="absolute inset-0 pointer-events-none"
-                        style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(10,10,10,0.95) 100%)' }}
+                        style={{ background: 'linear-gradient(to bottom, transparent 42%, rgba(11,12,13,0.88) 100%)' }}
                     />
                 </div>
 
                 {/* Card body — tighter padding on mobile */}
-                <div className="px-5 pt-4 pb-5 flex flex-col gap-2.5 sm:px-7 sm:pt-6 sm:pb-7 sm:gap-3.5">
+                <div className="relative z-10 px-5 pt-4 pb-5 flex flex-col gap-2.5 sm:px-7 sm:pt-6 sm:pb-7 sm:gap-3.5">
                     <span
                         className="font-mono uppercase"
                         style={{ fontSize: 9, letterSpacing: '0.28em', color: CYAN_DIM }}
                     >
-                        {project.id} // BUILD_LOG
+                        {project.id}{' // '}BUILD_LOG
                     </span>
 
                     <h3
@@ -405,10 +389,9 @@ stRef.current = ScrollTrigger.create({
 
                 {/* Top-left label */}
                 <div className="absolute left-4 top-6 z-30 pointer-events-none sm:left-10 sm:top-8">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/30 sm:text-[10px]">
-                        <span className="font-bold text-white mr-2">04.</span>
-                        <span className="hidden sm:inline">SYSTEM.LOGS // PROJECTS</span>
-                        <span className="sm:hidden">PROJECTS</span>
+                    <span className="rv-section-log">
+                        <span className="rv-section-log-number">06.</span>
+                        SYSTEM.LOGS // PROJECTS
                     </span>
                 </div>
 
@@ -422,35 +405,29 @@ stRef.current = ScrollTrigger.create({
                 {/* Title block */}
                 <div
                     ref={titleRef}
-                    className="absolute left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center w-full px-4"
-                    style={{ top: 'clamp(12%, 16%, 16%)' }}
+                    className="rv-section-header absolute left-1/2 -translate-x-1/2 z-20 px-4"
+                    style={{ top: 'clamp(96px, 14%, 120px)' }}
                 >
-                    <p className="hidden sm:block font-mono text-[9px] uppercase tracking-[0.35em] text-white/20 mb-3">
+                    <p className="rv-section-kicker">
                         ▶ BUILD_LOG // PROJECTS
                     </p>
                     <h2
-                        className="font-black uppercase text-white leading-none"
+                        className="rv-section-title"
                         style={{
-                            fontFamily: '"Inter","Arial Black",sans-serif',
-                            fontSize: 'clamp(22px, 4vw, 56px)',
-                            letterSpacing: '-0.01em',
-                        }}
+                            '--rv-section-title-mobile': 'clamp(30px, 8.4vw, 36px)',
+                            '--rv-section-title-desktop': 'clamp(22px, 4vw, 56px)',
+                        } as React.CSSProperties}
                     >
-                        WHAT WE&apos;VE{' '}
+                        WHAT WE&apos;VE<br />
                         <span style={{ color: '#4FAEF3' }}>BUILT.</span>
                     </h2>
-                    <div style={{
-                        marginTop: 10,
-                        height: 1,
-                        width: '100%',
-                        background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)',
-                    }}/>
+                    <div className="rv-section-rule" />
                 </div>
 
                 {/* ── Card belt ── */}
                 <div
                     ref={beltRef}
-                    className="absolute left-0 flex items-center top-[28%] sm:top-[32%]"
+                    className="absolute left-0 flex items-center top-[34%] sm:top-[32%]"
                     style={{
                         // ↑ gap floor bumped 12→20px for mobile breathing room
                         gap:          'clamp(28px, 2vw, 32px)',

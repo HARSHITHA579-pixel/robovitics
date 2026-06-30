@@ -115,32 +115,13 @@ function TeamSlide({
                 zIndex: isActive ? 2 : 1,
             }}
         >
-            <div
-    className="relative w-full h-auto sm:min-h-[460px] overflow-hidden rounded-[4px] flex flex-col md:flex-row transition-all duration-500 shadow-[0_0_25px_rgba(0,0,0,0.5)] hover:shadow-[0_0_35px_rgba(0,0,0,0.8)]"
-    style={{
-        background: '#0a0a0a',
-        border: '1px solid rgba(255,255,255,0.08)',
-    }}
->
-                {/* Inner texture overlay */}
-                {/* Inner texture overlay */}
-<div
-    className="absolute inset-0 pointer-events-none"
-    style={{
-        background: `
-            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-            linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.35))
-        `,
-        backgroundSize: '18px 18px, 18px 18px, auto',
-    }}
-/>
+            <div className="rv-card-surface rv-card-surface--lifted relative w-full h-auto sm:min-h-[460px] flex flex-col md:flex-row transition-all duration-500 hover:shadow-[0_18px_45px_rgba(0,0,0,0.45)]">
 
                 {/* Corner brackets */}
                 {['tl', 'tr', 'bl', 'br'].map((pos) => (
                     <span
                         key={pos}
-                        className="absolute z-10 pointer-events-none"
+                        className="absolute z-10 pointer-events-none hidden md:block"
                         style={{
                             top: pos.startsWith('t') ? 8 : undefined, bottom: pos.startsWith('b') ? 8 : undefined,
                             left: pos.endsWith('l') ? 8 : undefined, right: pos.endsWith('r') ? 8 : undefined,
@@ -163,43 +144,43 @@ function TeamSlide({
                 {/* Photo pane (3D Flip Card) */}
                 <div
                     className="group relative h-48 sm:h-64 md:h-auto md:w-[45%] flex-shrink-0 cursor-pointer border-b md:border-b-0 md:border-r border-white/10"
-                    style={{ perspective: '1200px', background: 'rgba(5,5,5,0.5)' }}
+                    style={{ perspective: '1200px', background: 'rgba(0,0,0,0.24)' }}
                 >
                     <div
                         className="absolute inset-4 transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:[transform:rotateY(180deg)]"
                         style={{ transformStyle: 'preserve-3d' }}
                     >
                         {/* Front face (Logo) */}
-                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/5 bg-black" style={{ backfaceVisibility: 'hidden' }}>
+                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/10 bg-[#0b0c0d]" style={{ backfaceVisibility: 'hidden' }}>
                             <Image
                                 src={team.teamLogoPath || team.teamPhotoPath}
                                 alt={`${team.teamName} logo`}
                                 fill
                                 sizes="(max-width: 768px) 100vw, 50vw"
-                                className="object-cover opacity-80 mix-blend-screen"
+                                className="object-cover opacity-[0.84] mix-blend-screen"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                             />
-                            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_51%)] bg-[length:100%_4px] opacity-20" />
-                            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 40px rgba(0,0,0,0.8), inset 0 0 0 1px ${accent.replace('0.9', '0.2')}` }} />
+                            <div className="absolute inset-0 pointer-events-none hidden md:block bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_51%)] bg-[length:100%_4px] opacity-20" />
+                            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 18px rgba(0,0,0,0.38), inset 0 0 0 1px ${accent.replace('0.9', '0.14')}` }} />
                         </div>
 
                         {/* Back face (Photo) */}
-                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/5 bg-black" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/10 bg-[#0b0c0d]" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
                             <Image
                                 src={team.teamPhotoPath}
                                 alt={`${team.teamName} photo`}
                                 fill
                                 sizes="(max-width: 768px) 100vw, 50vw"
-                                className="object-cover opacity-70 sepia-[0.2] hue-rotate-[-10deg]"
+                                className="object-cover opacity-[0.78] sepia-[0.1] hue-rotate-[-5deg]"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                             />
-                            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_51%)] bg-[length:100%_4px] opacity-20" />
-                            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 40px rgba(0,0,0,0.9), inset 0 0 0 1px ${accent.replace('0.9', '0.2')}` }} />
+                            <div className="absolute inset-0 pointer-events-none hidden md:block bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_51%)] bg-[length:100%_4px] opacity-20" />
+                            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 18px rgba(0,0,0,0.4), inset 0 0 0 1px ${accent.replace('0.9', '0.14')}` }} />
                         </div>
                     </div>
 
                     {/* HUD Corner Accents for Image Box */}
-                    <svg className="absolute inset-4 pointer-events-none opacity-50 z-20" style={{ width: 'calc(100% - 32px)', height: 'calc(100% - 32px)' }}>
+                    <svg className="absolute inset-4 pointer-events-none opacity-50 z-20 hidden md:block" style={{ width: 'calc(100% - 32px)', height: 'calc(100% - 32px)' }}>
                         <path d="M0,10 L0,0 L10,0" fill="none" stroke={accent} strokeWidth="1.5" />
                         <path d="M100%,10 L100%,0 Lcalc(100% - 10px),0" fill="none" stroke={accent} strokeWidth="1.5" />
                         <path d="M0,calc(100% - 10px) L0,100% L10,100%" fill="none" stroke={accent} strokeWidth="1.5" />
@@ -208,7 +189,7 @@ function TeamSlide({
                 </div>
 
                 {/* Text pane */}
-                <div className="flex flex-col justify-center px-6 py-8 sm:px-8 sm:py-10 md:px-12 md:py-14 md:w-[55%] z-20 bg-gradient-to-br from-transparent to-black/40">
+                <div className="flex flex-col justify-center px-6 py-8 sm:px-8 sm:py-10 md:px-12 md:py-14 md:w-[55%] z-20 md:bg-gradient-to-br md:from-transparent md:to-black/40">
                     <span
                         className="font-mono uppercase tracking-[0.3em] mb-2 sm:mb-3"
                         style={{ fontSize: 'clamp(9px, 1vw, 11px)', color: accent, textShadow: `0 0 8px ${accent.replace('0.9', '0.4')}` }}
@@ -338,9 +319,9 @@ export default function TechnicalTeams() {
             <SectionBackground />
 
             {/* Top-left section label */}
-            <div className="absolute left-5 sm:left-10 top-6 sm:top-10 z-20 pointer-events-none hidden sm:block">
-                <span style={{ fontFamily: 'monospace', fontSize: '10px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase' }}>
-                    <span style={{ color: '#ffffff', fontWeight: 700, marginRight: 8 }}>05.</span>
+            <div className="absolute left-5 sm:left-10 top-6 sm:top-10 z-20 pointer-events-none">
+                <span className="rv-section-log">
+                    <span className="rv-section-log-number">03.</span>
                     SYSTEM.LOGS // TECH_TEAMS
                 </span>
             </div>
@@ -348,22 +329,24 @@ export default function TechnicalTeams() {
             <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-8 md:px-12">
 
                 {/* Section header */}
-                <div className="mb-10 sm:mb-14 flex flex-col items-center text-center pointer-events-none">
+                <div className="rv-section-header mb-10 sm:mb-14">
                     <div ref={labelRef}>
-                        {/* ✅ Fixed: moved fontSize to className, removed invalid sm: from style */}
-                        <span
-                            className="text-[9px] sm:text-[10px]"
-                            style={{ letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: 12, display: 'block', textTransform: 'uppercase' }}
-                        >
+                        <span className="rv-section-kicker sm:text-[10px]">
                             ▶ UNIT_MANIFEST // TECH_TEAMS
                         </span>
                     </div>
 
-                    <div ref={titleRef}>
-                        <h2 style={{ margin: 0, fontSize: 'clamp(30px, 6vw, 64px)', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em', fontFamily: '"Inter", "Arial Black", sans-serif', textTransform: 'uppercase', lineHeight: 1 }}>
+                    <div ref={titleRef} className="rv-section-header">
+                        <h2
+                            className="rv-section-title"
+                            style={{
+                                '--rv-section-title-mobile': 'clamp(34px, 9.6vw, 42px)',
+                                '--rv-section-title-desktop': 'clamp(30px, 6vw, 64px)',
+                            } as React.CSSProperties}
+                        >
                             TEAMS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
                         </h2>
-                        <div style={{ marginTop: 14, width: '40%', height: '1px', marginInline: 'auto', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)' }} />
+                        <div className="rv-section-rule" />
                     </div>
                 </div>
 

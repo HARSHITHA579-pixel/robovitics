@@ -437,33 +437,22 @@ export default function Domains() {
       >
         <EventsBackground />
         <div className="absolute left-5 top-6 z-20 pointer-events-none">
-          <span style={{
-            fontFamily: 'monospace', fontSize: '9px', letterSpacing: '0.18em',
-            color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
-          }}>
-            <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02.</span>
+          <span className="rv-section-log">
+            <span className="rv-section-log-number">02.</span>
             SYSTEM.LOGS // DOMAINS
           </span>
         </div>
-        <div className="z-20 mb-8 flex flex-col items-center text-center pointer-events-none">
-          <span style={{
-            fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
-            fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase',
-          }}>
+        <div className="rv-section-header z-20 mb-8">
+          <span className="rv-section-kicker">
             ▶ SECTOR_MAP // DOMAINS
           </span>
-          <h2 style={{
-            margin: 0, fontSize: 'clamp(30px,9.5vw,42px)', fontWeight: '900',
-            color: '#ffffff', letterSpacing: '-0.01em',
-            fontFamily: '"Inter", "Arial Black", sans-serif',
-            textTransform: 'uppercase', lineHeight: 1.02,
-          }}>
+          <h2
+            className="rv-section-title"
+            style={{ '--rv-section-title-mobile': 'clamp(34px, 9.6vw, 42px)' } as React.CSSProperties}
+          >
             DOMAINS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
           </h2>
-          <div style={{
-            marginTop: '14px', width: '72%', height: '1px',
-            background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)',
-          }} />
+          <div className="rv-section-rule" />
         </div>
         <div className="z-10 grid w-full grid-cols-2 gap-3">
           {DOMAINS.map((domain) => (
@@ -485,11 +474,8 @@ export default function Domains() {
 
           {/* Top Left Label */}
           <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
-            <span style={{
-              fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
-              color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
-            }}>
-              <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02.</span>
+            <span className="rv-section-log">
+              <span className="rv-section-log-number">02.</span>
               SYSTEM.LOGS // DOMAINS
             </span>
           </div>
@@ -506,12 +492,7 @@ export default function Domains() {
             }}>
               ▶ SECTOR_MAP // DOMAINS
             </span>
-            <h2 style={{
-              margin: 0, fontSize: 'clamp(32px,4.5vw,72px)', fontWeight: '900',
-              color: '#ffffff', letterSpacing: '-0.01em',
-              fontFamily: '"Inter", "Arial Black", sans-serif',
-              textTransform: 'uppercase', lineHeight: 1, textAlign: 'center',
-            }}>
+            <h2 className="rv-section-title text-center" style={{ '--rv-section-title-desktop': 'clamp(32px, 4.5vw, 72px)' } as React.CSSProperties}>
               DOMAINS AT{' '}
               <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
             </h2>

@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -580,28 +581,15 @@ stRef.current = ScrollTrigger.create({
         if (mobileDidSwipe.current) return;
         setSelectedEvent(ev);
       }}
-      className="group relative h-full w-full overflow-hidden rounded-[4px] border border-white/10 bg-[#0a0a0a] text-left shadow-[0_12px_34px_rgba(0,0,0,0.38)]"
+      className="rv-card-surface rv-card-surface--lifted group h-full w-full text-left"
     >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(165deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 38%, rgba(0,0,0,0.35)), rgba(28,30,34,0.95)`,
-          backgroundSize: '18px 18px, 18px 18px, auto, auto',
-        }}
-      />
-      <div className="relative z-10">
+      <div className="rv-card-content">
         <div
-          className="relative h-28 overflow-hidden border-b border-[#4FAEF3]/20 bg-neutral-900"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-              linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)
-            `,
-            backgroundSize: '22px 22px',
-          }}
+          className="relative h-28 overflow-hidden border-b border-[#4FAEF3]/20 bg-[#0b0c0d]"
         >
-          <img src={ev.img} alt={ev.name} className="h-full w-full object-cover opacity-80 transition duration-500 group-hover:scale-105" onError={(e) => { e.currentTarget.style.display = "none"; }} />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
+          <img src={ev.img} alt={ev.name} className="h-full w-full object-cover opacity-[0.7] transition duration-500 group-hover:scale-105" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+          <div className="absolute inset-0 bg-black/12" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0b0c0d] via-[#0b0c0d]/18 to-transparent" />
         </div>
 
         <div className="p-4">
@@ -634,22 +622,25 @@ stRef.current = ScrollTrigger.create({
       <EventsBackground />
 
       <div className="relative z-10">
-        <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/35">
-          <span className="mr-2 font-bold text-white">03.</span>
+        <span className="rv-section-log">
+          <span className="rv-section-log-number">04.</span>
           SYSTEM.LOGS // EVENTS
         </span>
 
-        <div className="mt-10 text-center">
-          <span className="mb-3 block font-mono text-[9px] uppercase tracking-[0.35em] text-white/25">
+        <div className="rv-section-header mt-10">
+          <span className="rv-section-kicker">
             ▶ SECTOR_MAP // EVENTS
           </span>
-          <h2 className="font-sans text-[clamp(32px,10vw,44px)] font-black uppercase leading-none tracking-[-0.01em] text-white">
+          <h2
+            className="rv-section-title"
+            style={{ '--rv-section-title-mobile': 'clamp(34px, 9.6vw, 42px)' } as CSSProperties}
+          >
             EVENTS AT <span className="text-[#4FAEF3]">ROBOVITICS.</span>
           </h2>
-          <div className="mx-auto mt-4 h-px w-3/4 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+          <div className="rv-section-rule" />
         </div>
 
-        <div className="sticky top-[76px] z-30 mx-auto mt-8 flex w-full max-w-xs items-center gap-1 rounded-[4px] border border-white/15 bg-black/70 p-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur-md">
+        <div className="rv-segmented-toggle rv-segmented-toggle--compact sticky top-[76px] z-30 mx-auto mt-8">
           <button
             type="button"
             onClick={() => {
@@ -658,8 +649,7 @@ stRef.current = ScrollTrigger.create({
               isMobileSlideAnimating.current = false;
               prevMobileEventId.current = null;
             }}
-            className="flex-1 rounded-[3px] px-3 py-2 transition-colors"
-            style={{ color: mode === "events" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "events" ? "#4FAEF3" : "transparent" }}
+            className={`rv-segmented-toggle__item ${mode === "events" ? "rv-segmented-toggle__item--active" : ""}`}
           >
             Events
           </button>
@@ -671,8 +661,7 @@ stRef.current = ScrollTrigger.create({
               isMobileSlideAnimating.current = false;
               prevMobileEventId.current = null;
             }}
-            className="flex-1 rounded-[3px] px-3 py-2 transition-colors"
-            style={{ color: mode === "outreach" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "outreach" ? "#4FAEF3" : "transparent" }}
+            className={`rv-segmented-toggle__item ${mode === "outreach" ? "rv-segmented-toggle__item--active" : ""}`}
           >
             Outreach
           </button>
@@ -700,7 +689,7 @@ stRef.current = ScrollTrigger.create({
               </svg>
             </button>
 
-            <div ref={mobileCarouselRef} className="relative h-[345px] min-w-0 flex-1 overflow-hidden">
+            <div ref={mobileCarouselRef} className="relative h-[380px] min-w-0 flex-1 overflow-hidden">
               {activeList.map((ev) => (
                 <div
                   key={`mobile-slide-${ev.id}`}
@@ -746,21 +735,21 @@ stRef.current = ScrollTrigger.create({
         <EventsBackground />
 
         <div className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
-          <span ref={labelRef} style={{ fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase' }}>
-            <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>03.</span>
+          <span ref={labelRef} className="rv-section-log">
+            <span className="rv-section-log-number">04.</span>
             SYSTEM.LOGS // EVENTS
           </span>
         </div>
 
         <div style={{ perspective: "1100px", perspectiveOrigin: "50% 50%", position: "relative", width: "100vw", height: "100vh" }}>
-          <div ref={titleRef} className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center" style={{ zIndex: 10, top: '-6%' }}>
-            <span style={{ fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase' }}>
+          <div ref={titleRef} className="rv-section-header absolute inset-0 justify-center" style={{ zIndex: 10, top: '-6%' }}>
+            <span className="rv-section-kicker">
               ▶ SECTOR_MAP // EVENTS
             </span>
-            <h2 style={{ margin: 0, fontSize: 'clamp(32px,5.5vw,72px)', fontWeight: '900', color: '#ffffff', letterSpacing: '-0.01em', fontFamily: '"Inter", "Arial Black", sans-serif', textTransform: 'uppercase', lineHeight: 1, textAlign: 'center' }}>
+            <h2 className="rv-section-title" style={{ '--rv-section-title-desktop': 'clamp(32px, 5.5vw, 72px)' } as CSSProperties}>
               EVENTS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
             </h2>
-            <div style={{ marginTop: '14px', width: '30%', height: '1px', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)' }} />
+            <div className="rv-section-rule" />
           </div>
 
           <div ref={deckRef} className="absolute" style={{ width: 270, height: 195, top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
@@ -795,22 +784,20 @@ stRef.current = ScrollTrigger.create({
 
           <div
             ref={toggleRef}
-            className="absolute left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-[4px] border border-white/15 bg-black/55 p-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur-md pointer-events-none"
+            className="rv-segmented-toggle rv-segmented-toggle--compact absolute left-1/2 z-40 -translate-x-1/2 pointer-events-none"
             style={{ bottom: "8%", boxShadow: "0 0 24px rgba(79,174,243,0.12)" }}
           >
             <button
               type="button"
               onClick={() => handleToggle("events")}
-              className="cursor-pointer rounded-[3px] px-4 py-2 transition-colors hover:brightness-110"
-              style={{ color: mode === "events" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "events" ? "#4FAEF3" : "transparent" }}
+              className={`rv-segmented-toggle__item cursor-pointer ${mode === "events" ? "rv-segmented-toggle__item--active" : ""}`}
             >
               EVENTS
             </button>
             <button
               type="button"
               onClick={() => handleToggle("outreach")}
-              className="cursor-pointer rounded-[3px] px-4 py-2 transition-colors hover:brightness-110"
-              style={{ color: mode === "outreach" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "outreach" ? "#4FAEF3" : "transparent" }}
+              className={`rv-segmented-toggle__item cursor-pointer ${mode === "outreach" ? "rv-segmented-toggle__item--active" : ""}`}
             >
               OUTREACH
             </button>

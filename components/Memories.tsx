@@ -521,8 +521,8 @@ const targetPortalProgress = clamp((p - 0.70) / 0.08, 0, 1);
         }
         .mwt-label {
           position: absolute; top: 34px; left: 46px; z-index: 20;
-          font-family: monospace; font-size: 11px; letter-spacing: 0.2em;
-          color: rgba(255,255,255,0.4); text-transform: uppercase; pointer-events: none;
+          font-family: monospace; font-size: 10px; letter-spacing: 0.2em;
+          color: rgba(255,255,255,0.35); text-transform: uppercase; pointer-events: none;
         }
         .mwt-label b { color: #ffffff; font-weight: 700; margin-right: 8px; }
         .mwt-box {
@@ -565,14 +565,14 @@ const targetPortalProgress = clamp((p - 0.70) / 0.08, 0, 1);
         }
         @media (max-width: 700px) {
           .mwt-wrap { height: 600vh; }
-          .mwt-label { left: 20px; top: 22px; font-size: 9px; }
+          .mwt-label { left: 20px; top: 22px; font-size: 9px; letter-spacing: 0.18em; }
           .mwt-grid { background-size: 32px 32px; }
           .mwt-rtext {
             top: 0; width: 100%; height: auto; padding: 82px 22px 0;
             justify-content: flex-start; text-align: center; align-items: center;
           }
-          .mwt-rtext .eyebrow { font-size: 7px; letter-spacing: 0.24em; margin-bottom: 9px; }
-          .mwt-rtext h2 { font-size: clamp(31px, 10.5vw, 42px); margin-bottom: 11px; }
+          .mwt-rtext .eyebrow { font-size: 9px; letter-spacing: 0.35em; margin-bottom: 12px; }
+          .mwt-rtext h2 { font-size: clamp(30px, 8.8vw, 40px); line-height: 1.02; letter-spacing: 0; margin-bottom: 11px; max-width: none; white-space: nowrap; }
           .mwt-rtext .sub {
             max-width: 292px; font-size: 10px; line-height: 1.65; color: rgba(255,255,255,0.56);
           }
@@ -601,7 +601,7 @@ const targetPortalProgress = clamp((p - 0.70) / 0.08, 0, 1);
               <div key={i} className="mwt-bg-dot" style={{ left: `${lp}%`, top: `${tp}%` }} />
             ))}
 
-            <div className="mwt-label"><b>06.</b>SYSTEM.LOGS // MEMORY_BANK</div>
+            <div className="mwt-label"><b>08.</b>SYSTEM.LOGS // MEMORY_BANK</div>
 
             <div className="mwt-box" ref={boxRef}>
               <canvas ref={canvasRef} />
@@ -610,7 +610,7 @@ const targetPortalProgress = clamp((p - 0.70) / 0.08, 0, 1);
 
             <div className="mwt-rtext" ref={rtextRef}>
               <span className="eyebrow">▶ BOOT_SEQUENCE.LOAD()</span>
-              <h2>YEARS OF<br /><span>DATA</span></h2>
+              <h2>YEARS OF <span>DATA</span></h2>
               <p className="sub">From late-night builds to competition floors&mdash;<br />every circuit and line of code that shaped RoboVITics.</p>
             </div>
           </div>

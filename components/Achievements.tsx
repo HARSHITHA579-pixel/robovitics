@@ -42,27 +42,17 @@ function ViewToggle({ view, setView }: { view: View; setView: (v: View) => void 
   ];
 
   return (
-    <div
-      className="relative flex w-full flex-row sm:w-auto sm:inline-flex items-center gap-1 rounded-md p-1 shadow-2xl"
-      style={{ background: 'rgba(20,20,20,0.6)', border: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(12px)' }}
-    >
+    <div className="rv-segmented-toggle rv-segmented-toggle--compact">
       {items.map((item) => {
         const active = view === item.key;
         return (
           <button
+            type="button"
             key={item.key}
             onClick={() => setView(item.key)}
-            className="relative flex-1 sm:w-auto px-2 py-2.5 sm:px-6 sm:py-2 font-mono text-[8.5px] sm:text-[11px] uppercase tracking-[0.08em] sm:tracking-[0.15em] transition-all duration-300 text-center"
-            style={{ color: active ? '#ffffff' : 'rgba(255,255,255,0.4)' }}
+            className={`rv-segmented-toggle__item ${active ? 'rv-segmented-toggle__item--active' : ''}`}
           >
-            {active && (
-              <motion.span
-                layoutId="activeTab"
-                className="absolute inset-0 rounded-[4px]"
-                style={{ background: 'rgba(79,174,243,0.15)', border: '1px solid rgba(79,174,243,0.3)' }}
-              />
-            )}
-            <span className="relative z-10 drop-shadow-md">{item.label}</span>
+            {item.label}
           </button>
         );
       })}
@@ -315,24 +305,30 @@ export default function Achievements({
   return (
     <section
       id="achievements"
-      className="relative flex min-h-screen w-full flex-col bg-transparent px-4 sm:px-10 py-16 sm:py-20 md:px-16 lg:px-24"
+      className="relative flex min-h-screen w-full flex-col bg-transparent px-4 pb-16 pt-24 sm:px-10 sm:pb-20 sm:pt-28 md:px-16 md:pt-36 lg:px-24 lg:pt-40"
     >
       <AchievementsBackground />
+      <div className="absolute left-5 top-6 z-20 pointer-events-none sm:left-10 sm:top-8 md:top-20 lg:top-24">
+        <span className="rv-section-log">
+          <span className="rv-section-log-number">05.</span>
+          SYSTEM.LOGS // ACHIEVEMENTS
+        </span>
+      </div>
 
       <div className="relative z-10 flex flex-1 w-full flex-col mx-auto max-w-[1400px]">
-        <div className="flex-shrink-0 mb-6 sm:mb-8 md:mb-10">
-          <div className="mb-4 sm:mb-6 flex items-start justify-between gap-4">
-            <div>
-              <span className="mb-2 sm:mb-3 block font-mono text-[9px] uppercase tracking-[0.25em] text-gray-500 sm:text-[11px]">
-                <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>06.</span>
-                SYSTEM.LOGS // ACHIEVEMENTS
-              </span>
+        <div className="flex-shrink-0 mb-5 sm:mb-6 md:mb-7">
+          <div className="mb-4 sm:mb-5 flex items-center justify-center gap-4">
+            <div className="rv-section-header">
               <h2
-                className="font-sans uppercase text-white"
-                style={{ fontSize: 'clamp(24px, 7vw, 64px)', fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1.05 }}
+                className="rv-section-title"
+                style={{
+                  '--rv-section-title-mobile': 'clamp(34px, 9.6vw, 42px)',
+                  '--rv-section-title-desktop': 'clamp(24px, 7vw, 64px)',
+                } as React.CSSProperties}
               >
                 YEARS OF <span className="text-[#4FAEF3]">RECOGNITION.</span>
               </h2>
+              <div className="rv-section-rule" />
             </div>
           </div>
           <div className="flex w-full sm:w-auto">
@@ -340,7 +336,7 @@ export default function Achievements({
           </div>
         </div>
 
-        <div className="flex flex-1 flex-col justify-start sm:justify-center">
+        <div className="flex flex-1 flex-col justify-start">
           <AnimatePresence mode="wait">
             <motion.div
               key={view}

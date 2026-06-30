@@ -1,5 +1,6 @@
 'use client';
 
+import type { CSSProperties } from 'react';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
@@ -148,31 +149,25 @@ function SponsorCard({ sponsor, isHovered, onHoverChange }: {
 // ─── HEADER (UPGRADED TO MATCH DOMAINS HUD) ─────────────────────────────────
 function Header() {
     return (
-        <div className="z-20 mb-12 sm:mb-16 flex flex-col items-center text-center pointer-events-none w-full relative">
-            <span style={{
-                fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
-                fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase',
-            }}>
+        <div className="rv-section-header z-20 mb-12 sm:mb-16 relative">
+            <span className="rv-section-kicker">
                 ▶ PARTNERSHIPS // SPONSORS
             </span>
             <motion.h2 
+                className="rv-section-title rv-section-title--single-line"
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.6 }}
                 style={{
-                    margin: 0, fontSize: 'clamp(32px,5.5vw,72px)', fontWeight: '900',
-                    color: '#ffffff', letterSpacing: '-0.01em',
-                    fontFamily: '"Inter", "Arial Black", sans-serif',
-                    textTransform: 'uppercase', lineHeight: 1,
-            }}>
+                    '--rv-section-title-mobile': 'clamp(28px, 7.8vw, 36px)',
+                    '--rv-section-title-desktop': 'clamp(28px, 4.2vw, 56px)',
+            } as CSSProperties}>
                 OUR <span style={{ color: '#4FAEF3', fontWeight: 900 }}>SPONSORS.</span>
             </motion.h2>
             <motion.div 
+                className="rv-section-rule"
                 initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
                 viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                    marginTop: '14px', width: '30%', height: '1px',
-                    background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)',
-            }} />
+            />
         </div>
     );
 }
@@ -548,6 +543,12 @@ export default function Sponsors() {
         <section ref={secRef} id="sponsors" className="relative z-40 w-full overflow-hidden bg-[#0d0d0d] py-20">
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)', backgroundSize: "40px 40px" }} />
+            </div>
+            <div className="absolute left-5 top-6 z-20 pointer-events-none sm:left-10 sm:top-8">
+                <span className="rv-section-log">
+                    <span className="rv-section-log-number">07.</span>
+                    SYSTEM.LOGS // SPONSORS
+                </span>
             </div>
             
             <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-12">

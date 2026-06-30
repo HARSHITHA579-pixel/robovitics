@@ -30,26 +30,15 @@ export default function About() {
     <>
       {/* MOBILE LAYOUT */}
       <section id="about-mobile" className="relative z-10 block w-full px-4 py-20 text-white md:hidden">
-        <div className="mb-10 font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500">
-          <span className="mr-2 font-bold text-white">01.</span> System.Logs // About
+        <div className="rv-section-log mb-10">
+          <span className="rv-section-log-number">01.</span>SYSTEM.LOGS // ABOUT
         </div>
 
         <div className="flex flex-col gap-7">
           
           {/* About Us Mobile */}
-          <div className="relative overflow-hidden rounded-[4px] border border-white/10 bg-[#0a0a0a] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)]">
-            <div
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background: `
-                  linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-                  linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-                  linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.35))
-                `,
-                backgroundSize: '18px 18px, 18px 18px, auto',
-              }}
-            />
-            <div className="relative z-10">
+          <div className="rv-card-surface p-4">
+            <div className="rv-card-content">
               <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#4FAEF3]/75">Mission Brief</span>
               <h2 className="mt-3 text-[34px] font-black uppercase leading-none tracking-[-0.02em]">
                 About <span className="text-[#4FAEF3]">RoboVITics</span>
@@ -88,19 +77,8 @@ export default function About() {
           </div>
 
           {/* About VIT Mobile */}
-          <div className="relative overflow-hidden rounded-[4px] border border-white/10 bg-[#0a0a0a] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)]">
-            <div
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background: `
-                  linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-                  linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-                  linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.35))
-                `,
-                backgroundSize: '18px 18px, 18px 18px, auto',
-              }}
-            />
-            <div className="relative z-10">
+          <div className="rv-card-surface p-4">
+            <div className="rv-card-content">
               <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#4FAEF3]/75">Campus Node</span>
               <h2 className="mt-3 text-[34px] font-black uppercase leading-none tracking-[-0.02em]">
                 About <span className="text-[#4FAEF3]">VIT</span>
@@ -140,8 +118,8 @@ export default function About() {
         
         <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-12 lg:px-24 max-w-[1600px] mx-auto pointer-events-none">
           
-          <div className="absolute top-24 left-12 lg:left-24 font-mono text-gray-500 text-sm tracking-widest uppercase">
-            <span className="font-bold mr-2 text-white">01.</span> System.Logs // About
+          <div className="rv-section-log absolute top-24 left-12 lg:left-24">
+            <span className="rv-section-log-number">01.</span>SYSTEM.LOGS // ABOUT
           </div>
 
           <div className="relative w-full h-[500px] flex items-center mt-12">
