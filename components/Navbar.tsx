@@ -195,7 +195,7 @@ export default function Navbar() {
         <Link
           href="/"
           onClick={() => setMenuOpen(false)}
-          className={`hidden min-w-0 overflow-hidden items-center justify-self-start md:flex ${fadeClass}`}
+          className={`hidden min-w-0 overflow-hidden items-center justify-self-start md:flex ${isExpanded ? 'md:w-auto' : 'md:w-0'} ${fadeClass}`}
         >
           <Image
             src="/robovitics-logo.png"
@@ -308,7 +308,9 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setContactOpen(true)}
-          className={`hidden h-9 min-w-[132px] items-center justify-center justify-self-end self-center overflow-hidden whitespace-nowrap border border-white/16 bg-white/[0.035] px-4 font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-white/88 transition-all duration-300 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] md:inline-flex lg:h-10 lg:min-w-[146px] lg:text-[10px] ${fadeClass}`}
+          className={`hidden h-9 items-center justify-center justify-self-end self-center overflow-hidden whitespace-nowrap border bg-white/[0.035] font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-white/88 transition-all duration-300 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] md:inline-flex lg:h-10 lg:text-[10px] ${
+            isExpanded ? 'min-w-[132px] border-white/16 px-4 lg:min-w-[146px]' : 'w-0 min-w-0 border-transparent px-0'
+          } ${fadeClass}`}
         >
           Contact Us
         </button>
