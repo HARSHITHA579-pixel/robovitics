@@ -167,27 +167,59 @@ function SponsorCard({
 }
 
 // ─── HEADER (UPGRADED TO MATCH DOMAINS HUD) ─────────────────────────────────
-function Header() {
+function Header({
+    isHovered,
+    onHoverChange,
+    onPointerDown,
+    registerDraggable,
+}: {
+    isHovered: boolean;
+    onHoverChange: (h: boolean, r: DOMRect | null) => void;
+    onPointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void;
+    registerDraggable: (id: string, el: HTMLDivElement | null) => void;
+}) {
+    const ref = useRef<HTMLDivElement>(null);
+    const setHeaderRef = useCallback((node: HTMLDivElement | null) => {
+        ref.current = node;
+        registerDraggable('SPONSORS_TITLE', node);
+    }, [registerDraggable]);
+
     return (
         <div className="rv-section-header z-20 mb-12 sm:mb-16 relative">
             <span className="rv-section-kicker">
                 ▶ PARTNERSHIPS // SPONSORS
             </span>
-            <motion.h2 
-                className="rv-section-title rv-section-title--single-line"
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.6 }}
+            <div
+                ref={setHeaderRef}
+                className="pointer-events-auto mx-auto cursor-grab active:cursor-grabbing"
                 style={{
-                    '--rv-section-title-mobile': 'clamp(28px, 7.8vw, 36px)',
-                    '--rv-section-title-desktop': 'clamp(28px, 4.2vw, 56px)',
-            } as CSSProperties}>
-                OUR <span style={{ color: '#4FAEF3', fontWeight: 900 }}>SPONSORS.</span>
-            </motion.h2>
-            <motion.div 
-                className="rv-section-rule"
-                initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
-                viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            />
+                    filter: isHovered ? 'drop-shadow(0 0 14px rgba(255,255,255,0.24))' : 'none',
+                    touchAction: 'none',
+                    transition: 'filter 0.25s ease',
+                    willChange: 'transform',
+                    width: 'fit-content',
+                    maxWidth: '100%',
+                }}
+                onPointerDown={onPointerDown}
+                onMouseEnter={() => onHoverChange(true, ref.current?.getBoundingClientRect() ?? null)}
+                onMouseLeave={() => onHoverChange(false, null)}
+            >
+                <motion.h2 
+                    className="rv-section-title rv-section-title--single-line"
+                    initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.6 }}
+                    style={{
+                        '--rv-section-title-mobile': 'clamp(28px, 7.8vw, 36px)',
+                        '--rv-section-title-desktop': 'clamp(28px, 4.2vw, 56px)',
+                } as CSSProperties}>
+                    OUR <span style={{ color: '#4FAEF3', fontWeight: 900 }}>SPONSORS.</span>
+                </motion.h2>
+                <motion.div 
+                    className="rv-section-rule"
+                    initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                />
+            </div>
         </div>
     );
 }
@@ -201,6 +233,8 @@ const JR = [46, 36, 26, 18]; // Massive outer joints
 const JIR = [30, 24, 18, 12]; // Inner rings
 const JSR = [12, 10, 8, 6]; // Shafts
 const D = 180 / Math.PI;
+const SPONSORS_TITLE_ID = 'SPONSORS_TITLE';
+const SPONSORS_HELP_ID = 'SPONSORS_HELP';
 
 // ─── MAIN ───────────────────────────────────────────────────────────────────
 export default function Sponsors() {
@@ -308,7 +342,7 @@ export default function Sponsors() {
             top: rect.top - sr.top,
             bottom: rect.bottom - sr.top,
         };
-        const pickupMargin = 10;
+        const pickupMargin = id === SPONSORS_TITLE_ID ? 28 : 10;
 
         return (
             clawPoint.x >= cardRect.left - pickupMargin &&
@@ -343,8 +377,8 @@ export default function Sponsors() {
         cardOrigins.current = {};
         cardOffsets.current = {};
 
-        SPONSORS.forEach((sponsor) => {
-            const el = cardEls.current[sponsor.id];
+        [...SPONSORS.map((sponsor) => sponsor.id), SPONSORS_TITLE_ID, SPONSORS_HELP_ID].forEach((id) => {
+            const el = cardEls.current[id];
             if (!el) return;
             el.style.transform = '';
             el.style.transition = 'transform 180ms ease-out';
@@ -493,9 +527,9 @@ export default function Sponsors() {
             const srForPick = secRef.current?.getBoundingClientRect();
             let nextPickableId: string | null = null;
             if (!holding && srForPick) {
-                const pickupMargin = 10;
-                for (const sponsor of SPONSORS) {
-                    const el = cardEls.current[sponsor.id];
+                for (const id of [...SPONSORS.map((sponsor) => sponsor.id), SPONSORS_TITLE_ID, SPONSORS_HELP_ID]) {
+                    const pickupMargin = id === SPONSORS_TITLE_ID ? 28 : 10;
+                    const el = cardEls.current[id];
                     if (!el) continue;
                     const rect = el.getBoundingClientRect();
                     const left = rect.left - srForPick.left - pickupMargin;
@@ -503,7 +537,7 @@ export default function Sponsors() {
                     const top = rect.top - srForPick.top - pickupMargin;
                     const bottom = rect.bottom - srForPick.top + pickupMargin;
                     if (clawPoint.x >= left && clawPoint.x <= right && clawPoint.y >= top && clawPoint.y <= bottom) {
-                        nextPickableId = sponsor.id;
+                        nextPickableId = id;
                         break;
                     }
                 }
@@ -803,30 +837,44 @@ export default function Sponsors() {
                 </span>
             </div>
             {showSponsorHelp && (
-                <motion.div
-                    className="absolute bottom-6 left-1/2 z-20 hidden -translate-x-1/2 items-center gap-3 rounded-[4px] border border-white/8 bg-black/35 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.12em] text-white/42 backdrop-blur-sm md:flex"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2, ease: 'easeOut' }}
-                >
-                    <span className="text-white/55">Hold when claw is over card</span>
-                    <span className="h-3 w-px bg-white/15" />
-                    <span>Release to drop</span>
-                    <span className="h-3 w-px bg-white/15" />
-                    <span>Arrow keys move arm</span>
-                    <button
-                        type="button"
-                        onClick={resetSponsorCards}
-                        disabled={!hasMovedCards && !heldId}
-                        className="ml-1 rounded-[4px] border border-white/15 px-2 py-1 text-white/50 transition-colors duration-200 hover:border-white/35 hover:bg-white/5 hover:text-white/70 disabled:cursor-default disabled:border-white/8 disabled:text-white/20 disabled:hover:bg-transparent"
+                <div className="absolute bottom-6 left-0 right-0 z-20 hidden justify-center md:flex">
+                    <div
+                        ref={(node) => registerCard(SPONSORS_HELP_ID, node)}
+                        className="flex cursor-grab items-center gap-3 rounded-[4px] border border-white/6 bg-black/25 px-3 py-2 font-mono text-[10px] tracking-[0.08em] text-white/38 backdrop-blur-[2px] active:cursor-grabbing"
+                        style={{
+                            boxShadow: pickableId === SPONSORS_HELP_ID || heldId === SPONSORS_HELP_ID ? '0 0 18px rgba(255,255,255,0.08)' : 'none',
+                            touchAction: 'none',
+                            willChange: 'transform',
+                        }}
+                        onPointerDown={(event) => {
+                            if ((event.target as HTMLElement).closest('button')) return;
+                            onCardPointerDown(SPONSORS_HELP_ID)(event);
+                        }}
                     >
-                        RESET
-                    </button>
-                </motion.div>
+                        <span>Hold to pick up</span>
+                        <span className="h-3 w-px bg-white/15" />
+                        <span>Release to drop</span>
+                        <span className="h-3 w-px bg-white/15" />
+                        <span>Arrow keys move arm</span>
+                        <button
+                            type="button"
+                            onClick={resetSponsorCards}
+                            disabled={!hasMovedCards && !heldId}
+                            className="ml-1 rounded-[4px] border border-white/12 px-2 py-1 text-white/42 transition-colors duration-200 hover:border-white/28 hover:bg-white/5 hover:text-white/62 disabled:cursor-default disabled:border-white/8 disabled:text-white/18 disabled:hover:bg-transparent"
+                        >
+                            Reset
+                        </button>
+                    </div>
+                </div>
             )}
             
             <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-12">
-                <Header />
+                <Header
+                    isHovered={pickableId === SPONSORS_TITLE_ID || heldId === SPONSORS_TITLE_ID}
+                    onHoverChange={onCard()}
+                    onPointerDown={onCardPointerDown(SPONSORS_TITLE_ID)}
+                    registerDraggable={registerCard}
+                />
 
                 {/* Desktop Grid — 3 / 5 / 3 symmetric layout */}
 <div className="hidden md:flex md:flex-col gap-5">
