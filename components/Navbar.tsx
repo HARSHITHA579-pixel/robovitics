@@ -3,8 +3,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
+import ContactModal from './ContactModal';
 
 const navItems = ['About', 'Domains', 'Teams', 'Events', 'Projects'];
+const moreNavItems = ['Achievements', 'Sponsors', 'Memories', 'Board'];
+const mobileNavItems = ['About', 'Domains', 'Teams', 'Events', 'Achievements', 'Projects', 'Sponsors', 'Memories', 'Board'];
+const pageNavItems = mobileNavItems;
 
 const desktopNavTargets: Record<string, string> = {
   About: 'about',
@@ -12,6 +16,10 @@ const desktopNavTargets: Record<string, string> = {
   Teams: 'technical-teams',
   Events: 'events',
   Projects: 'projects',
+  Achievements: 'achievements',
+  Sponsors: 'sponsors',
+  Memories: 'memories',
+  Board: 'command-structure',
 };
 
 const mobileNavTargets: Record<string, string> = {
@@ -20,6 +28,10 @@ const mobileNavTargets: Record<string, string> = {
   Teams: 'technical-teams',
   Events: 'events-mobile',
   Projects: 'projects-mobile',
+  Achievements: 'achievements',
+  Sponsors: 'sponsors',
+  Memories: 'memories',
+  Board: 'command-structure',
 };
 
 // 🛠️ NEW: Custom scroll offsets for each specific section
@@ -30,7 +42,7 @@ const sectionOffsets: Record<string, number> = {
   // Moved from -50 to 20 (scrolls ~70px further down)
   'technical-teams': 20,   
   
-  'events': 1400,           
+  'events': 2000,           
   'events-mobile': 100,    
   
   // Moved from -70 to 0 (scrolls ~70px further down)
@@ -44,10 +56,17 @@ const sectionOffsets: Record<string, number> = {
   
   'domains-desktop': -120,
   'domains-mobile': 0,
+
+  achievements: -80,
+  sponsors: -80,
+  memories: 0,
+  'command-structure': -80,
 };
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
   const [activeSection, setActiveSection] = useState('');
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, top: 0, width: 0, height: 0, opacity: 0 });
@@ -75,50 +94,33 @@ export default function Navbar() {
       setIsExpanded(window.scrollY < 80);
       if (window.scrollY < window.innerHeight * 0.85) {
         setActiveSection('');
+        return;
       }
-    };
-    
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntry = entries.find((entry) => entry.isIntersecting);
-        if (visibleEntry) {
-          const id = visibleEntry.target.id;
-          if (id === 'hero' || id === 'sponsors') {
-            setActiveSection('');
-            return;
-          }
-          const matchingItem = navItems.find((item) => {
-            return item.toLowerCase() === id || desktopNavTargets[item] === id || mobileNavTargets[item] === id;
-          });
-          if (matchingItem) setActiveSection(matchingItem);
+      const targets = window.innerWidth < 768 ? mobileNavTargets : desktopNavTargets;
+      const scrollPoint = window.scrollY + window.innerHeight * 0.38;
+      let currentSection = '';
+
+      pageNavItems.forEach((item) => {
+        const target = document.getElementById(targets[item]);
+        if (!target) return;
+
+        const targetTop = target.getBoundingClientRect().top + window.scrollY;
+        if (targetTop <= scrollPoint) {
+          currentSection = item;
         }
-      },
-      { threshold: 0, rootMargin: '-20% 0px -60% 0px' }
-    );
-
-    const timeout = setTimeout(() => {
-      navItems.forEach((item) => {
-        const idsToObserve = [item.toLowerCase(), desktopNavTargets[item], mobileNavTargets[item]].filter(Boolean);
-        Array.from(new Set(idsToObserve)).forEach((id) => {
-          const el = document.getElementById(id as string);
-          if (el) observer.observe(el);
-        });
       });
-      ['hero', 'sponsors'].forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) observer.observe(el);
-      });
-    }, 100);
 
+      setActiveSection(currentSection);
+    };
+
+    const timeout = setTimeout(handleScroll, 100);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
     return () => {
       clearTimeout(timeout);
-      observer.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
     };
   }, []);
 
@@ -176,7 +178,7 @@ export default function Navbar() {
     <header className="fixed left-0 right-0 top-0 z-[80] px-3 pt-3 sm:px-6 md:px-10">
       <div
         style={navShellStyle}
-        className={`relative ml-auto flex md:grid justify-end w-fit items-center gap-3 overflow-hidden border text-white transition-all duration-300 ease-out md:mx-auto md:backdrop-blur-2xl md:backdrop-saturate-150 md:border-white/[0.14] md:bg-black/65 md:shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] ${
+        className={`relative ml-auto flex md:grid justify-end w-fit items-center gap-3 overflow-visible border text-white transition-all duration-300 ease-out md:mx-auto md:backdrop-blur-2xl md:backdrop-saturate-150 md:border-white/[0.14] md:bg-black/65 md:shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] ${
           isScrolled
             ? 'max-md:mr-0 max-md:w-fit max-md:border-transparent max-md:bg-transparent max-md:p-0 max-md:shadow-none md:w-fit md:px-3 md:py-2'
             : 'border-transparent bg-transparent p-0 shadow-none md:w-auto md:px-4 md:py-2.5'
@@ -236,13 +238,6 @@ export default function Navbar() {
                   isActive ? 'text-white' : 'hover:text-white/80'
                 }`}
               >
-                <span className={`mr-2 transition-colors duration-200 ${
-                  isActive
-                    ? 'text-[#4FAEF3] drop-shadow-[0_0_6px_rgba(79,174,243,0.8)]'
-                    : 'text-[#4FAEF3]/60 group-hover:text-[#4FAEF3]'
-                }`}>
-                  0{index + 1}
-                </span>
                 {item}
                 {!isActive && (
                   <span className="absolute bottom-0 left-3 right-3 h-px origin-left scale-x-0 bg-[#4FAEF3]/60 transition-transform duration-300 group-hover:scale-x-100" />
@@ -250,22 +245,73 @@ export default function Navbar() {
               </Link>
             );
           })}
+
+          <div
+            className="relative z-20"
+            onMouseEnter={() => setMoreOpen(true)}
+            onMouseLeave={() => setMoreOpen(false)}
+            onFocus={() => setMoreOpen(true)}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) {
+                setMoreOpen(false);
+              }
+            }}
+          >
+            <button
+              type="button"
+              className={`relative px-2.5 py-1.5 uppercase transition-colors duration-200 xl:px-3 ${
+                moreNavItems.includes(activeSection) ? 'text-white' : 'hover:text-white/80'
+              }`}
+              aria-haspopup="true"
+              aria-expanded={moreOpen}
+            >
+              More
+              {!moreNavItems.includes(activeSection) && (
+                <span className={`absolute bottom-0 left-3 right-3 h-px origin-left bg-[#4FAEF3]/60 transition-transform duration-300 ${moreOpen ? 'scale-x-100' : 'scale-x-0'}`} />
+              )}
+            </button>
+
+            <div className={`absolute left-1/2 top-full mt-5 w-72 -translate-x-1/2 rounded-[6px] border border-white/18 bg-[#070808]/95 p-2 shadow-[0_20px_60px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl transition-all duration-200 before:absolute before:-top-5 before:left-0 before:h-5 before:w-full before:content-[''] ${
+              moreOpen ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none translate-y-2 opacity-0'
+            }`}>
+              <div className="pointer-events-none absolute inset-0 opacity-35" style={{
+                backgroundImage: 'linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)',
+                backgroundSize: '22px 22px, 22px 22px',
+              }} />
+              <div className="relative z-10 flex flex-col">
+                {moreNavItems.map((item) => {
+                  const isActive = activeSection === item;
+                  return (
+                    <Link
+                      key={item}
+                      href={`#${desktopNavTargets[item] ?? item.toLowerCase()}`}
+                      onClick={(e) => {
+                        setMoreOpen(false);
+                        scrollToSection(e, desktopNavTargets[item] ?? item.toLowerCase(), item);
+                      }}
+                      className={`group/item relative border-b border-white/10 px-4 py-3.5 transition-colors last:border-b-0 ${
+                        isActive ? 'text-white' : 'text-white/66 hover:text-white'
+                      }`}
+                    >
+                      <span className="flex items-center justify-between gap-4">
+                        <span className="text-[11px]">{item}</span>
+                        <span className={`h-px w-5 transition-colors ${isActive ? 'bg-[#4FAEF3]/70' : 'bg-white/15 group-hover/item:bg-white/35'}`} />
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </nav>
 
-        <Link
-          href="#about"
-          onClick={(e) => {
-            e.preventDefault();
-            const target = document.getElementById('about');
-            if (target) {
-              const y = target.getBoundingClientRect().top + window.scrollY - 120;
-              window.scrollTo({ top: y, behavior: 'smooth' });
-            }
-          }}
-          className={`hidden overflow-hidden whitespace-nowrap justify-self-end border border-white/16 bg-white/[0.04] px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/90 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] sm:inline-flex ${fadeClass}`}
+        <button
+          type="button"
+          onClick={() => setContactOpen(true)}
+          className={`hidden h-9 min-w-[132px] items-center justify-center justify-self-end self-center overflow-hidden whitespace-nowrap border border-white/16 bg-white/[0.035] px-4 font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-white/88 transition-all duration-300 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] md:inline-flex lg:h-10 lg:min-w-[146px] lg:text-[10px] ${fadeClass}`}
         >
           Contact Us
-        </Link>
+        </button>
 
         <button
           type="button"
@@ -333,7 +379,7 @@ export default function Navbar() {
           </div>
 
           <nav className="mt-7 flex flex-col font-mono uppercase tracking-[0.16em]">
-            {navItems.map((item, index) => {
+            {mobileNavItems.map((item) => {
               const isActive = activeSection === item;
               return (
                 <Link
@@ -346,7 +392,6 @@ export default function Navbar() {
                 >
                   <span className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-3">
-                      <span className={`text-[10px] ${isActive ? 'text-[#4FAEF3]/85' : 'text-white/28'}`}>0{index + 1}</span>
                       <span className="text-[12px]">{item}</span>
                     </span>
                     <span className={`h-px w-6 transition-colors ${isActive ? 'bg-[#4FAEF3]/70' : 'bg-white/15 group-hover:bg-white/35'}`} />
@@ -357,28 +402,25 @@ export default function Navbar() {
           </nav>
 
           <div className="mt-auto border-t border-white/10 pt-5">
-            <Link
-              href="#about"
+            <button
+              type="button"
               onClick={(e) => {
                 e.preventDefault();
-                const target = document.getElementById('about');
-                if (target) {
-                  const y = target.getBoundingClientRect().top + window.scrollY - 120;
-                  window.scrollTo({ top: y, behavior: 'smooth' });
-                }
                 setMenuOpen(false);
+                setContactOpen(true);
               }}
               className="flex items-center justify-between border border-white/12 bg-white/[0.035] px-4 py-3 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-white/82 transition-colors hover:bg-white/[0.07] hover:text-white"
             >
-              <span>Join the Club</span>
+              <span>Contact Us</span>
               <span aria-hidden="true">↗</span>
-            </Link>
+            </button>
             <p className="mt-4 font-mono text-[8px] uppercase tracking-[0.2em] text-white/25">
               Tap a section to navigate
             </p>
           </div>
         </div>
       </aside>
+      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
     </header>
   );
 }

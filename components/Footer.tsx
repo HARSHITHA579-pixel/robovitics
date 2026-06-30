@@ -117,7 +117,7 @@ export default function Footer() {
       />
 
       {/* Main Content Wrapper */}
-      <div className="relative mx-auto w-full max-w-7xl px-5 pb-8 sm:px-8 md:px-12 lg:px-16">
+      <div className="relative mx-auto w-full max-w-7xl px-5 pb-2 sm:px-8 sm:pb-8 md:px-12 lg:px-16">
 
         {/* System label */}
         <div className="mb-5 flex items-center gap-3 sm:mb-6">
@@ -331,7 +331,7 @@ export default function Footer() {
             <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/50 sm:text-[10px] sm:tracking-[0.3em]">
               Official Robotics Club of VIT Vellore
             </p>
-            <p className="max-w-[260px] text-center font-mono text-[9px] leading-relaxed text-white/35 sm:max-w-none sm:text-[10px]">
+            <p className="hidden max-w-[260px] text-center font-mono text-[9px] leading-relaxed text-white/35 sm:block sm:max-w-none sm:text-[10px]">
               Student-led robotics, workshops, competitions, and engineering projects since 2010.
             </p>
           </div>
@@ -340,7 +340,7 @@ export default function Footer() {
       </div>
 
       {/* Full Bleed Image Foundation */}
-      <div className="pointer-events-none relative z-0 -mt-4 flex w-full justify-center leading-none sm:-mt-56 sm:-mb-28 md:-mt-80 md:-mb-40 lg:-mt-[26rem] lg:-mb-52">
+      <div className="pointer-events-none relative z-0 -mt-20 flex w-full justify-center leading-none sm:-mt-56 sm:-mb-28 md:-mt-80 md:-mb-40 lg:-mt-[26rem] lg:-mb-52">
         <Image
           src="/footer.png"
           alt="RoboVITics Technical Landscape Foundation"

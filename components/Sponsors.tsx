@@ -49,14 +49,14 @@ const SPONSORS: Sponsor[] = [
 
 function SponsorMarquee() {
     return (
-        <div className="flex w-full overflow-hidden md:hidden">
-            <motion.div 
-                className="flex gap-4"
-                animate={{ x: ["0%", "-50%"] }}
-                transition={{ duration: 25, ease: "linear", repeat: Infinity }}
+        <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden md:hidden">
+            <motion.div
+                className="flex w-max gap-4 px-4 pb-4"
+                animate={{ x: ['0%', '-50%'] }}
+                transition={{ duration: 28, ease: 'linear', repeat: Infinity }}
             >
                 {[...SPONSORS, ...SPONSORS].map((sp, i) => (
-                    <div key={`${sp.id}-${i}`} className="w-[200px] flex-shrink-0">
+                    <div key={`${sp.id}-${i}`} className="h-40 w-[230px] flex-shrink-0">
                         <SponsorCard sponsor={sp} isHovered={false} onHoverChange={() => {}} />
                     </div>
                 ))}

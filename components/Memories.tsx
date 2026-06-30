@@ -586,7 +586,7 @@ const targetPortalProgress = clamp((p - 0.70) / 0.08, 0, 1);
         }
       `}</style>
 
-      <div className="mwt-wrap" ref={wrapRef}>
+      <div id="memories" className="mwt-wrap" ref={wrapRef}>
         <div className="mwt-sticky">
           <div className="mwt-scene" ref={sceneRef}>
             <div className="mwt-grid" />
