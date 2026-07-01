@@ -56,6 +56,94 @@ const socialLinks = [
   },
 ];
 
+const footerStars = [
+  { left: '8%', top: '24%', size: 2, opacity: 0.42, blur: 0, flare: 0.55 },
+  { left: '15%', top: '58%', size: 2.5, opacity: 0.34, blur: 0.2, flare: 0 },
+  { left: '26%', top: '34%', size: 2, opacity: 0.32, blur: 0, flare: 0.45 },
+  { left: '38%', top: '17%', size: 2.5, opacity: 0.38, blur: 0.1, flare: 0.65 },
+  { left: '52%', top: '49%', size: 1.5, opacity: 0.28, blur: 0, flare: 0 },
+  { left: '64%', top: '27%', size: 3, opacity: 0.34, blur: 0.4, flare: 0.5 },
+  { left: '77%', top: '63%', size: 2, opacity: 0.3, blur: 0, flare: 0 },
+  { left: '88%', top: '35%', size: 2.5, opacity: 0.38, blur: 0.2, flare: 0.6 },
+  { left: '94%', top: '14%', size: 2, opacity: 0.28, blur: 0, flare: 0 },
+];
+
+const footerDepthStars = [
+  { left: '11%', top: '41%', size: 4, opacity: 0.22, blur: 1.3, flare: 0 },
+  { left: '44%', top: '71%', size: 3.5, opacity: 0.18, blur: 1, flare: 0 },
+  { left: '71%', top: '18%', size: 4, opacity: 0.2, blur: 1.5, flare: 0 },
+  { left: '83%', top: '50%', size: 4.5, opacity: 0.16, blur: 1.8, flare: 0 },
+];
+
+const skyStars = [
+  { left: '7%', top: '16%', size: 2.5, opacity: 0.7, blur: 0, flare: 0.9 },
+  { left: '13%', top: '31%', size: 3, opacity: 0.56, blur: 0.2, flare: 0.7 },
+  { left: '21%', top: '12%', size: 2, opacity: 0.52, blur: 0, flare: 0.55 },
+  { left: '30%', top: '39%', size: 3.5, opacity: 0.46, blur: 0.5, flare: 0 },
+  { left: '68%', top: '18%', size: 2.5, opacity: 0.62, blur: 0, flare: 0.75 },
+  { left: '75%', top: '34%', size: 3, opacity: 0.52, blur: 0.2, flare: 0.65 },
+  { left: '83%', top: '13%', size: 3.5, opacity: 0.48, blur: 0.6, flare: 0 },
+  { left: '92%', top: '28%', size: 2.5, opacity: 0.6, blur: 0, flare: 0.8 },
+];
+
+function StarLayer({
+  stars,
+  className = '',
+}: {
+  stars: { left: string; top: string; size: number; opacity: number; blur: number; flare: number }[];
+  className?: string;
+}) {
+  return (
+    <div className={`pointer-events-none absolute ${className}`} aria-hidden="true">
+      {stars.map((star) => (
+        <span
+          key={`${star.left}-${star.top}`}
+          className="absolute"
+          style={{
+            left: star.left,
+            top: star.top,
+            width: `${star.size * 8}px`,
+            height: `${star.size * 8}px`,
+            opacity: star.opacity,
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          {star.flare > 0 && (
+            <>
+              <span
+                className="absolute left-1/2 top-1/2 h-px -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-transparent via-white to-transparent"
+                style={{
+                  width: `${star.size * 8}px`,
+                  opacity: star.flare,
+                  filter: `blur(${Math.max(star.blur, 0.2)}px)`,
+                }}
+              />
+              <span
+                className="absolute left-1/2 top-1/2 w-px -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-transparent via-white to-transparent"
+                style={{
+                  height: `${star.size * 8}px`,
+                  opacity: star.flare * 0.85,
+                  filter: `blur(${Math.max(star.blur, 0.2)}px)`,
+                }}
+              />
+            </>
+          )}
+          <span
+            className="absolute left-1/2 top-1/2 rounded-full bg-white"
+            style={{
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              transform: 'translate(-50%, -50%)',
+              filter: `blur(${star.blur}px)`,
+              boxShadow: `0 0 ${star.size * 5}px rgba(160, 210, 255, ${Math.min(star.opacity + 0.18, 0.8)})`,
+            }}
+          />
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function Bracketed({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
     <div className={`relative ${className}`}>
@@ -103,7 +191,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative z-20 overflow-hidden bg-[#050607] pt-10 text-white sm:pt-12">
+    <footer className="relative z-20 overflow-hidden bg-black pt-10 text-white sm:pt-12">
       {/* Top border glow */}
       <div className="pointer-events-none absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-[#4FAEF3]/60 to-transparent" />
 
@@ -127,8 +215,11 @@ export default function Footer() {
         }}
       />
 
+      <StarLayer stars={footerDepthStars} className="inset-0 z-0" />
+      <StarLayer stars={footerStars} className="inset-0 z-0 [mask-image:linear-gradient(to_bottom,transparent,black_14%,black_84%,transparent)]" />
+
       {/* Main Content Wrapper */}
-      <div className="relative mx-auto w-full max-w-7xl px-5 sm:px-8 md:px-12 lg:px-16">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-8 md:px-12 lg:px-16">
 
         {/* System label */}
         <div className="mb-5 flex items-center gap-3 sm:mb-6">
@@ -326,8 +417,12 @@ export default function Footer() {
 
       {/* Logo overlay + Full Bleed Image Foundation */}
       <div className="relative w-full">
+        <StarLayer
+          stars={skyStars}
+          className="inset-x-0 top-0 z-10 h-[42%] [mask-image:radial-gradient(ellipse_at_center,transparent_0%,transparent_22%,black_42%),linear-gradient(to_bottom,black_0%,black_76%,transparent_100%)]"
+        />
         <motion.div
-          className="absolute inset-x-0 top-0 z-20 flex flex-col items-center px-4 pt-6 sm:pt-8 md:pt-10 lg:pt-14"
+          className="absolute inset-x-0 top-0 z-20 flex flex-col items-center px-4 pt-10 sm:pt-14 md:pt-16 lg:pt-20"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: 'easeOut' }}
@@ -352,7 +447,7 @@ export default function Footer() {
 
         <div className="pointer-events-none relative z-0 flex h-[clamp(300px,43vw,650px)] w-full justify-center overflow-hidden leading-none sm:h-[clamp(360px,43vw,680px)] lg:h-[clamp(500px,42vw,760px)]">
           <Image
-            src="/footer.jpg"
+            src="/footer.png"
             alt="RoboVITics Technical Landscape Foundation"
             width={1913}
             height={822}
