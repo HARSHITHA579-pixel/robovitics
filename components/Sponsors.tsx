@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 // ─── TYPES & IK ─────────────────────────────────────────────────────────────
 interface Point { x: number; y: number; }
-interface Sponsor { id: string; name: string; tier: string; }
+interface Sponsor { id: string; name: string; }
 
 function dist(a: Point, b: Point) { return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2); }
 function lv(a: number, b: number, t: number) { return a + (b - a) * t; }
@@ -34,17 +34,17 @@ function solveFABRIK(joints: Point[], target: Point, lens: number[]): Point[] {
 
 // ─── DATA ───────────────────────────────────────────────────────────────────
 const SPONSORS: Sponsor[] = [
-    { id: 'SP_001', name: 'NEXON DYNAMICS', tier: 'LEVEL 1' },
-    { id: 'SP_002', name: 'TITANFORGE LABS', tier: 'LEVEL 1' },
-    { id: 'SP_003', name: 'VOLTARC SYSTEMS', tier: 'LEVEL 2' },
-    { id: 'SP_004', name: 'CYGNUS ROBOTICS', tier: 'LEVEL 1' },
-    { id: 'SP_005', name: 'AXION VENTURES', tier: 'LEVEL 2' },
-    { id: 'SP_006', name: 'HELIX FOUNDRY', tier: 'LEVEL 3' },
-    { id: 'SP_007', name: 'MERIDIAN TECH', tier: 'LEVEL 2' },
-    { id: 'SP_008', name: 'QUASAR DESIGN', tier: 'LEVEL 3' },
-    { id: 'SP_009', name: 'OMNI SYSTEMS', tier: 'LEVEL 2' },
-    { id: 'SP_010', name: 'VANGUARD AI', tier: 'LEVEL 1' },
-    { id: 'SP_011', name: 'YOUR_SPONSOR_NAME', tier: 'LEVEL X' },
+    { id: 'SP_001', name: 'DigitalOcean' },
+    { id: 'SP_002', name: 'Sylo Group' },
+    { id: 'SP_003', name: 'Sag Taurus' },
+    { id: 'SP_004', name: 'LT (Larsen & Toubro)' },
+    { id: 'SP_005', name: 'Siemens' },
+    { id: 'SP_006', name: 'Analog Devices' },
+    { id: 'SP_007', name: 'Schneider Electric' },
+    { id: 'SP_008', name: 'Autodesk' },
+    { id: 'SP_009', name: 'Persistence' },
+    { id: 'SP_010', name: 'Texas Instruments' },
+    { id: 'SP_011', name: 'YOUR_SPONSOR_NAME' },
 ];
 
 function SponsorMarquee() {
@@ -150,11 +150,6 @@ function SponsorCard({
                         }}>
                         {sponsor.name}
                     </h3>
-                    <p className="text-center font-mono uppercase tracking-[0.1em] transition-all duration-500"
-                        style={{ margin: '0 0 10px', fontSize: 'clamp(7px, 0.55vw, 9px)', color: 'rgba(79,174,243,0.85)' }}>
-                        {sponsor.tier}
-                    </p>
-
                     <div style={{
                         height: '1px', margin: '0 6px 10px', width: 'calc(100% - 12px)',
                         background: 'linear-gradient(90deg, transparent, rgba(79,174,243,0.4) 30%, rgba(79,174,243,0.4) 70%, transparent)',
