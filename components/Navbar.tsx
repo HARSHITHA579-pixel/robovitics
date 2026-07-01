@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
 import ContactModal from './ContactModal';
 
-const navItems = ['About', 'Domains', 'Teams', 'Events', 'Projects'];
-const moreNavItems = ['Achievements', 'Sponsors', 'Memories', 'Board'];
-const mobileNavItems = ['About', 'Domains', 'Teams', 'Events', 'Achievements', 'Projects', 'Sponsors', 'Memories', 'Board'];
-const pageNavItems = mobileNavItems;
+const navItems = ['About', 'Domains', 'Teams', 'Events', 'More'];
+const moreNavItems = ['Projects', 'Achievements', 'Sponsors', 'Memories', 'Board'];
+const mobileNavItems = navItems;
+const pageNavItems = ['About', 'Domains', 'Teams', 'Events', ...moreNavItems];
 
 const desktopNavTargets: Record<string, string> = {
   About: 'about',
@@ -66,13 +66,14 @@ const sectionOffsets: Record<string, number> = {
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
   const [activeSection, setActiveSection] = useState('');
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, top: 0, width: 0, height: 0, opacity: 0 });
-  const navRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const navRefs = useRef<(HTMLElement | null)[]>([]);
 
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string, item: string) => {
+  const scrollToSection = (e: React.MouseEvent<HTMLElement>, targetId: string, item: string) => {
     e.preventDefault();
     const target = document.getElementById(targetId);
     
@@ -137,6 +138,10 @@ export default function Navbar() {
   useEffect(() => {
     const updateIndicator = () => {
       if (!activeSection) {
+        setIndicatorStyle((prev) => ({ ...prev, opacity: 0 }));
+        return;
+      }
+      if (moreNavItems.includes(activeSection)) {
         setIndicatorStyle((prev) => ({ ...prev, opacity: 0 }));
         return;
       }
@@ -237,7 +242,95 @@ export default function Navbar() {
           </div>
 
           {navItems.map((item, index) => {
-            const isActive = activeSection === item;
+            const isActive = item !== 'More' && activeSection === item;
+
+            if (item === 'More') {
+              return (
+                <div
+                  key={item}
+                  className="group relative z-20"
+                  ref={(el) => { navRefs.current[index] = el; }}
+                  onMouseEnter={() => setMoreOpen(true)}
+                  onMouseLeave={() => setMoreOpen(false)}
+                  onFocus={() => setMoreOpen(true)}
+                  onBlur={(event) => {
+                    if (!event.currentTarget.contains(event.relatedTarget)) {
+                      setMoreOpen(false);
+                    }
+                  }}
+                >
+                  <button
+                    type="button"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => setMoreOpen((open) => !open)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Escape') setMoreOpen(false);
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setMoreOpen((open) => !open);
+                      }
+                    }}
+                    className={`relative flex items-center px-2.5 py-1.5 uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#4FAEF3] focus-visible:ring-offset-1 focus-visible:ring-offset-black xl:px-3 ${
+                      isActive ? 'text-white' : 'hover:text-white/80'
+                    }`}
+                    aria-haspopup="true"
+                    aria-expanded={moreOpen}
+                  >
+                    <span className={`mr-2 transition-colors duration-200 ${
+                      isActive
+                        ? 'text-[#4FAEF3] drop-shadow-[0_0_6px_rgba(79,174,243,0.8)]'
+                        : 'text-[#4FAEF3]/60 group-hover:text-[#4FAEF3]'
+                    }`}>
+                      0{index + 1}
+                    </span>
+                    {item}
+                    <svg aria-hidden="true" className={`ml-1 h-3 w-3 transition-transform duration-300 ${moreOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                    {!isActive && (
+                      <span className="absolute bottom-0 left-3 right-3 h-px origin-left scale-x-0 bg-[#4FAEF3]/60 transition-transform duration-300 group-hover:scale-x-100" />
+                    )}
+                  </button>
+
+                  <div className={`absolute left-1/2 top-full -translate-x-1/2 pt-4 transition-all duration-300 ${
+                    moreOpen
+                      ? 'visible pointer-events-auto translate-y-0 opacity-100'
+                      : 'invisible pointer-events-none -translate-y-3 opacity-0'
+                  }`}>
+                    <div className="relative flex min-w-[230px] flex-col border border-white/[0.14] bg-black/65 p-2 shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] backdrop-blur-md backdrop-saturate-150">
+                      <span className="pointer-events-none absolute left-0 top-0 h-2.5 w-2.5 border-l border-t border-[#4FAEF3] shadow-[0_0_12px_rgba(79,174,243,0.85)]" />
+                      <span className="pointer-events-none absolute right-0 top-0 h-2.5 w-2.5 border-r border-t border-[#4FAEF3] shadow-[0_0_12px_rgba(79,174,243,0.85)]" />
+                      <span className="pointer-events-none absolute bottom-0 left-0 h-2.5 w-2.5 border-b border-l border-[#4FAEF3] shadow-[0_0_12px_rgba(79,174,243,0.85)]" />
+                      <span className="pointer-events-none absolute bottom-0 right-0 h-2.5 w-2.5 border-b border-r border-[#4FAEF3] shadow-[0_0_12px_rgba(79,174,243,0.85)]" />
+
+                      <div className="relative z-10 flex flex-col gap-1">
+                        {moreNavItems.map((dropItem) => (
+                          <Link
+                            key={dropItem}
+                            href={`#${desktopNavTargets[dropItem] ?? dropItem.toLowerCase()}`}
+                            onClick={(event) => {
+                              setMoreOpen(false);
+                              scrollToSection(event, desktopNavTargets[dropItem] ?? dropItem.toLowerCase(), dropItem);
+                            }}
+                            onKeyDown={(event) => {
+                              if (event.key === 'Escape') {
+                                setMoreOpen(false);
+                                navRefs.current[index]?.focus();
+                              }
+                            }}
+                            className="group/item flex items-center justify-between rounded px-3.5 py-3 text-[10px] font-medium uppercase tracking-[0.2em] text-white/75 transition-all duration-200 hover:bg-white/[0.06] hover:text-[#4FAEF3] focus-visible:bg-white/[0.06] focus-visible:text-[#4FAEF3] focus-visible:outline-none"
+                          >
+                            {dropItem}
+                            <span className="text-[#4FAEF3] opacity-0 transition-opacity duration-200 group-hover/item:opacity-100">→</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
             return (
               <Link
                 key={item}
@@ -248,6 +341,13 @@ export default function Navbar() {
                   isActive ? 'text-white' : 'hover:text-white/80'
                 }`}
               >
+                <span className={`mr-2 transition-colors duration-200 ${
+                  isActive
+                    ? 'text-[#4FAEF3] drop-shadow-[0_0_6px_rgba(79,174,243,0.8)]'
+                    : 'text-[#4FAEF3]/60 group-hover:text-[#4FAEF3]'
+                }`}>
+                  0{index + 1}
+                </span>
                 {item}
                 {!isActive && (
                   <span className="absolute bottom-0 left-3 right-3 h-px origin-left scale-x-0 bg-[#4FAEF3]/60 transition-transform duration-300 group-hover:scale-x-100" />
@@ -255,66 +355,6 @@ export default function Navbar() {
               </Link>
             );
           })}
-
-          <div
-            className="relative z-20"
-            onMouseEnter={() => setMoreOpen(true)}
-            onMouseLeave={() => setMoreOpen(false)}
-            onFocus={() => setMoreOpen(true)}
-            onBlur={(event) => {
-              if (!event.currentTarget.contains(event.relatedTarget)) {
-                setMoreOpen(false);
-              }
-            }}
-          >
-            <button
-              type="button"
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => setMoreOpen((open) => !open)}
-              className={`relative px-2.5 py-1.5 uppercase transition-colors duration-200 xl:px-3 ${
-                moreNavItems.includes(activeSection) ? 'text-white' : 'hover:text-white/80'
-              }`}
-              aria-haspopup="true"
-              aria-expanded={moreOpen}
-            >
-              More
-              {!moreNavItems.includes(activeSection) && (
-                <span className={`absolute bottom-0 left-3 right-3 h-px origin-left bg-[#4FAEF3]/60 transition-transform duration-300 ${moreOpen ? 'scale-x-100' : 'scale-x-0'}`} />
-              )}
-            </button>
-
-            <div className={`absolute left-1/2 top-full mt-5 w-72 -translate-x-1/2 rounded-[6px] border border-white/18 bg-[#070808]/95 p-2 shadow-[0_20px_60px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl transition-all duration-200 before:absolute before:-top-5 before:left-0 before:h-5 before:w-full before:content-[''] ${
-              moreOpen ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none translate-y-2 opacity-0'
-            }`}>
-              <div className="pointer-events-none absolute inset-0 opacity-35" style={{
-                backgroundImage: 'linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)',
-                backgroundSize: '22px 22px, 22px 22px',
-              }} />
-              <div className="relative z-10 flex flex-col">
-                {moreNavItems.map((item) => {
-                  const isActive = activeSection === item;
-                  return (
-                    <Link
-                      key={item}
-                      href={`#${desktopNavTargets[item] ?? item.toLowerCase()}`}
-                      onClick={(e) => {
-                        setMoreOpen(false);
-                        scrollToSection(e, desktopNavTargets[item] ?? item.toLowerCase(), item);
-                      }}
-                      className={`group/item relative border-b border-white/10 px-4 py-3.5 transition-colors last:border-b-0 ${
-                        isActive ? 'text-white' : 'text-white/66 hover:text-white'
-                      }`}
-                    >
-                      <span className="flex items-center justify-between gap-4">
-                        <span className="text-[11px]">{item}</span>
-                        <span className={`h-px w-5 transition-colors ${isActive ? 'bg-[#4FAEF3]/70' : 'bg-white/15 group-hover/item:bg-white/35'}`} />
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
         </nav>
 
         <button
@@ -393,8 +433,51 @@ export default function Navbar() {
           </div>
 
           <nav className="mt-7 flex flex-col font-mono uppercase tracking-[0.16em]">
-            {mobileNavItems.map((item) => {
-              const isActive = activeSection === item;
+            {mobileNavItems.map((item, index) => {
+              const isActive = item !== 'More' && activeSection === item;
+
+              if (item === 'More') {
+                return (
+                  <div key={item} className="group relative border-b border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => setMobileMoreOpen((open) => !open)}
+                      className={`flex w-full items-center justify-between px-1 py-4 transition-colors ${
+                        isActive ? 'text-white' : 'text-white/62 hover:text-white'
+                      }`}
+                      aria-expanded={mobileMoreOpen}
+                      aria-haspopup="true"
+                    >
+                      <span className="flex items-center gap-3">
+                        <span className={`text-[10px] ${isActive ? 'text-[#4FAEF3]/85' : 'text-white/28'}`}>0{index + 1}</span>
+                        <span className="text-[12px]">{item}</span>
+                      </span>
+                      <svg className={`h-4 w-4 transition-transform duration-300 ${mobileMoreOpen ? 'rotate-180 text-[#4FAEF3]' : 'text-white/50'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${mobileMoreOpen ? 'max-h-80 pb-4 opacity-100' : 'max-h-0 opacity-0'}`}>
+                      <div className="flex flex-col gap-1 pl-[38px]">
+                        {moreNavItems.map((dropItem) => (
+                          <Link
+                            key={dropItem}
+                            href={`#${mobileNavTargets[dropItem] ?? dropItem.toLowerCase()}`}
+                            onClick={(event) => {
+                              scrollToSection(event, mobileNavTargets[dropItem] ?? dropItem.toLowerCase(), dropItem);
+                              setMobileMoreOpen(false);
+                            }}
+                            className="block py-2.5 text-[10.5px] tracking-[0.18em] text-white/50 transition-colors hover:text-[#4FAEF3]"
+                          >
+                            {dropItem}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
               return (
                 <Link
                   key={item}
@@ -406,6 +489,7 @@ export default function Navbar() {
                 >
                   <span className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-3">
+                      <span className={`text-[10px] ${isActive ? 'text-[#4FAEF3]/85' : 'text-white/28'}`}>0{index + 1}</span>
                       <span className="text-[12px]">{item}</span>
                     </span>
                     <span className={`h-px w-6 transition-colors ${isActive ? 'bg-[#4FAEF3]/70' : 'bg-white/15 group-hover:bg-white/35'}`} />
