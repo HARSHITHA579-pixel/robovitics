@@ -20,7 +20,7 @@ type DeckItem = {
 
 type Mode = "events" | "outreach";
 
-const DESKTOP_SCROLL_UNITS = 2.8;
+const DESKTOP_SCROLL_UNITS = 1.85;
 
 // Replace the events array — add the 6th entry:
 const events: DeckItem[] = [
@@ -384,7 +384,7 @@ const revealCards = useCallback((cards: HTMLDivElement[], direction: "left" | "r
       tl.to(toggleRef.current, { opacity: 1, y: 0, duration: 0.16, ease: "sine.out" }, 0.67);
     }
 
-    tl.to({}, { duration: 0.22 }); 
+    tl.to({}, { duration: 0.06 }); 
 
     stRef.current = ScrollTrigger.create({
       trigger: section,

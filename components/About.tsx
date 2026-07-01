@@ -1,30 +1,26 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const aboutDriveLink = 'https://drive.google.com/file/d/1Ycd76P7kxszbPqTYpeSCTFRmOsU1qTWY/view?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAb21jcASgblJleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAaeFsaDj9ZViLc2mc_5dTS9zWV0UHu9Qv8fXSJ2_wBnC-oeSCMO7g5y2VzUt1A_aem_OMmhAV5KvpCJEWMEwO_jRg';
+const ABOUT_PANEL_HEIGHT = 620;
+const ABOUT_PANEL_GAP = 170;
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
   
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"]
   });
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest < 0.45) {
-      setActiveIndex(0);
-    } else if (latest >= 0.45 && latest < 0.55) {
-      setActiveIndex(-1);
-    } else {
-      setActiveIndex(1);
-    }
-  });
   
   const progressHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const aboutRailY = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.78, 1],
+    ["0px", "0px", `-${ABOUT_PANEL_HEIGHT + ABOUT_PANEL_GAP}px`, `-${ABOUT_PANEL_HEIGHT + ABOUT_PANEL_GAP}px`]
+  );
 
   return (
     <>
@@ -114,15 +110,15 @@ export default function About() {
       </section>
 
       {/* DESKTOP LAYOUT */}
-      <section id="about" ref={sectionRef} className="hidden md:block relative z-10 h-[300vh] w-full text-white pointer-events-none">
+      <section id="about" ref={sectionRef} className="hidden md:block relative z-10 h-[205vh] w-full text-white pointer-events-none">
         
-        <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-12 lg:px-24 max-w-[1600px] mx-auto pointer-events-none">
+        <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-8 lg:px-24 max-w-[1600px] mx-auto pointer-events-none">
           
-          <div className="rv-section-log absolute top-24 left-12 lg:left-24">
+          <div className="rv-section-log absolute top-16 left-8 lg:top-24 lg:left-24">
             <span className="rv-section-log-number">01.</span>SYSTEM.LOGS // ABOUT
           </div>
 
-          <div className="relative w-full h-[500px] flex items-center mt-12">
+          <div className="relative mt-12 flex h-[620px] w-full items-center">
             
             {/* Scroll Progress Bar - FIXED */}
             <div
@@ -139,27 +135,33 @@ export default function About() {
               />
             </div>
 
-            <div className="relative w-full h-full ml-12 lg:ml-20">
-              <AnimatePresence mode="wait">
-                
-                {activeIndex === 0 && (
-                  <motion.div
-                    key="robo"
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -50 }}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
-                    className="absolute inset-0 flex items-center justify-between gap-12 lg:gap-20"
-                  >
+            <div
+              className="relative w-full h-full ml-12 overflow-hidden lg:ml-20"
+              style={{
+                maskImage: 'linear-gradient(to bottom, black 0%, black 94%, transparent 100%)',
+                WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 94%, transparent 100%)',
+              }}
+            >
+              <motion.div
+                style={{
+                  y: aboutRailY,
+                  willChange: 'transform',
+                  height: ABOUT_PANEL_HEIGHT * 2 + ABOUT_PANEL_GAP,
+                  rowGap: ABOUT_PANEL_GAP,
+                  gridTemplateRows: `${ABOUT_PANEL_HEIGHT}px ${ABOUT_PANEL_HEIGHT}px`,
+                }}
+                className="absolute inset-x-0 top-0 grid"
+              >
+                <div className="flex items-center justify-between gap-12 lg:gap-20">
                     <div className="flex-1 flex flex-col justify-center">
-                      <h2 className="text-6xl lg:text-7xl font-black uppercase tracking-tighter mb-6 drop-shadow-lg">
-                        About Us <br/> <span className="text-xl lg:text-2xl font-medium normal-case tracking-tight mt-4 block" style={{ color: '#4FAEF3' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
+                      <h2 className="mb-5 pt-3 text-[clamp(42px,5vw,72px)] font-black uppercase leading-[1.12] tracking-tighter drop-shadow-lg">
+                        About Us <br/> <span className="mt-3 block text-[clamp(17px,1.7vw,24px)] font-medium normal-case leading-snug tracking-tight" style={{ color: '#4FAEF3' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
                       </h2>
-                      <div className="flex flex-col gap-5">
-                        <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
+                      <div className="flex flex-col gap-4">
+                        <p className="text-[clamp(15px,1.35vw,20px)] font-light leading-[1.65] tracking-normal text-white/90 drop-shadow-md">
                           RoboVITics, the official Robotics Club of VIT Vellore, is a community of passionate innovators exploring robotics, automation, and emerging technologies. Through hands-on projects, workshops, and technical events, we provide students with opportunities to learn, create, and transform ideas into reality.
                         </p>
-                        <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
+                        <p className="text-[clamp(15px,1.35vw,20px)] font-light leading-[1.65] tracking-normal text-white/90 drop-shadow-md">
                           Over the years, RoboVITics has grown into a hub of innovation and excellence, empowering students to build impactful solutions, compete on prestigious platforms, and continuously expand their technical expertise. Driven by creativity, collaboration, and ambition, we strive to shape the next generation of engineers and innovators.
                         </p>
                         <a
@@ -173,50 +175,39 @@ export default function About() {
                       </div>
                     </div>
 
-                    <div className="hidden md:flex flex-1 max-w-[450px] lg:max-w-[550px] xl:max-w-[650px] justify-center items-center">
+                    <div className="hidden md:flex flex-1 max-w-[390px] lg:max-w-[550px] xl:max-w-[650px] justify-center items-center">
                       <img 
                         src="/AboutUs.png.jpeg" 
                         alt="About Us" 
                         className="w-full h-auto object-contain rounded-2xl shadow-[0_0_60px_rgba(79,174,243,0.15)] ring-1 ring-white/10"
                       />
                     </div>
-                  </motion.div>
-                )}
+                </div>
 
-                {activeIndex === 1 && (
-                  <motion.div
-                    key="vit"
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -50 }}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
-                    className="absolute inset-0 flex items-center justify-between gap-12 lg:gap-20"
-                  >
+                <div className="flex items-center justify-between gap-12 lg:gap-20">
                     <div className="flex-1 flex flex-col justify-center">
-                      <h2 className="text-6xl lg:text-7xl font-black uppercase tracking-tighter mb-6 drop-shadow-lg">
-                        About VIT <br/> <span className="text-xl lg:text-2xl font-medium normal-case tracking-tight mt-4 block" style={{ color: '#4FAEF3' }}>&quot;A place to learn, a chance to grow&quot;</span>
+                      <h2 className="mb-5 pt-3 text-[clamp(42px,5vw,72px)] font-black uppercase leading-[1.12] tracking-tighter drop-shadow-lg">
+                        About VIT <br/> <span className="mt-3 block text-[clamp(17px,1.7vw,24px)] font-medium normal-case leading-snug tracking-tight" style={{ color: '#4FAEF3' }}>&quot;A place to learn, a chance to grow&quot;</span>
                       </h2>
-                      <div className="flex flex-col gap-5">
-                        <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
+                      <div className="flex flex-col gap-4">
+                        <p className="text-[clamp(15px,1.35vw,20px)] font-light leading-[1.65] tracking-normal text-white/90 drop-shadow-md">
                           Vellore Institute of Technology (VIT) is one of India&apos;s leading private universities, accredited with A++ by NAAC and consistently ranked among the top institutions by NIRF. With a thriving community of 40,000+ students, strong industry partnerships, and global collaborations, VIT fosters an environment that encourages innovation, research, and hands-on learning.
                         </p>
-                        <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
+                        <p className="text-[clamp(15px,1.35vw,20px)] font-light leading-[1.65] tracking-normal text-white/90 drop-shadow-md">
                           This dynamic ecosystem empowers students to explore their interests, develop practical skills, and contribute to impactful initiatives, serving as the foundation for communities like RoboVITics to learn, innovate, and grow.
                         </p>
                       </div>
                     </div>
 
-                    <div className="hidden md:flex flex-1 max-w-[450px] lg:max-w-[550px] xl:max-w-[650px] justify-center items-center">
+                    <div className="hidden md:flex flex-1 max-w-[390px] lg:max-w-[550px] xl:max-w-[650px] justify-center items-center">
                       <img 
                         src="/AboutVit.png.jpeg" 
                         alt="About VIT" 
                         className="w-full h-auto object-contain rounded-2xl shadow-[0_0_60px_rgba(79,174,243,0.15)] ring-1 ring-white/10"
                       />
                     </div>
-                  </motion.div>
-                )}
-                
-              </AnimatePresence>
+                </div>
+              </motion.div>
             </div>
           </div>
 
