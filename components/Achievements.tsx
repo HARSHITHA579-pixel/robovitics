@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 function AchievementsBackground() {
   return (
@@ -178,118 +179,221 @@ interface IndividualAchievement {
   name: string;
   achievement: string;
   year: string;
+  level: string;
+  description: string;
+  imageSrc?: string;
 }
 
 const INDIVIDUAL_ACHIEVEMENTS: IndividualAchievement[] = [
-  { id: '01', name: 'Member Name 01', achievement: 'Competition Title // Position', year: '2026' },
-  { id: '02', name: 'Member Name 02', achievement: 'Competition Title // Position', year: '2026' },
-  { id: '03', name: 'Member Name 03', achievement: 'Competition Title // Position', year: '2026' },
-  { id: '04', name: 'Member Name 04', achievement: 'Competition Title // Position', year: '2026' },
-  { id: '05', name: 'Member Name 05', achievement: 'Competition Title // Position', year: '2026' },
-  { id: '06', name: 'Member Name 06', achievement: 'Event Title // Position', year: '2025' },
-  { id: '07', name: 'Member Name 07', achievement: 'Event Title // Position', year: '2025' },
-  { id: '08', name: 'Member Name 08', achievement: 'Event Title // Position', year: '2025' },
-  { id: '09', name: 'Member Name 09', achievement: 'Event Title // Position', year: '2024' },
-  { id: '10', name: 'Member Name 10', achievement: 'Event Title // Position', year: '2024' },
+  { id: '01', name: 'Ryan Fernandes', achievement: "Synapse'26 // Second Place", year: '2026', level: 'NATIONAL', description: "Secured Second Place at Synapse'26, Scaler School of Technology, Bengaluru." },
+  { id: '02', name: 'Team NeuroVITics', achievement: 'Neurohack Shaastra 2026 // 1st Place', year: '2026', level: 'NATIONAL', description: 'Won 1st Place at Neurohack Shaastra 2026, IIT Madras.' },
+  { id: '03', name: 'Ujaini DE & Aarushi Jha', achievement: "Vinhack'25 // 2nd Place", year: '2025', level: 'NATIONAL', description: "Secured 2nd Place at Vinhack'25." },
+  { id: '04', name: 'Mahmood', achievement: "Hackelite'25 // 3rd Place", year: '2025', level: 'NATIONAL', description: "Secured 3rd Place at Hackelite'25, SRM Vadapalani." },
+  { id: '05', name: 'Team Sphnix', achievement: "Cosmo Clemch - TechSolctice'26 // 1st Place", year: '2026', level: 'NATIONAL', description: "Won 1st Place in Cosmo Clemch, TechSolctice'26, MIT Bangalore." },
+  { id: '06', name: 'Team Sphnix', achievement: "RoboRace - TechSolctice'26 // 1st Runner-Up", year: '2026', level: 'NATIONAL', description: "Secured 1st Runner-Up in RoboRace at TechSolctice'26, MIT Bangalore." },
+  { id: '07', name: 'Team CyberVITics', achievement: "Null OWASP CTF - TechSolctice'26 // 2nd Place", year: '2026', level: 'NATIONAL', description: "Secured 2nd Place in Null OWASP CTF at TechSolctice'26, MIT Bangalore." },
+  { id: '08', name: 'Member Name 08', achievement: 'Quantum Computing Hack // Finalist', year: '2025', level: 'INTERNATIONAL', description: 'Optimized a quantum circuit for simulating molecular dynamics.' },
+  { id: '09', name: 'Member Name 09', achievement: 'Open Source Contribution Award // Winner', year: '2024', level: 'GLOBAL', description: 'Recognized for significant open-source engineering contributions.' },
+  { id: '10', name: 'Member Name 10', achievement: 'RoboWars Alpha // Grand Champion', year: '2024', level: 'NATIONAL', description: 'Dominated the heavyweight combat robotics arena.' },
+  { id: '11', name: 'Member Name 11', achievement: 'NextGen AI Conference // Best Paper', year: '2024', level: 'INTERNATIONAL', description: 'Published research on efficient transformers for mobile devices.' },
 ];
 
-function LogRow({ data }: { data: IndividualAchievement }) {
+const DECK_VISIBLE_DEPTH = 3;
+
+function DossierCard({
+  log,
+  pos,
+  total,
+  isHovered,
+  onCardClick,
+}: {
+  log: IndividualAchievement;
+  pos: number;
+  total: number;
+  isHovered: boolean;
+  onCardClick: (pos: number) => void;
+}) {
+  const isFront = pos === 0;
+  const wrappedPos = pos > total / 2 ? pos - total : pos;
+  const depth = Math.min(Math.abs(wrappedPos), DECK_VISIBLE_DEPTH);
+  const isBack = wrappedPos < 0;
+  const stackTilt = depth === 0 ? 0 : (depth % 2 === 0 ? -1 : 1) * (2 + depth * 1.5);
+  const offscreen = Math.abs(wrappedPos) > DECK_VISIBLE_DEPTH;
+  const fanOutY = isHovered && depth > 0 && !offscreen && !isBack ? depth * 12 : 0;
+  const fanOutX = isHovered && depth > 0 && !offscreen && !isBack ? (depth % 2 === 0 ? 15 : -15) : 0;
+  const [title, position = 'Winner'] = log.achievement.split('//').map((part) => part.trim());
+
   return (
-    <div className="group relative flex w-full flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 border-b border-white/[0.04] px-4 py-3 sm:px-6 sm:py-4 transition-all duration-200 hover:bg-white/[0.03]">
-      <span
-        className="absolute left-0 top-0 h-full w-[2px] scale-y-0 bg-[#4FAEF3] shadow-[0_0_8px_#4FAEF3] transition-transform duration-200 group-hover:scale-y-100"
-        style={{ transformOrigin: 'center' }}
-      />
-      <div className="flex items-center justify-between sm:hidden w-full mb-0.5">
-        <div className="flex items-center gap-3">
-          <span className="w-5 flex-shrink-0 font-mono text-[9px] text-[#4FAEF3]/60">{data.id}</span>
-          <span className="flex-shrink-0 font-mono text-[8px] text-emerald-500/80 group-hover:text-emerald-400">[OK]</span>
+    <motion.div
+      className="absolute inset-0 cursor-pointer"
+      onClick={() => onCardClick(wrappedPos)}
+      style={{ zIndex: isBack ? 1 : total - depth }}
+      animate={{
+        x: fanOutX,
+        y: offscreen ? (isBack ? 110 : -20) : depth * 28 + fanOutY,
+        scale: offscreen ? 0.75 : 1 - depth * 0.08,
+        rotate: offscreen ? (isBack ? 8 : 0) : stackTilt + (isHovered && depth > 0 ? (depth % 2 === 0 ? -2 : 2) : 0),
+        opacity: offscreen ? 0 : 1 - depth * 0.25,
+      }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <div
+        className="relative flex h-full w-full flex-col items-center justify-between gap-5 overflow-hidden rounded-2xl border p-5 transition-colors duration-500 sm:p-8 md:flex-row md:items-start md:gap-8"
+        style={{
+          background: 'linear-gradient(160deg, rgba(24,26,29,0.97) 0%, rgba(11,11,11,0.99) 100%)',
+          backdropFilter: 'blur(20px)',
+          borderColor: isFront ? 'rgba(79,174,243,0.5)' : isHovered ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.08)',
+          boxShadow: isFront
+            ? '0 24px 60px rgba(0,0,0,0.7), 0 0 45px rgba(79,174,243,0.25)'
+            : isHovered
+              ? '0 15px 35px rgba(0,0,0,0.6)'
+              : '0 10px 26px rgba(0,0,0,0.5)',
+        }}
+      >
+        <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#4FAEF3]/40 to-transparent opacity-60" />
+
+        <span className="absolute left-3 top-3 h-3 w-3 border-l border-t border-[#4FAEF3]/50" />
+        <span className="absolute right-3 top-3 h-3 w-3 border-r border-t border-[#4FAEF3]/50" />
+        <span className="absolute bottom-3 left-3 h-3 w-3 border-b border-l border-[#4FAEF3]/50" />
+        <span className="absolute bottom-3 right-3 h-3 w-3 border-b border-r border-[#4FAEF3]/50" />
+
+        <div className="relative z-10 flex h-full min-w-0 flex-1 flex-col justify-center">
+          <span className="mb-2.5 font-mono text-[9.5px] uppercase tracking-[0.2em] text-[#4FAEF3] sm:text-[11px]">
+            {log.level} {'//'} {log.year}
+          </span>
+          <h3 className="mb-4 font-sans text-lg font-bold uppercase leading-tight tracking-wide text-white sm:text-2xl lg:text-3xl">
+            {title}
+          </h3>
+
+          <div className="mb-4 flex items-center gap-4">
+            <div className="h-px w-8 bg-white/20 sm:w-12" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-gray-300 sm:text-[12px]">
+              {log.name}
+            </span>
+          </div>
+
+          <div className="mb-4 w-fit rounded-sm border border-[#4FAEF3]/30 bg-[#4FAEF3]/10 px-3 py-1.5 shadow-[0_0_15px_rgba(79,174,243,0.15)] sm:px-4 sm:py-2">
+            <span className="font-mono text-[9.5px] uppercase tracking-[0.1em] text-[#4FAEF3] sm:text-[11px]">
+              POSITION: {position}
+            </span>
+          </div>
+
+          <p className="max-w-lg font-sans text-[11px] leading-relaxed text-gray-400 sm:text-[13.5px]">
+            {log.description}
+          </p>
         </div>
-        <span className="flex-shrink-0 font-mono text-[8px] text-gray-500 group-hover:text-[#4FAEF3]/80 transition-colors">{data.year}</span>
+
+        <div className="relative z-10 flex aspect-[4/3] w-full shrink-0 items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] md:w-[36%]">
+          {log.imageSrc ? (
+            <Image src={log.imageSrc} alt={title} fill sizes="(min-width: 768px) 360px, 100vw" className="object-cover" />
+          ) : (
+            <div className="flex flex-col items-center gap-3">
+              <svg className="h-8 w-8 text-white/20 sm:h-11 sm:w-11" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/30 sm:text-[9px]">
+                NO ATTACHMENT
+              </span>
+            </div>
+          )}
+          <span className="absolute left-2 top-2 h-2 w-2 border-l border-t border-white/30" />
+          <span className="absolute right-2 top-2 h-2 w-2 border-r border-t border-white/30" />
+          <span className="absolute bottom-2 left-2 h-2 w-2 border-b border-l border-white/30" />
+          <span className="absolute bottom-2 right-2 h-2 w-2 border-b border-r border-white/30" />
+        </div>
       </div>
-      <span className="hidden sm:block w-8 flex-shrink-0 font-mono text-[11px] text-[#4FAEF3]/60">{data.id}</span>
-      <span className="hidden sm:block w-12 flex-shrink-0 font-mono text-[10px] text-emerald-500/80 group-hover:text-emerald-400">[OK]</span>
-      <div className="flex flex-col sm:flex-row sm:items-center min-w-0 flex-1">
-        <span className="truncate text-[12px] font-medium text-gray-200 tracking-wide sm:w-[150px] md:text-[13.5px]">{data.name}</span>
-        <span className="truncate text-[10px] sm:text-[11.5px] text-gray-400 md:text-[13px] group-hover:text-white transition-colors tracking-wide mt-0.5 sm:mt-0">{data.achievement}</span>
-      </div>
-      <span className="hidden sm:block flex-shrink-0 font-mono text-[10px] text-gray-500 group-hover:text-[#4FAEF3]/80 transition-colors">{data.year}</span>
-    </div>
+    </motion.div>
   );
 }
 
 function IndividualLogPanel() {
-  const half = Math.ceil(INDIVIDUAL_ACHIEVEMENTS.length / 2);
-  const colA = INDIVIDUAL_ACHIEVEMENTS.slice(0, half);
-  const colB = INDIVIDUAL_ACHIEVEMENTS.slice(half);
+  const total = INDIVIDUAL_ACHIEVEMENTS.length;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const activeLog = INDIVIDUAL_ACHIEVEMENTS[activeIndex];
+
+  const handleNext = () => setActiveIndex((prev) => (prev + 1) % total);
+  const handlePrev = () => setActiveIndex((prev) => (prev - 1 + total) % total);
+
+  const handleCardClick = (wrappedPos: number) => {
+    if (wrappedPos === 0) {
+      handleNext();
+    } else if (wrappedPos > 0) {
+      setActiveIndex((prev) => (prev + wrappedPos) % total);
+    }
+  };
 
   return (
-    <div
-      className="relative flex h-auto max-h-[60vh] sm:max-h-[600px] w-full flex-col overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
-      style={{
-        background: '#0a0a0a',
-        border: '1px solid rgba(255,255,255,0.1)',
-      }}
-    >
-      {/* Shared card texture */}
+    <div className="relative flex w-full flex-col items-center">
+      <div className="mx-auto mb-8 w-full max-w-[1000px] sm:mb-10">
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+            <div className="h-1.5 w-1.5 rounded-sm bg-[#4FAEF3] shadow-[0_0_8px_#4FAEF3] animate-pulse sm:h-2 sm:w-2" />
+            <span className="truncate font-mono text-[9px] uppercase tracking-[0.2em] text-gray-300 sm:text-[11px] md:text-[12px]">
+              MISSION_ARCHIVE // LOG {activeLog.id}
+            </span>
+          </div>
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={handlePrev}
+              className="rounded-md border border-white/10 p-2 text-[#4FAEF3] transition-colors hover:border-[#4FAEF3]/40 hover:bg-white/5 sm:p-2.5"
+              aria-label="Previous achievement"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+            </button>
+            <span className="w-16 text-center font-mono text-[11px] tracking-widest text-white/50 sm:text-[13px]">
+              {String(activeIndex + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+            </span>
+            <button
+              type="button"
+              onClick={handleNext}
+              className="rounded-md border border-white/10 p-2 text-[#4FAEF3] transition-colors hover:border-[#4FAEF3]/40 hover:bg-white/5 sm:p-2.5"
+              aria-label="Next achievement"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+          </div>
+        </div>
+        <div className="flex w-full items-center gap-2 sm:gap-2.5">
+          {INDIVIDUAL_ACHIEVEMENTS.map((item, index) => (
+            <button
+              type="button"
+              key={item.id}
+              onClick={() => setActiveIndex(index)}
+              aria-label={`Open achievement ${item.id}`}
+              className={`h-[3px] flex-1 rounded-full transition-all duration-500 sm:h-[4px] ${
+                index === activeIndex
+                  ? 'bg-[#4FAEF3] shadow-[0_0_10px_#4FAEF3]'
+                  : index < activeIndex
+                    ? 'bg-[#4FAEF3]/30'
+                    : 'bg-white/10'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
       <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: `
-            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-            linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.35))
-          `,
-          backgroundSize: '18px 18px, 18px 18px, auto',
-        }}
-      />
-
-      <div className="relative z-10 flex flex-shrink-0 flex-row items-center justify-between border-b border-white/[0.05] bg-black/20 px-4 py-4 sm:px-8 sm:py-5">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-sm bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]" />
-          <span className="font-mono text-[8.5px] sm:text-[10px] uppercase tracking-[0.2em] text-gray-300 md:text-[11px]">RECORDS.DAT</span>
+        className="relative mx-auto w-full max-w-[1000px] pb-10 sm:pb-16"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className="relative h-[390px] w-full sm:h-[340px]">
+          {INDIVIDUAL_ACHIEVEMENTS.map((log, index) => {
+            const pos = (index - activeIndex + total) % total;
+            return (
+              <DossierCard
+                key={log.id}
+                log={log}
+                pos={pos}
+                total={total}
+                isHovered={isHovered}
+                onCardClick={handleCardClick}
+              />
+            );
+          })}
         </div>
-        <span className="font-mono text-[8.5px] sm:text-[10px] tracking-[0.1em] text-[#4FAEF3]/80 md:text-[11px]">10/10 LOADED</span>
-      </div>
-
-      <div className="relative z-10 hidden lg:grid grid-cols-2 divide-x divide-white/[0.05] border-b border-white/[0.05] bg-black/10 font-mono text-[9px] uppercase tracking-[0.2em] text-gray-500">
-        <div className="flex items-center gap-4 px-6 py-3">
-          <span className="w-8">ID</span>
-          <span className="w-12">STATUS</span>
-          <span className="w-[150px]">OPERATIVE</span>
-          <span className="flex-1">DIRECTIVE</span>
-          <span>CYCLE</span>
-        </div>
-        <div className="flex items-center gap-4 px-6 py-3">
-          <span className="w-8">ID</span>
-          <span className="w-12">STATUS</span>
-          <span className="w-[150px]">OPERATIVE</span>
-          <span className="flex-1">DIRECTIVE</span>
-          <span>CYCLE</span>
-        </div>
-      </div>
-
-      <div className="relative z-10 grid min-h-[300px] flex-1 grid-cols-1 divide-y divide-white/[0.05] overflow-y-auto lg:grid-cols-2 lg:divide-x lg:divide-y-0">
-        <div className="flex flex-col">
-          <div className="lg:hidden">
-            {INDIVIDUAL_ACHIEVEMENTS.map((item) => <LogRow key={item.id} data={item} />)}
-          </div>
-          <div className="hidden lg:flex flex-col">
-            {colA.map((item) => <LogRow key={item.id} data={item} />)}
-          </div>
-        </div>
-        <div className="hidden lg:flex flex-col">
-          {colB.map((item) => <LogRow key={item.id} data={item} />)}
-        </div>
-      </div>
-
-      <div className="relative z-10 flex flex-shrink-0 items-center justify-center gap-2 border-t border-white/[0.05] bg-black/20 py-3 sm:py-4">
-        <span className="font-mono text-[8.5px] sm:text-[10px] uppercase tracking-[0.2em] text-gray-500 md:text-[11px]">EOF // END OF FILE</span>
-        <motion.span
-          animate={{ opacity: [1, 0] }}
-          transition={{ repeat: Infinity, duration: 0.9, ease: 'linear' }}
-          className="inline-block h-2 sm:h-3 w-1 sm:w-1.5 bg-[#4FAEF3]/80 align-[-0.15em]"
-        />
       </div>
     </div>
   );
