@@ -483,7 +483,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
           display: none;
         }
           :global(.team-grid-faculty) {
-          max-width: min(100%, 600px);
+          max-width: min(100%, 640px);
           margin-left: auto;
           margin-right: auto;
         }
@@ -493,7 +493,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         }
         @media (min-width: 768px) {
           :global(.team-grid-faculty) {
-            max-width: min(100%, 760px);
+            max-width: min(100%, 840px);
           }
           :global(.team-grid-balanced) {
             display: grid;
@@ -521,7 +521,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         }
         @media (min-width: 1024px) {
           :global(.team-grid-faculty) {
-            max-width: min(100%, 900px);
+            max-width: min(100%, 980px);
           }
           :global(.team-grid-balanced) {
             grid-template-columns: repeat(10, minmax(0, 1fr));
