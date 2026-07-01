@@ -338,12 +338,12 @@ const isMobile = window.matchMedia('(max-width: 768px)').matches;    const activ
 
       const p = getProgress();
 
-      const targetZoom = clamp((p - 0.025) / 0.32, 0, 1);
+      const targetZoom = clamp(p / 0.26, 0, 1);
 zoomProgress += (targetZoom - zoomProgress) * (dt * 0.004);
 
       let targetT = 0;
-      if (p > 0.18) {
-  const seqP = clamp((p - 0.18) / 0.52, 0, 1);
+      if (p > 0.14) {
+  const seqP = clamp((p - 0.14) / 0.54, 0, 1);
         targetT = seqP * (MEMORIES.length + 5.8);
       }
 displayT += (targetT - displayT) * (dt * (isMobile ? 0.0012 : 0.004));      
