@@ -43,28 +43,65 @@ function EventsBackground() {
 // ----------------------------------------------------------------------
 // FACULTY & BOARD DATA
 // ----------------------------------------------------------------------
-const FACULTY = Array.from({ length: 4 }).map((_, i) => ({
+const FACULTY = [
+  { name: 'Prof. Kalaiarassan G', role: 'School of Mechanical Engineering' },
+  { name: 'Prof. Abraham Sampson S', role: 'School of Electronic Engineering' },
+  { name: 'Prof. Brisilla R M', role: 'School of Computer Science & Engineering' },
+  { name: 'Prof. Radhakrishnan Delhibabu', role: 'School of Computer Science & Engineering' },
+].map((person, i) => ({
   id: `fac-${i + 1}`,
-  name: `FACULTY ${i + 1}`,
-  role: 'ADVISOR',
+  name: person.name,
+  role: person.role,
   // Replace photoUrl with real member photo. Robot shown on hover.
   photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=fac${i}&backgroundColor=b6e3f4`,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=fac${i}&backgroundColor=transparent`,
 }));
 
-const BOARD = Array.from({ length: 19 }).map((_, i) => ({
+const BOARD = [
+  { name: 'Shuktika', role: 'Chairperson' },
+  { name: 'Aarushi', role: 'Vice-Chairperson' },
+  { name: 'Krrish', role: 'Secretary' },
+  { name: 'Shambhavi', role: 'Co-Secretary' },
+  { name: 'Tharun', role: 'Events Head' },
+  { name: 'Kashikaa', role: 'PR Head' },
+  { name: 'Arushi', role: 'Tech Lead' },
+  { name: 'Kesava Prasath', role: 'R&D Head' },
+  { name: 'Azad', role: 'Design Head' },
+  { name: 'Mahmood', role: 'AI/ML Lead & Project Lead' },
+  { name: 'Kriday', role: 'Cyber Security Lead' },
+  { name: 'Harshita', role: 'Web Development Lead' },
+  { name: 'Jacinth', role: 'App Development Lead & RoboWars Head' },
+  { name: 'Kiruba', role: 'Managing Director (MD)' },
+  { name: 'Shravan', role: 'Hands-on Robotics (HoR)' },
+  { name: 'Ishan', role: 'Hacks' },
+  { name: 'Suyash', role: 'Editorial Head' },
+  { name: 'Animeha', role: 'Creative Head' },
+].map((person, i) => ({
   id: `board-${i + 1}`,
-  name: `BOARD MEMBER ${i + 1}`,
-  role: i === 0 ? 'PRESIDENT' : i === 1 ? 'VICE PRESIDENT' : 'CORE BOARD',
+  name: person.name,
+  role: person.role,
   // Replace photoUrl with real member photo. Robot shown on hover.
   photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=board${i}&backgroundColor=b6e3f4`,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=board${i}&backgroundColor=transparent`,
 }));
 
-const SENIOR_BOARD = Array.from({ length: 15 }).map((_, i) => ({
+const SENIOR_BOARD = [
+  'Ryan',
+  'Sheyansh',
+  'Anjali Chougule',
+  'Ankith',
+  'Bhavya Singla',
+  'Naman Chauhan',
+  'Sarvesh',
+  'Vasabdatwa',
+  'Aadithya Chourasia',
+  'Advay',
+  'Charvi',
+  'Rithvik',
+].map((name, i) => ({
   id: `senior-board-${i + 1}`,
-  name: `SENIOR BOARD ${i + 1}`,
-  role: 'SENIOR BOARD',
+  name,
+  role: '',
   // Replace photoUrl with real member photo. Robot shown on hover.
   photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=senior-board${i}&backgroundColor=b6e3f4`,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=senior-board${i}&backgroundColor=transparent`,
@@ -445,8 +482,8 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         :global(.team-grid-balanced::-webkit-scrollbar) {
           display: none;
         }
-        :global(.team-grid-faculty) {
-          max-width: min(100%, 520px);
+          :global(.team-grid-faculty) {
+          max-width: min(100%, 600px);
           margin-left: auto;
           margin-right: auto;
         }
@@ -456,7 +493,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         }
         @media (min-width: 768px) {
           :global(.team-grid-faculty) {
-            max-width: min(100%, 640px);
+            max-width: min(100%, 760px);
           }
           :global(.team-grid-balanced) {
             display: grid;
@@ -472,10 +509,19 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
             flex: initial;
             scroll-snap-align: none;
           }
+          :global(.team-grid-balanced > :nth-last-child(3):nth-child(5n + 1)) {
+            grid-column-start: 2;
+          }
+          :global(.team-grid-balanced > :nth-last-child(2):nth-child(5n + 1)) {
+            grid-column-start: 2;
+          }
+          :global(.team-grid-balanced > :nth-last-child(1):nth-child(5n + 1)) {
+            grid-column-start: 3;
+          }
         }
         @media (min-width: 1024px) {
           :global(.team-grid-faculty) {
-            max-width: min(100%, 760px);
+            max-width: min(100%, 900px);
           }
           :global(.team-grid-balanced) {
             grid-template-columns: repeat(10, minmax(0, 1fr));
@@ -488,6 +534,15 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
           }
           :global(.team-grid-balanced > :nth-last-child(4):nth-child(5n + 1)) {
             grid-column: 2 / span 2;
+          }
+          :global(.team-grid-balanced > :nth-last-child(3):nth-child(5n + 1)) {
+            grid-column: 3 / span 2;
+          }
+          :global(.team-grid-balanced > :nth-last-child(2):nth-child(5n + 1)) {
+            grid-column: 4 / span 2;
+          }
+          :global(.team-grid-balanced > :nth-last-child(1):nth-child(5n + 1)) {
+            grid-column: 5 / span 2;
           }
         }
         @media (max-width: 640px) {
