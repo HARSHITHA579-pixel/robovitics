@@ -451,11 +451,12 @@ export default function Sponsors() {
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
             const s = st.current;
-            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+            const key = event.key.toLowerCase();
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || key === 'a' || key === 'd') {
                 if (!secRef.current || window.innerWidth < 768) return;
                 event.preventDefault();
                 setShowSponsorHelp(true);
-                const dir = event.key === 'ArrowLeft' ? -1 : 1;
+                const dir = event.key === 'ArrowLeft' || key === 'a' ? -1 : 1;
                 const step = event.shiftKey ? 56 : 28;
                 const minBaseX = 95;
                 const maxBaseX = Math.max(minBaseX, s.w - 95);
