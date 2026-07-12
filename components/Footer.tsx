@@ -54,6 +54,18 @@ const socialLinks = [
       </svg>
     ),
   },
+  {
+    label: 'Medium',
+    href: '#',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+        <path
+          fill="currentColor"
+          d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42c1.87 0 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"
+        />
+      </svg>
+    ),
+  },
 ];
 
 const footerStars = [
@@ -144,15 +156,14 @@ function StarLayer({
   );
 }
 
-function Bracketed({ children, className = '' }: { children: ReactNode; className?: string }) {
+function CornerBrackets() {
   return (
-    <div className={`relative ${className}`}>
-      <span className="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l border-t border-white/30" />
-      <span className="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r border-t border-white/30" />
-      <span className="pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b border-l border-white/30" />
-      <span className="pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b border-r border-white/30" />
-      {children}
-    </div>
+    <>
+      <span className="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l border-t border-[#3862BD] shadow-[0_0_14px_rgba(56,98,189,0.85)] transition-shadow duration-300 group-hover:shadow-[0_0_20px_rgba(56,98,189,1)]" />
+      <span className="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r border-t border-[#3862BD] shadow-[0_0_14px_rgba(56,98,189,0.85)] transition-shadow duration-300 group-hover:shadow-[0_0_20px_rgba(56,98,189,1)]" />
+      <span className="pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b border-l border-[#3862BD] shadow-[0_0_14px_rgba(56,98,189,0.85)] transition-shadow duration-300 group-hover:shadow-[0_0_20px_rgba(56,98,189,1)]" />
+      <span className="pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b border-r border-[#3862BD] shadow-[0_0_14px_rgba(56,98,189,0.85)] transition-shadow duration-300 group-hover:shadow-[0_0_20px_rgba(56,98,189,1)]" />
+    </>
   );
 }
 
@@ -168,20 +179,19 @@ function ContactChip({
   icon: ReactNode;
 }) {
   return (
-    <Bracketed>
-      <a
-        href={href}
-        className="group flex min-h-10 items-center gap-3 border border-white/8 bg-white/[0.02] px-3 text-left transition-all duration-300 hover:border-[#4FAEF3]/40 hover:bg-white/[0.045] hover:shadow-[0_0_15px_rgba(79,174,243,0.15)] sm:min-h-14 sm:px-4"
-      >
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center border border-white/15 bg-white/[0.04] text-white/50 transition-colors group-hover:border-[#4FAEF3]/50 group-hover:text-[#4FAEF3] sm:h-9 sm:w-9">
-          {icon}
-        </span>
-        <span className="min-w-0">
-          <span className="block font-mono text-[9px] uppercase tracking-[0.2em] text-white/30 sm:text-[10px]">{label}</span>
-          <span className="block truncate text-xs font-semibold text-white/80 sm:text-sm">{value}</span>
-        </span>
-      </a>
-    </Bracketed>
+    <a
+      href={href}
+      className="group relative flex min-h-10 items-center gap-3 border border-white/10 bg-white/[0.02] px-3 text-left transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04] hover:shadow-[0_0_20px_rgba(56,98,189,0.15)] hover:-translate-y-[2px] sm:min-h-14 sm:px-4"
+    >
+      <CornerBrackets />
+      <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center border border-white/15 bg-white/[0.04] text-white/50 transition-all duration-300 group-hover:border-[#3862BD]/50 group-hover:text-[#3862BD] group-hover:drop-shadow-[0_0_8px_rgba(56,98,189,0.8)] sm:h-9 sm:w-9">
+        {icon}
+      </span>
+      <span className="relative z-10 min-w-0">
+        <span className="block font-mono text-[9px] uppercase tracking-[0.2em] text-white/30 sm:text-[10px]">{label}</span>
+        <span className="block truncate text-xs font-semibold text-white/80 transition-colors duration-300 group-hover:text-white sm:text-sm">{value}</span>
+      </span>
+    </a>
   );
 }
 
@@ -191,9 +201,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative z-20 overflow-hidden bg-black pt-10 text-white sm:pt-12">
-      {/* Top border glow */}
-      <div className="pointer-events-none absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-[#4FAEF3]/60 to-transparent" />
+    <footer className="relative z-20 overflow-hidden bg-black pt-8 text-white sm:pt-10">
 
       {/* Grid background */}
       <div
@@ -218,201 +226,112 @@ export default function Footer() {
       <StarLayer stars={footerDepthStars} className="inset-0 z-0" />
       <StarLayer stars={footerStars} className="inset-0 z-0 [mask-image:linear-gradient(to_bottom,transparent,black_14%,black_84%,transparent)]" />
 
-      {/* Main Content Wrapper */}
+      {/* Main Content Wrapper - Awwwards Style */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-8 md:px-12 lg:px-16">
+        <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
 
-        {/* System label */}
-        <div className="mb-5 flex items-center gap-3 sm:mb-6">
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/25">
-            SYSTEM.CONNECT //
-          </span>
-          <span className="h-px flex-1 bg-white/8" />
-        </div>
-
-        {/* ── MOBILE LAYOUT ── */}
-        <div className="lg:hidden">
-
-          {/* Nav links — horizontal, compact */}
-          <div className="mb-5 flex gap-8 font-mono text-[10px] uppercase tracking-[0.15em] text-white/55">
-            <div className="flex flex-col gap-2.5">
-              <a href="/about" className="transition-colors hover:text-[#4FAEF3]">About Us</a>
-              <a href="/projects" className="transition-colors hover:text-[#4FAEF3]">Projects</a>
+          {/* Left Column */}
+          <div className="flex flex-col justify-between pt-2 lg:pt-8">
+            <div>
+              <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl whitespace-nowrap flex gap-2">
+                <span className="text-white/90">Innovate.</span>
+                <span className="text-white/80">Build.</span>
+                <span className="text-[#3862BD]">Inspire</span>
+              </h2>
+              <p className="mt-6 max-w-sm text-sm leading-relaxed text-white/50 sm:text-base">
+                The official Robotics Club of VIT, Vellore.
+              </p>
+              <div className="mt-6 h-px w-full bg-gradient-to-r from-white/30 to-transparent" />
             </div>
-            <div className="flex flex-col gap-2.5">
-              <a href="/events" className="transition-colors hover:text-[#4FAEF3]">Events</a>
-              <a href="/join" className="transition-colors hover:text-[#4FAEF3]">Contact Us</a>
-            </div>
-          </div>
 
-          {/* Contact chips — stacked, full width */}
-          <div className="mb-5 flex flex-col gap-2">
-            <ContactChip
-              label="Email"
-              value={contactEmail}
-              href={`mailto:${contactEmail}`}
-              icon={
-                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
-                  <path d="M4 6.5h16v11H4v-11Z" fill="none" stroke="currentColor" strokeWidth="2" />
-                  <path d="m5 7.5 7 5 7-5" fill="none" stroke="currentColor" strokeWidth="2" />
-                </svg>
-              }
-            />
-            <ContactChip
-              label="Phone"
-              value={contactPhone}
-              href={`tel:${contactPhone.replaceAll(' ', '')}`}
-              icon={
-                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
-                  <path
-                    d="M7.2 4.8 9.3 9c.2.5.1 1-.3 1.3l-1.1.9a10.5 10.5 0 0 0 4.9 4.9l.9-1.1c.3-.4.9-.5 1.3-.3l4.2 2.1c.5.2.7.7.6 1.2l-.5 2.1c-.1.5-.6.9-1.1.9C9.8 21 3 14.2 3 5.8c0-.5.4-1 .9-1.1L6 4.2c.5-.1 1 .1 1.2.6Z"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  />
-                </svg>
-              }
-            />
-          </div>
-
-          {/* Divider */}
-          <div className="mb-5 h-px w-full bg-white/8" />
-
-          {/* Social + back to top — same row */}
-          <div className="mb-5 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/35">Connect</p>
-              <div className="h-px w-6 bg-[#4FAEF3]/45" />
-              {socialLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={link.label}
-                  title={link.label}
-                  className="flex h-8 w-8 items-center justify-center border border-white/10 bg-white/[0.02] text-white/50 transition-all duration-300 hover:border-[#4FAEF3]/60 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3]"
-                >
-                  {link.icon}
-                </a>
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={scrollToTop}
-              className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white/50 transition-colors hover:text-white"
-            >
-              <span>Top</span>
-              <svg viewBox="0 0 24 24" aria-hidden="true" className="h-3.5 w-3.5">
-                <path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Copyright */}
-          <div className="flex flex-col gap-2 border-b border-white/8 pb-5 font-mono text-[9px] uppercase tracking-[0.14em] text-white/35">
-            <div className="flex items-center gap-3">
-              <span className="text-white/20">05. EOF</span>
-              <span className="h-px w-5 bg-white/15" />
-              <p>&copy; {new Date().getFullYear()} All rights reserved.</p>
-            </div>
-            <p>VIT Vellore Campus, Tamil Nadu</p>
-          </div>
-        </div>
-
-        {/* ── DESKTOP LAYOUT (lg+) ── */}
-        <div className="hidden lg:block">
-
-          {/* Top row */}
-          <div className="grid gap-8 border-b border-white/8 pb-8 lg:grid-cols-[1fr_auto] lg:items-end">
-            <section>
-              <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/25">Navigation</p>
-              <div className="flex gap-10 font-mono text-[11px] uppercase tracking-[0.15em] text-white/60">
-                <div className="flex flex-col gap-3">
-                  <a href="/about" className="transition-colors hover:text-[#4FAEF3]">About Us</a>
-                  <a href="/projects" className="transition-colors hover:text-[#4FAEF3]">Projects</a>
-                </div>
-                <div className="flex flex-col gap-3">
-                  <a href="/events" className="transition-colors hover:text-[#4FAEF3]">Events</a>
-                  <a href="/join" className="transition-colors hover:text-[#4FAEF3]">Contact Us</a>
+            <div className="flex flex-col gap-8 mt-6 lg:mt-8">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.25em] text-white/40">Connect</span>
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                  {socialLinks.map((link, idx) => (
+                    <motion.a
+                      key={link.label}
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={link.label}
+                      title={link.label}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.4, delay: idx * 0.05, ease: 'easeOut' }}
+                      viewport={{ once: true }}
+                      className="group flex h-11 w-11 items-center justify-center border border-white/10 bg-white/[0.02] text-white/50 transition-all duration-300 hover:scale-110 hover:border-[#3862BD]/60 hover:bg-[#3862BD]/10 hover:text-[#3862BD] hover:shadow-[0_0_15px_rgba(56,98,189,0.3)]"
+                    >
+                      {link.icon}
+                    </motion.a>
+                  ))}
                 </div>
               </div>
-            </section>
-            <section className="grid gap-3 sm:grid-cols-2 lg:min-w-[480px]">
-              <ContactChip
-                label="Email"
-                value={contactEmail}
-                href={`mailto:${contactEmail}`}
-                icon={
-                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
-                    <path d="M4 6.5h16v11H4v-11Z" fill="none" stroke="currentColor" strokeWidth="2" />
-                    <path d="m5 7.5 7 5 7-5" fill="none" stroke="currentColor" strokeWidth="2" />
-                  </svg>
-                }
-              />
-              <ContactChip
-                label="Phone"
-                value={contactPhone}
-                href={`tel:${contactPhone.replaceAll(' ', '')}`}
-                icon={
-                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
-                    <path
-                      d="M7.2 4.8 9.3 9c.2.5.1 1-.3 1.3l-1.1.9a10.5 10.5 0 0 0 4.9 4.9l.9-1.1c.3-.4.9-.5 1.3-.3l4.2 2.1c.5.2.7.7.6 1.2l-.5 2.1c-.1.5-.6.9-1.1.9C9.8 21 3 14.2 3 5.8c0-.5.4-1 .9-1.1L6 4.2c.5-.1 1 .1 1.2.6Z"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                  </svg>
-                }
-              />
-            </section>
-          </div>
-
-          {/* Social + back to top */}
-          <div className="grid gap-5 pb-8 pt-6 md:grid-cols-[1fr_auto] md:items-center">
-            <div className="flex flex-wrap items-center gap-3">
-              <p className="mr-1 font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">Connect</p>
-              <div className="h-px w-10 bg-[#4FAEF3]/45" />
-              {socialLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={link.label}
-                  title={link.label}
-                  className="flex h-10 w-10 items-center justify-center border border-white/10 bg-white/[0.02] text-white/50 transition-all duration-300 hover:border-[#4FAEF3]/60 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_12px_rgba(79,174,243,0.3)]"
-                >
-                  {link.icon}
-                </a>
-              ))}
-            </div>
-            <div className="flex items-center justify-end">
-              <Bracketed>
-                <button
-                  type="button"
-                  onClick={scrollToTop}
-                  className="flex min-h-10 items-center gap-3 border border-white/20 bg-transparent px-4 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70 transition-all duration-300 hover:border-[#4FAEF3]/50 hover:bg-white/[0.04] hover:text-white hover:shadow-[0_0_12px_rgba(79,174,243,0.2)]"
-                >
-                  <span>Back to top</span>
-                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
-                    <path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
-                  </svg>
-                </button>
-              </Bracketed>
+              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
+                &copy; 2026 ALL RIGHTS RESERVED.
+              </span>
             </div>
           </div>
 
-          {/* Copyright */}
-          <div className="flex flex-col gap-2 border-b border-white/8 pb-6 font-mono text-[10px] uppercase tracking-[0.16em] text-white/40 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <span className="text-white/20">05. EOF</span>
-              <span className="h-px w-6 bg-white/15" />
-              <p>&copy; {new Date().getFullYear()} All rights reserved.</p>
+          {/* Right Column */}
+          <div className="flex flex-col justify-between pt-2 lg:pt-10">
+
+            {/* Row 1 - Contact Cards */}
+            <div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <ContactChip
+                  label="EMAIL"
+                  value={contactEmail}
+                  href={`mailto:${contactEmail}`}
+                  icon={
+                    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+                      <path d="M4 6.5h16v11H4v-11Z" fill="none" stroke="currentColor" strokeWidth="2" />
+                      <path d="m5 7.5 7 5 7-5" fill="none" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                  }
+                />
+                <ContactChip
+                  label="PHONE"
+                  value={contactPhone}
+                  href={`tel:${contactPhone.replaceAll(' ', '')}`}
+                  icon={
+                    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+                      <path
+                        d="M7.2 4.8 9.3 9c.2.5.1 1-.3 1.3l-1.1.9a10.5 10.5 0 0 0 4.9 4.9l.9-1.1c.3-.4.9-.5 1.3-.3l4.2 2.1c.5.2.7.7.6 1.2l-.5 2.1c-.1.5-.6.9-1.1.9C9.8 21 3 14.2 3 5.8c0-.5.4-1 .9-1.1L6 4.2c.5-.1 1 .1 1.2.6Z"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                    </svg>
+                  }
+                />
+              </div>
+              <div className="mt-6 h-px w-full bg-gradient-to-r from-white/30 to-transparent" />
             </div>
-            <p>VIT Vellore Campus, Tamil Nadu</p>
+
+            {/* Row 2 - Footer Utility */}
+            <div className="flex flex-col gap-8 mt-6 lg:mt-8 sm:items-end">
+              <button
+                type="button"
+                onClick={scrollToTop}
+                className="group relative flex h-11 items-center gap-3 border border-white/10 bg-transparent px-5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04] hover:text-white hover:shadow-[0_0_20px_rgba(56,98,189,0.15)] hover:-translate-y-[2px]"
+              >
+                <CornerBrackets />
+                <span className="relative z-10">BACK TO TOP</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="relative z-10 h-4 w-4 transition-all duration-300 group-hover:-translate-y-[2px] group-hover:text-[#3862BD] group-hover:drop-shadow-[0_0_8px_rgba(56,98,189,0.8)]">
+                  <path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+                </svg>
+              </button>
+              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.25em] text-white/40">
+                VIT VELLORE CAMPUS, TAMIL NADU
+              </span>
+            </div>
+
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="mb-0 mt-8 h-px w-full bg-gradient-to-r from-white/30 to-transparent lg:mt-10" />
       </div>
 
       {/* Logo overlay + Full Bleed Image Foundation */}
@@ -422,30 +341,31 @@ export default function Footer() {
           className="inset-x-0 top-0 z-10 h-[42%] [mask-image:radial-gradient(ellipse_at_center,transparent_0%,transparent_22%,black_42%),linear-gradient(to_bottom,black_0%,black_76%,transparent_100%)]"
         />
         <motion.div
-          className="absolute inset-x-0 top-0 z-20 flex flex-col items-center px-4 pt-10 sm:pt-14 md:pt-16 lg:pt-20"
-          initial={{ opacity: 0, y: 24 }}
+          className="absolute inset-x-0 top-0 z-20 flex flex-col items-center px-4 pt-8 sm:pt-12 md:pt-14 lg:pt-16"
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: 'easeOut' }}
-          viewport={{ once: true }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
+          viewport={{ once: true, amount: 0.5 }}
         >
           <Image
             src="/robovitics-logo.png"
             alt="RoboVITics Logo"
             width={600}
             height={200}
-            className="h-auto w-full max-w-[240px] object-contain sm:max-w-[26rem] md:max-w-[31rem] lg:max-w-[46rem]"
+            className="h-auto w-full max-w-[280px] object-contain opacity-85 mix-blend-screen sm:max-w-[34rem] md:max-w-[42rem] lg:max-w-[56rem]"
           />
           <div className="mt-3 flex flex-col items-center gap-2 sm:mt-2 lg:mt-3">
             <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/50 sm:text-[9px] sm:tracking-[0.26em] lg:text-[10px] lg:tracking-[0.3em]">
-              Official Robotics Club of VIT Vellore
+              OFFICIAL ROBOTICS CLUB OF VIT VELLORE
             </p>
             <p className="hidden max-w-[260px] text-center font-mono text-[9px] leading-relaxed text-white/35 sm:block sm:max-w-[46rem] sm:text-[9px] lg:max-w-none lg:text-[10px]">
               Student-led robotics, workshops, competitions, and engineering projects since 2010.
             </p>
+
           </div>
         </motion.div>
 
-        <div className="pointer-events-none relative z-0 flex h-[clamp(300px,43vw,650px)] w-full justify-center overflow-hidden leading-none sm:h-[clamp(360px,43vw,680px)] lg:h-[clamp(500px,42vw,760px)]">
+        <div className="pointer-events-none relative z-0 flex h-[clamp(270px,39vw,585px)] w-full justify-center overflow-hidden leading-none sm:h-[clamp(320px,39vw,610px)] lg:h-[clamp(450px,38vw,680px)]">
           <Image
             src="/footer.png"
             alt="RoboVITics Technical Landscape Foundation"

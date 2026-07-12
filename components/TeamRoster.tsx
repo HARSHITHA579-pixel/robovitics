@@ -44,16 +44,16 @@ function EventsBackground() {
 // FACULTY & BOARD DATA
 // ----------------------------------------------------------------------
 const FACULTY = [
-  { name: 'Prof. Kalaiarassan G', role: 'School of Mechanical Engineering' },
-  { name: 'Prof. Abraham Sampson S', role: 'School of Electronic Engineering' },
-  { name: 'Prof. Brisilla R M', role: 'School of Computer Science & Engineering' },
-  { name: 'Prof. Radhakrishnan Delhibabu', role: 'School of Computer Science & Engineering' },
+  { name: 'Prof. Kalaiarassan G', role: 'School of Mechanical Engineering', photoUrl: '/kalai%201.png' },
+  { name: 'Prof. Abraham Sampson S', role: 'School of Electronic Engineering', photoUrl: '/sampson%201.png' },
+  { name: 'Prof. Brisilla R M', role: 'School of Computer Science & Engineering', photoUrl: '/brisilla%201.png' },
+  { name: 'Prof. Radhakrishnan Delhibabu', role: 'School of Computer Science & Engineering', photoUrl: '/delhibabu%201.png' },
 ].map((person, i) => ({
   id: `fac-${i + 1}`,
   name: person.name,
   role: person.role,
   // Replace photoUrl with real member photo. Robot shown on hover.
-  photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=fac${i}&backgroundColor=b6e3f4`,
+  photoUrl: person.photoUrl,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=fac${i}&backgroundColor=transparent`,
 }));
 
@@ -69,7 +69,7 @@ const BOARD = [
   { name: 'Azad', role: 'Design Head' },
   { name: 'Mahmood', role: 'AI/ML Lead & Project Lead' },
   { name: 'Kriday', role: 'Cyber Security Lead' },
-  { name: 'Harshita', role: 'Web Development Lead' },
+  { name: 'Harshitha', role: 'Web Development Lead' },
   { name: 'Jacinth', role: 'App Development Lead & RoboWars Head' },
   { name: 'Kiruba', role: 'Managing Director (MD)' },
   { name: 'Shravan', role: 'Hands-on Robotics (HoR)' },
@@ -81,7 +81,11 @@ const BOARD = [
   name: person.name,
   role: person.role,
   // Replace photoUrl with real member photo. Robot shown on hover.
-  photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=board${i}&backgroundColor=b6e3f4`,
+  photoUrl: person.name === 'Shuktika' ? '/shukthika.png' :
+            person.name === 'Arushi' ? '/arushi.png' :
+            person.name === 'Azad' ? '/azad.png' :
+            person.name === 'Suyash' ? '/suyash.png' :
+            `https://api.dicebear.com/7.x/personas/svg?seed=board${i}&backgroundColor=b6e3f4`,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=board${i}&backgroundColor=transparent`,
 }));
 
@@ -103,7 +107,8 @@ const SENIOR_BOARD = [
   name,
   role: '',
   // Replace photoUrl with real member photo. Robot shown on hover.
-  photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=senior-board${i}&backgroundColor=b6e3f4`,
+  photoUrl: name === 'Naman Chauhan' ? '/naman.png' :
+            `https://api.dicebear.com/7.x/personas/svg?seed=senior-board${i}&backgroundColor=b6e3f4`,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=senior-board${i}&backgroundColor=transparent`,
 }));
 
@@ -167,7 +172,8 @@ function ProfileCard({
       <div
         className={compact ? 'team-card-inner team-card-compact relative h-full overflow-hidden rounded-[4px] flex flex-col' : 'team-card-inner relative h-full overflow-hidden rounded-[4px] flex flex-col'}
         style={{
-         padding: compact ? 'clamp(9px, 0.8vw, 11px)' : facultyCompact ? 'clamp(9px, 0.8vw, 11px)' : 'clamp(12px, 1.2vw, 16px)',
+          containerType: 'inline-size',
+          padding: compact ? 'clamp(9px, 0.8vw, 11px)' : facultyCompact ? 'clamp(9px, 0.8vw, 11px)' : 'clamp(12px, 1.2vw, 16px)',
 
 
           background: '#0a0a0a',
@@ -280,11 +286,11 @@ aspectRatio: compact || facultyCompact ? '1/1' : '4/5',
         {/* Name & role */}
         <div className="relative z-30 mt-auto flex flex-col items-center w-full">
           <h3
-            className="team-name text-center font-sans font-black uppercase"
+            className="team-name text-center font-sans font-black uppercase whitespace-nowrap overflow-hidden text-ellipsis w-full"
             style={{
               margin: '0 0 4px',
-              fontSize: compact ? 'clamp(10px, 0.78vw, 12px)' : facultyCompact ? 'clamp(10px, 0.78vw, 12px)' : 'clamp(12px, 1.1vw, 15px)',
-              letterSpacing: compact ? '0.045em' : facultyCompact ? '0.045em' : '0.06em',
+              fontSize: compact ? 'clamp(9px, 8cqw, 12px)' : facultyCompact ? 'clamp(7.5px, 6.5cqw, 11px)' : 'clamp(10px, 9cqw, 15px)',
+              letterSpacing: compact ? '0.04em' : facultyCompact ? '0.01em' : '0.05em',
               lineHeight: 1.15,
               color: isActive ? '#4FAEF3' : '#ffffff',
               textShadow: isActive ? '0 0 10px rgba(79,174,243,0.6)' : 'none',
@@ -412,7 +418,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
       <div className="absolute top-6 left-6 md:top-10 md:left-10 z-20 pointer-events-none">
         <span className="rv-section-log">
           <span className="rv-section-log-number">09.</span>
-          SYSTEM.LOGS // COMMAND_STRUCTURE
+          SYSTEM.LOGS // CLUB_COMMITTEE
         </span>
       </div>
 
@@ -421,7 +427,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         <div id="team-faculty" className="w-full max-w-4xl scroll-mt-28 flex flex-col items-center mb-14 md:mb-24">
 
           <SectionTitle
-            eyebrow="▶ ACCESS_LEVEL // TIER_01"
+            eyebrow="▶ ACCESS_LEVEL // FACULTY_ADVISORS"
             title="FACULTY"
             accent="ADVISORS"
           />
@@ -437,7 +443,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         {/* ── BOARD SECTION ── */}
         <div id="team-board" className="w-full max-w-7xl scroll-mt-28 flex flex-col items-center mb-14 md:mb-24">
           <SectionTitle
-            eyebrow="▶ ACCESS_LEVEL // TIER_02"
+            eyebrow="▶ ACCESS_LEVEL // BOARD"
             title="BOARD"
           />
 
@@ -452,9 +458,9 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         {/* ── SENIOR BOARD SECTION ── */}
         <div id="team-senior-board" className="w-full max-w-7xl scroll-mt-28 flex flex-col items-center">
           <SectionTitle
-            eyebrow="▶ ACCESS_LEVEL // TIER_03"
+            eyebrow="▶ ACCESS_LEVEL // SENIOR_CORE"
             title="SENIOR"
-            accent="BOARD"
+            accent="CORE"
           />
 
           <RevealGrid
@@ -554,16 +560,21 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
           :global(.team-card-inner) {
             padding: 10px !important;
             min-height: 214px;
+            container-type: inline-size;
           }
           :global(.team-image) {
             aspect-ratio: 1 / 1 !important;
             margin-bottom: 10px !important;
           }
           :global(.team-name) {
-            font-size: 10.5px !important;
-            letter-spacing: 0.045em !important;
+            font-size: clamp(7.5px, 7.5cqw, 10.5px) !important;
+            letter-spacing: 0.02em !important;
             line-height: 1.2 !important;
             margin-bottom: 4px !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            width: 100% !important;
           }
           :global(.team-role) {
             font-size: 7px !important;

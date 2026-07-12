@@ -121,7 +121,8 @@ function ProjectCard({
                         alt={project.title}
                         fill
                         sizes="(max-width: 640px) calc(100vw - 48px), 440px"
-                        className="object-cover"
+                        className="object-contain"
+                        unoptimized={true}
                         priority={index === 0}
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />

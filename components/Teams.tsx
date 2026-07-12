@@ -118,7 +118,7 @@ function TeamSlide({
             className="absolute inset-0 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] flex items-center justify-center"
             style={{
                 opacity: isActive ? 1 : 0,
-                transform: isActive ? 'translateX(0) scale(1)' : 'translateX(3%) scale(0.98)',
+                transform: isActive ? 'translateX(0) scale(1) translateZ(0)' : 'translateX(3%) scale(0.98) translateZ(0)',
                 pointerEvents: isActive ? 'auto' : 'none',
                 zIndex: isActive ? 2 : 1,
             }}
@@ -196,31 +196,35 @@ function TeamSlide({
                         style={{ transformStyle: 'preserve-3d' }}
                     >
                         {/* Front face (Logo) */}
-                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/5 bg-black" style={{ backfaceVisibility: 'hidden' }}>
-                            <Image
-                                src={team.teamLogoPath || team.teamPhotoPath}
-                                alt={`${team.teamName} logo`}
-                                fill
-                                sizes="(max-width: 768px) 100vw, 50vw"
-                                className="object-cover opacity-80 mix-blend-screen"
-                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                            />
-                            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_51%)] bg-[length:100%_4px] opacity-20" />
-                            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 40px rgba(0,0,0,0.8), inset 0 0 0 1px ${accent.replace('0.9', '0.2')}` }} />
+                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/5 bg-black" style={{ backfaceVisibility: 'hidden', transform: 'translateZ(1px)' }}>
+                            <div className="absolute inset-0 w-full h-full" style={{ transform: team.teamLogoTransform }}>
+                                <Image
+                                    src={team.teamLogoPath || team.teamPhotoPath}
+                                    alt={`${team.teamName} logo`}
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    className="object-contain"
+                                    unoptimized={true}
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                />
+                            </div>
+                            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 0 1px ${accent.replace('0.9', '0.2')}` }} />
                         </div>
 
                         {/* Back face (Photo) */}
-                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/5 bg-black" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-                            <Image
-                                src={team.teamPhotoPath}
-                                alt={`${team.teamName} photo`}
-                                fill
-                                sizes="(max-width: 768px) 100vw, 50vw"
-                                className="object-cover opacity-70 sepia-[0.2] hue-rotate-[-10deg]"
-                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                            />
-                            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_51%)] bg-[length:100%_4px] opacity-20" />
-                            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 40px rgba(0,0,0,0.9), inset 0 0 0 1px ${accent.replace('0.9', '0.2')}` }} />
+                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/5 bg-black" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg) translateZ(1px)' }}>
+                            <div className="absolute inset-0 w-full h-full" style={{ transform: team.teamPhotoTransform }}>
+                                <Image
+                                    src={team.teamPhotoPath}
+                                    alt={`${team.teamName} photo`}
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    className="object-contain"
+                                    unoptimized={true}
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                />
+                            </div>
+                            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 0 1px ${accent.replace('0.9', '0.2')}` }} />
                         </div>
                     </div>
 

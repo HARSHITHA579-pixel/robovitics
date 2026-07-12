@@ -47,7 +47,7 @@ export const projectsData: Project[] = [
         tagline: 'Covert channel identification',
         description:
             'A network analysis tool that exposes covert data-exfiltration tunnels in live DNS traffic. Uses a trained random-forest classifier to achieve >96% accuracy.',
-        imagePath: '/project 3.png',
+        imagePath: '/project3.png',
         readMoreLink: '#',
         domain: 'CYBERSECURITY',
         status: 'COMPLETED',
@@ -98,6 +98,10 @@ export interface Team {
     teamPhotoPath: string;
     /** Absolute path from /public for the team logo */
     teamLogoPath?: string;
+    /** Custom CSS transform for the team logo */
+    teamLogoTransform?: string;
+    /** Custom CSS transform for the team photo (e.g., to fix tilted images) */
+    teamPhotoTransform?: string;
     /** Member count badge */
     memberCount: number;
     /** Primary accent colour (CSS rgba/hex string) */
@@ -110,8 +114,9 @@ export const teamsData: Team[] = [
         teamName: 'ORCUS',
         tagline: 'Combat Robotics Team',
         description: 'Team Orcus is the combat robotics wing of RoboVITics, specializing in designing and building powerful combat robots entirely from scratch. From concept to fabrication and competitive testing, the team combines precision engineering with strategic design to create battle-ready machines that excel in national competitions.',
-        teamPhotoPath: '/orcus2.png',
-        teamLogoPath: '/orcus1.png',
+        teamPhotoPath: '/Orcus 2.png',
+        teamLogoPath: '/Orcus 1.png',
+        teamLogoTransform: 'rotate(-5deg) scale(1.15)',
         memberCount: 20,
         accentColor: 'rgba(79,174,243,0.9)',
     },
@@ -120,8 +125,8 @@ export const teamsData: Team[] = [
         teamName: 'ARTEMIS',
         tagline: 'Autonomous Robotics Team',
         description: 'Team Artemis develops autonomous legged robots capable of navigating complex environments with intelligence and precision. Bringing together Mechanical, Electrical, and Computer Science expertise, the team builds future-ready robotic systems powered by ROS, AI, perception, and advanced control technologies.',
-        teamPhotoPath: '/artemis2.png',
-        teamLogoPath: '/artemis1.png',
+        teamPhotoPath: '/Artemis 2.png',
+        teamLogoPath: '/Artemis 1.png',
         memberCount: 25,
         accentColor: 'rgba(79,174,243,0.9)',
     },
@@ -130,8 +135,8 @@ export const teamsData: Team[] = [
         teamName: 'AVATAR',
         tagline: 'Humanoid Robotics Team',
         description: 'Team Avatar is VIT\'s first official humanoid robotics team, dedicated to developing intelligent humanoid robots capable of interacting with real-world environments. By integrating advanced mechanics, sensing, and artificial intelligence, the team is shaping the future of humanoid robotics through research and innovation.',
-        teamPhotoPath: '/avatar2.png',
-        teamLogoPath: '/avatar1.png',
+        teamPhotoPath: '/Avatar 2.png',
+        teamLogoPath: '/Avatar 1.png',
         memberCount: 15,
         accentColor: 'rgba(79,174,243,0.9)',
     },
