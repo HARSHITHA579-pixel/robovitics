@@ -34,17 +34,17 @@ function solveFABRIK(joints: Point[], target: Point, lens: number[]): Point[] {
 
 // ─── DATA ───────────────────────────────────────────────────────────────────
 const SPONSORS: Sponsor[] = [
-    { id: 'SP_001', name: 'DigitalOcean', logoUrl: '/sponsor logoos/DigitalOcean_Logo.png' },
-    { id: 'SP_002', name: 'Sylo Group' },
-    { id: 'SP_003', name: 'Sag Taurus' },
-    { id: 'SP_004', name: 'LT (Larsen & Toubro)', logoUrl: '/sponsor logoos/L&T.png' },
-    { id: 'SP_005', name: 'Siemens', logoUrl: '/sponsor logoos/siemens_logo.png' },
-    { id: 'SP_006', name: 'Analog Devices', logoUrl: '/sponsor logoos/ADI-Logo.png' },
-    { id: 'SP_007', name: 'Schneider Electric' },
-    { id: 'SP_008', name: 'Autodesk', logoUrl: '/sponsor logoos/Autodesk_Logo.png' },
-    { id: 'SP_009', name: 'Persistence' },
-    { id: 'SP_010', name: 'Texas Instruments' },
-    { id: 'SP_011', name: 'YOUR_SPONSOR_NAME' },
+    { id: 'SP_001', name: 'Syolo Consulting', logoUrl: '/sponsor logoos/one.png' },
+    { id: 'SP_002', name: 'Texas Instruments', logoUrl: '/sponsor logoos/two.png' },
+    { id: 'SP_003', name: 'Persistence', logoUrl: '/sponsor logoos/three.png' },
+    { id: 'SP_004', name: 'Autodesk', logoUrl: '/sponsor logoos/four.png' },
+    { id: 'SP_005', name: 'Analog Devices GMSL Ecosystem', logoUrl: '/sponsor logoos/five.png' },
+    { id: 'SP_006', name: 'Schneider Electric', logoUrl: '/sponsor logoos/six.png' },
+    { id: 'SP_007', name: 'Siemens', logoUrl: '/sponsor logoos/seven.png' },
+    { id: 'SP_008', name: 'SagTaur Systems', logoUrl: '/sponsor logoos/eight.png' },
+    { id: 'SP_009', name: 'Available sponsor slot' },
+    { id: 'SP_010', name: 'Available sponsor slot' },
+    { id: 'SP_011', name: 'Available sponsor slot' },
 ];
 
 function SponsorMarquee() {
@@ -98,11 +98,13 @@ function SponsorCard({
                     aspectRatio: '230/160',
                     padding: 'clamp(14px, 1.4vw, 18px) clamp(12px, 1.3vw, 16px) clamp(13px, 1.3vw, 17px)',
                     // 1. FROSTED GLASS BASE LAYER
-                    background: 'rgba(12, 15, 20, 0.25)',
-                    backdropFilter: 'blur(10px)',
-                    WebkitBackdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    boxShadow: isHovered ? '0 0 25px rgba(79,174,243,0.18)' : 'none',
+                    background: 'linear-gradient(145deg, rgba(24, 28, 34, 0.82), rgba(5, 7, 10, 0.74))',
+                    backdropFilter: 'blur(14px)',
+                    WebkitBackdropFilter: 'blur(14px)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    boxShadow: isHovered
+                        ? '0 0 28px rgba(79,174,243,0.2), inset 0 1px 0 rgba(255,255,255,0.07)'
+                        : 'inset 0 1px 0 rgba(255,255,255,0.05)',
                 }}>
 
                 {/* 2. THE GRID PATTERN OVERLAY */}
@@ -125,22 +127,20 @@ function SponsorCard({
                     <span style={{ position: 'absolute', top: '-1px', left: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.6)' }} />
                     <span style={{ position: 'absolute', bottom: '-1px', right: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.35)' }} />
                 </div>
-
-                {sponsor.logoUrl && (
-                    <div className="absolute inset-0 bg-white" style={{ borderRadius: '3px', zIndex: 20 }} />
-                )}
-
                 <div className="relative z-30 flex h-full items-center justify-center pointer-events-none p-4">
                     {sponsor.logoUrl && (
-                        <img 
-                            src={sponsor.logoUrl} 
-                            alt={sponsor.name} 
+                        <img
+                            src={sponsor.logoUrl}
+                            alt={`${sponsor.name} logo`}
                             style={{
                                 width: '100%',
                                 height: '100%',
                                 objectFit: 'contain',
-                                filter: isHovered ? 'drop-shadow(0 0 10px rgba(0,0,0,0.15))' : 'drop-shadow(0 0 4px rgba(0,0,0,0.05))',
-                                transition: 'all 0.4s ease'
+                                filter: isHovered
+                                    ? 'drop-shadow(0 0 12px rgba(79,174,243,0.24))'
+                                    : 'drop-shadow(0 2px 5px rgba(0,0,0,0.35))',
+                                transition: 'filter 0.4s ease, transform 0.4s ease',
+                                transform: isHovered ? 'scale(1.03)' : 'scale(1)'
                             }}
                         />
                     )}
@@ -886,10 +886,8 @@ export default function Sponsors() {
                     registerDraggable={registerCard}
                 />
 
-                {/* Desktop Grid — 3 / 5 / 3 symmetric layout */}
+                {/* Desktop Grid — original 3 / 5 / 3 symmetric layout */}
                 <div className="hidden md:flex md:flex-col gap-5">
-
-                    {/* Row 1 — 3 cards, centered */}
                     <div className="grid grid-cols-3 gap-5 mx-auto w-[60%]">
                         {SPONSORS.slice(0, 3).map((sp, i) => (
                             <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
@@ -905,7 +903,6 @@ export default function Sponsors() {
                         ))}
                     </div>
 
-                    {/* Row 2 — 5 cards, full width */}
                     <div className="grid grid-cols-5 gap-5">
                         {SPONSORS.slice(3, 8).map((sp, i) => (
                             <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
@@ -921,7 +918,6 @@ export default function Sponsors() {
                         ))}
                     </div>
 
-                    {/* Row 3 — 3 cards, centered */}
                     <div className="grid grid-cols-3 gap-5 mx-auto w-[60%]">
                         {SPONSORS.slice(8, 11).map((sp, i) => (
                             <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
@@ -936,7 +932,6 @@ export default function Sponsors() {
                             </motion.div>
                         ))}
                     </div>
-
                 </div>
 
                 {/* Mobile Auto-Scroll */}
