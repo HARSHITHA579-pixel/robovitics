@@ -98,13 +98,11 @@ function SponsorCard({
                     aspectRatio: '230/160',
                     padding: 'clamp(14px, 1.4vw, 18px) clamp(12px, 1.3vw, 16px) clamp(13px, 1.3vw, 17px)',
                     // 1. FROSTED GLASS BASE LAYER
-                    background: 'linear-gradient(145deg, rgba(24, 28, 34, 0.82), rgba(5, 7, 10, 0.74))',
-                    backdropFilter: 'blur(14px)',
-                    WebkitBackdropFilter: 'blur(14px)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    boxShadow: isHovered
-                        ? '0 0 28px rgba(79,174,243,0.2), inset 0 1px 0 rgba(255,255,255,0.07)'
-                        : 'inset 0 1px 0 rgba(255,255,255,0.05)',
+                    background: 'rgba(12, 15, 20, 0.25)',
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    boxShadow: isHovered ? '0 0 25px rgba(79,174,243,0.18)' : 'none',
                 }}>
 
                 {/* 2. THE GRID PATTERN OVERLAY */}
@@ -127,7 +125,8 @@ function SponsorCard({
                     <span style={{ position: 'absolute', top: '-1px', left: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.6)' }} />
                     <span style={{ position: 'absolute', bottom: '-1px', right: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.35)' }} />
                 </div>
-                <div className="relative z-30 flex h-full items-center justify-center pointer-events-none p-4">
+
+                <div className="relative z-30 flex h-full items-center justify-center pointer-events-none">
                     {sponsor.logoUrl && (
                         <img
                             src={sponsor.logoUrl}
