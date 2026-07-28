@@ -113,7 +113,7 @@ function AnimatedDrones() {
 
   // Drone 2 Path (Right anchor, sweeping left then right)
   const xPath2 = ["0vw", "-15vw", "-30vw", "-15vw", "0vw", "15vw", "30vw", "15vw", "0vw"];
-  const yPath2 = ["0vh", "4vh", "0vh", "-4vh", "0vh", "-4vh", "0vh", "4vh", "0vh"];
+  const yPath2 = ["0vh", "-4vh", "0vh", "-4vh", "0vh", "-4vh", "0vh", "4vh", "0vh"];
   const rotatePath2 = [0, -3, 0, 3, 0, 3, 0, -3, 0];
 
   const opacityPath = [0.85, 1, 0.85, 1, 0.85, 1, 0.85, 1, 0.85];
@@ -164,7 +164,6 @@ function AnimatedDrones() {
           duration: 20,
           repeat: Infinity,
           ease: 'easeInOut',
-          delay: 4,
           times: [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1]
         }}
         viewport={{ once: false, amount: 0 }}
@@ -367,7 +366,7 @@ export default function Footer() {
               <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl whitespace-nowrap flex gap-2 sm:gap-3">
                 <span className="text-white/90">Innovate.</span>
                 <span className="text-white/80">Build.</span>
-                <span className="text-[#3862BD]">Inspire</span>
+                <span className="text-[#2985E2]">Inspire</span>
               </h2>
               <p className="mt-6 max-w-sm text-sm leading-relaxed text-white/50 sm:text-base">
                 The official Robotics Club of VIT, Vellore.

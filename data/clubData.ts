@@ -68,7 +68,7 @@ export const projectsData: Project[] = [
         title: 'Robotic Gripper',
         tagline: 'Adaptive under-actuated grasping',
         description:
-            'A tendon-driven, under-actuated robotic gripper that passively conforms to object geometry. Uses force-feedback and PID control for versatile pick-and-place.',
+            'A tendon driven, underactuated robotic gripper that passively conforms to object geometry. Uses force feedback and PID control for versatile pick and place operations.',
         imagePath: '/project5.png',
         readMoreLink: '#',
         domain: 'MECHANICAL',
