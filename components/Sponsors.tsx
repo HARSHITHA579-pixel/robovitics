@@ -42,8 +42,8 @@ const SPONSORS: Sponsor[] = [
     { id: 'SP_006', name: 'Schneider Electric', logoUrl: '/sponsor logoos/six.png' },
     { id: 'SP_007', name: 'Siemens', logoUrl: '/sponsor logoos/seven.png' },
     { id: 'SP_008', name: 'SagTaur Systems', logoUrl: '/sponsor logoos/eight.png' },
-    { id: 'SP_009', name: 'Available sponsor slot' },
-    { id: 'SP_010', name: 'Available sponsor slot' },
+    { id: 'SP_009', name: 'L&T', logoUrl: '/sponsor logoos/LNT.png' },
+    { id: 'SP_010', name: 'DigitalOcean', logoUrl: '/sponsor logoos/Digital Ocean_logo.png' },
     { id: 'SP_011', name: 'Available sponsor slot' },
 ];
 
@@ -798,10 +798,10 @@ export default function Sponsors() {
                 const by = s.base.y + 60; // Pushed further down
                 const bx = s.base.x;
                 bmi.setAttribute('transform', `translate(${bx.toFixed(1)}, ${by.toFixed(1)})`);
-                
+
                 const osc = Math.sin(Date.now() / 400) * 4;
                 const spread = 50 + osc;
-                
+
                 const bLine = e['bmiLine'] as SVGLineElement;
                 if (bLine) {
                     bLine.setAttribute('x1', (-spread + 5).toFixed(1));
