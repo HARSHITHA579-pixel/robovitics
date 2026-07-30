@@ -5,7 +5,11 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import LogoAssembly, { getAssemblyDurationMs } from './LogoAssembly';
 
-export default function Hero() {
+interface HeroProps {
+  startAnimation?: boolean;
+}
+
+export default function Hero({ startAnimation = true }: HeroProps) {
   const fullSubtitleText = "The Official Robotics Club of VIT Vellore";
   const [typedSubtitle, setTypedSubtitle] = useState("");
   // Subtitle typing no longer starts on a fixed timeout — it waits for the
@@ -17,11 +21,12 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
+    if (!startAnimation) return;
     // Fallback in case onAnimationComplete doesn't fire (e.g. reduced-motion
     // browsers) — flips the flag once the known assembly duration elapses.
     const fallback = setTimeout(() => setLogoAssembled(true), getAssemblyDurationMs() + 200);
     return () => clearTimeout(fallback);
-  }, []);
+  }, [startAnimation]);
 
   useEffect(() => {
     if (!logoAssembled) return;
@@ -49,7 +54,7 @@ export default function Hero() {
 
         {/* Logo assembly animation replaces the static "ROBOVITICS" letter-stagger title */}
         <div className="mb-4 w-full max-w-[min(92vw,520px)] sm:mb-3 sm:max-w-[620px] md:max-w-[720px] lg:mb-4 lg:max-w-[820px]">
-          <LogoAssembly onComplete={handleLogoComplete} />
+          <LogoAssembly start={startAnimation} onComplete={handleLogoComplete} />
         </div>
 
         <motion.div
@@ -73,11 +78,11 @@ export default function Hero() {
       {/* RIGHT SIDE: Massive Bot Image */}
       <div className="relative z-20 mt-3 flex h-[clamp(330px,45svh,440px)] w-full justify-center pointer-events-none sm:mt-0 sm:h-[48svh] md:h-[56svh] lg:mt-0 lg:h-[80vh] lg:max-h-[950px] lg:w-[40%] lg:justify-end">
         <motion.div
-          initial={{ opacity: 0, x: 100 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, x: 80 }}
+          animate={{ opacity: logoAssembled ? 1 : 0, x: logoAssembled ? 0 : 80 }}
           transition={{
-            opacity: { delay: 0.8, duration: 1 },
-            x: { delay: 0.8, duration: 1, ease: "easeOut" }
+            opacity: { duration: 0.8, ease: "easeOut" },
+            x: { duration: 0.8, ease: "easeOut" }
           }}
           className="relative h-full w-full origin-center scale-[1.18] sm:scale-[1.14] lg:translate-x-[10%] lg:scale-[1.3] xl:scale-[1.45]"
         >
