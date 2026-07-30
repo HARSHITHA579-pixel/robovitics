@@ -1,7 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import LoadingScreen from '@/components/LoadingScreen';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
@@ -16,6 +17,7 @@ import Footer from '@/components/Footer';
 import Achievements from '@/components/Achievements';
 
 export default function Page() {
+  const [isLoaderFinished, setIsLoaderFinished] = useState(false);
   const domainsRef = useRef<HTMLDivElement>(null);
 
   // 1. Tracks overall page scroll
@@ -52,6 +54,7 @@ export default function Page() {
 
   return (
     <main className="relative bg-black text-white flex flex-col font-sans selection:bg-gray-300 selection:text-black">
+      <LoadingScreen onLoadingComplete={() => setIsLoaderFinished(true)} />
       <Navbar />
 
       {/* GLOBAL BACKGROUND GRID */}
@@ -79,7 +82,7 @@ export default function Page() {
 
       {/* --- CONTENT DOM TREE --- */}
       <div className="relative z-20 flex min-h-svh flex-col justify-between overflow-x-clip lg:h-screen">
-        <Hero />
+        <Hero startAnimation={isLoaderFinished} />
         <footer className="relative z-10 flex w-full flex-col items-center justify-between gap-2 px-5 pb-5 pt-2 text-center font-mono text-[10px] leading-relaxed text-gray-500 sm:px-8 sm:text-xs md:flex-row md:items-end md:px-12 md:py-8 md:text-left md:text-sm lg:py-10">
           <p className="max-w-[20rem] md:hidden">
             Established in <span className="text-gray-300">2010</span>. Evolving ever since. We&apos;re the <span className="text-gray-300">engineers</span> that actually build.

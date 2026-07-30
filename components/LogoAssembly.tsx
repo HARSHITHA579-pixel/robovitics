@@ -1877,12 +1877,13 @@ interface LogoAssemblyProps {
     /** Called once the assembly + glow + lock-in sequence has fully finished. */
     onComplete?: () => void;
     className?: string;
+    start?: boolean;
 }
 
 const VIEW_W = 4096;
 const VIEW_H = 683;
 
-export default function LogoAssembly({ onComplete, className }: LogoAssemblyProps) {
+export default function LogoAssembly({ onComplete, className, start = true }: LogoAssemblyProps) {
     const pieces = ASSEMBLY_PIECES as AssemblyPiece[];
 
     const maxDelay = useMemo(
@@ -1939,7 +1940,7 @@ export default function LogoAssembly({ onComplete, className }: LogoAssemblyProp
         <motion.div
             className={className}
             initial="hidden"
-            animate="visible"
+            animate={start ? "visible" : "hidden"}
             style={{ position: 'relative', width: '100%' }}
         >
             <motion.svg
@@ -1948,11 +1949,8 @@ export default function LogoAssembly({ onComplete, className }: LogoAssemblyProp
                 height="auto"
                 xmlns="http://www.w3.org/2000/svg"
                 style={{ display: 'block', overflow: 'visible' }}
-                // Settle-in jiggle (rotate wobble) immediately after assembly,
-                // then the precision lock-in: scale 1 -> 1.018 -> 1 + soft glow
-                // pulse, all in one continuous, smoothly-eased timeline.
                 initial={{ scale: 1, rotate: 0, filter: 'drop-shadow(0 0 0px rgba(120,200,255,0))' }}
-                animate={{
+                animate={start ? {
                     rotate: [0, -2, 2.2, -1.1, 0.5, 0, 0],
                     scale: [1, 1, 1, 1, 1, 1.018, 1],
                     filter: [
@@ -1964,14 +1962,16 @@ export default function LogoAssembly({ onComplete, className }: LogoAssemblyProp
                         'drop-shadow(0 0 16px rgba(150,210,255,0.7))',
                         'drop-shadow(0 0 4px rgba(150,210,255,0.2))',
                     ],
-                }}
+                } : { scale: 1, rotate: 0, filter: 'drop-shadow(0 0 0px rgba(120,200,255,0))' }}
                 transition={{
                     duration: postAssemblyTotal,
                     delay: assemblyEnd,
                     times: [0, 0.18, 0.36, 0.54, jiggleEndFrac, jiggleEndFrac + (1 - jiggleEndFrac) * 0.65, 1],
                     ease: 'easeInOut',
                 }}
-                onAnimationComplete={() => onComplete?.()}
+                onAnimationComplete={() => {
+                    if (start) onComplete?.();
+                }}
             >
                 {pieces.map((piece) => (
                     <motion.g
