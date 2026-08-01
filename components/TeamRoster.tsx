@@ -52,7 +52,6 @@ const FACULTY = [
   id: `fac-${i + 1}`,
   name: person.name,
   role: person.role,
-  // Replace photoUrl with real member photo. Robot shown on hover.
   photoUrl: person.photoUrl,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=fac${i}&backgroundColor=transparent`,
 }));
@@ -102,18 +101,17 @@ const BOARD = [
   name: person.name,
   role: person.role,
   link: BOARD_LINKS[i],
-  // Replace photoUrl with real member photo. Robot shown on hover.
   photoUrl: person.name === 'Shuktika' ? '/shukthika.png' :
-            person.name === 'Aarushi' ? '/aarushi.png' :
-            person.name === 'Kashikaa' ? '/kashikaa.png' :
-            person.name === 'Arushi' ? '/arushi.png' :
-            person.name === 'Azad' ? '/azad.png' :
+    person.name === 'Aarushi' ? '/aarushi.png' :
+      person.name === 'Kashikaa' ? '/kashikaa.png' :
+        person.name === 'Arushi' ? '/arushi.png' :
+          person.name === 'Azad' ? '/azad.png' :
             person.name === 'Suyash' ? '/suyash.png' :
-            `https://api.dicebear.com/7.x/personas/svg?seed=board${i}&backgroundColor=b6e3f4`,
+              `https://api.dicebear.com/7.x/personas/svg?seed=board${i}&backgroundColor=b6e3f4`,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=board${i}&backgroundColor=transparent`,
 }));
 
-const SENIOR_BOARD_LINKS = [
+const SENIOR_CORE_LINKS = [
   'https://www.linkedin.com/in/ryan-fernandes-120291327/',
   'https://www.linkedin.com/in/shreyansh-choudhary-84b52232a/',
   'https://www.linkedin.com/in/anjali-chougule-53bb23333/',
@@ -128,7 +126,7 @@ const SENIOR_BOARD_LINKS = [
   '',
 ];
 
-const SENIOR_BOARD = [
+const SENIOR_CORE = [
   'Ryan',
   'Sheyansh',
   'Anjali Chougule',
@@ -142,35 +140,51 @@ const SENIOR_BOARD = [
   'Charvi',
   'Rithvik',
 ].map((name, i) => ({
-  id: `senior-board-${i + 1}`,
+  id: `senior-core-${i + 1}`,
   name,
   role: '',
-  link: SENIOR_BOARD_LINKS[i] || undefined,
-  // Replace photoUrl with real member photo. Robot shown on hover.
+  link: SENIOR_CORE_LINKS[i] || undefined,
   photoUrl: name === 'Naman Chauhan' ? '/naman.png' :
-            name === 'Ankith' ? '/ankith.png' :
-            `https://api.dicebear.com/7.x/personas/svg?seed=senior-board${i}&backgroundColor=b6e3f4`,
+    name === 'Ankith' ? '/ankith.png' :
+      `https://api.dicebear.com/7.x/personas/svg?seed=senior-board${i}&backgroundColor=b6e3f4`,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=senior-board${i}&backgroundColor=transparent`,
 }));
 
-function createPlaceholderBoard(year: '2024' | '2023') {
+function createPlaceholderBoard(year: '2025' | '2024') {
   return Array.from({ length: 20 }, (_, i) => ({
     id: `${year}-board-${i + 1}`,
     name: `Member ${String(i + 1).padStart(2, '0')}`,
-    role: `${year} Board · Placeholder`,
+    role: `${year} Board · Member ${i + 1}`,
     photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=${year}-board${i}&backgroundColor=b6e3f4`,
     robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${year}-board${i}&backgroundColor=transparent`,
   }));
 }
 
-const BOARD_2024 = createPlaceholderBoard('2024');
-const BOARD_2023 = createPlaceholderBoard('2023');
+const ALL_BOARD_2025 = createPlaceholderBoard('2025');
+const ALL_BOARD_2024 = createPlaceholderBoard('2024');
 
 const BOARD_OPTIONS = [
-  { id: 'current', label: 'Board', shortLabel: 'Board', people: BOARD },
-  { id: '2025', label: '2025 Board', shortLabel: '2025', people: SENIOR_BOARD },
-  { id: '2024', label: '2024 Board', shortLabel: '2024', people: BOARD_2024 },
-  { id: '2023', label: '2023 Board', shortLabel: '2023', people: BOARD_2023 },
+  {
+    id: 'current',
+    label: 'Board',
+    shortLabel: 'Board',
+    boardPeople: BOARD,
+    seniorCorePeople: SENIOR_CORE,
+  },
+  {
+    id: '2025',
+    label: '2025 Board',
+    shortLabel: '2025',
+    boardPeople: ALL_BOARD_2025.slice(0, -5),
+    seniorCorePeople: ALL_BOARD_2025.slice(-5),
+  },
+  {
+    id: '2024',
+    label: '2024 Board',
+    shortLabel: '2024',
+    boardPeople: ALL_BOARD_2024.slice(0, -5),
+    seniorCorePeople: ALL_BOARD_2024.slice(-5),
+  },
 ] as const;
 
 type BoardOptionId = (typeof BOARD_OPTIONS)[number]['id'];
@@ -243,7 +257,6 @@ function ProfileCard({
           containerType: 'inline-size',
           padding: compact ? 'clamp(9px, 0.8vw, 11px)' : facultyCompact ? 'clamp(9px, 0.8vw, 11px)' : 'clamp(12px, 1.2vw, 16px)',
 
-
           background: '#0a0a0a',
           border: isActive ? '1px solid rgba(79,174,243,0.45)' : `1px solid rgba(255,255,255,${compact ? 0.055 : 0.08})`,
           boxShadow: isActive ? '0 0 20px rgba(79,174,243,0.13)' : 'none',
@@ -275,15 +288,15 @@ function ProfileCard({
             key={ci}
             className="absolute z-10 pointer-events-none"
             style={{
-              ...(c.top    !== undefined ? { top:    c.top }    : {}),
+              ...(c.top !== undefined ? { top: c.top } : {}),
               ...(c.bottom !== undefined ? { bottom: c.bottom } : {}),
-              ...(c.left   !== undefined ? { left:   c.left }   : {}),
-              ...(c.right  !== undefined ? { right:  c.right }  : {}),
+              ...(c.left !== undefined ? { left: c.left } : {}),
+              ...(c.right !== undefined ? { right: c.right } : {}),
               width: isSmall ? 10 : 14, height: isSmall ? 10 : 14,
-              borderTop:    c.borderTop    ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              borderTop: c.borderTop ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
               borderBottom: c.borderBottom ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
-              borderLeft:   c.borderLeft   ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
-              borderRight:  c.borderRight  ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              borderLeft: c.borderLeft ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              borderRight: c.borderRight ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
               opacity: isActive ? 1 : 0,
               transform: isActive ? 'scale(1)' : 'scale(0.82)',
               filter: isActive ? 'drop-shadow(0 0 6px rgba(79,174,243,0.9))' : 'drop-shadow(0 0 4px rgba(79,174,243,0.5))',
@@ -302,7 +315,7 @@ function ProfileCard({
         <div
           className="team-image relative w-full mb-4 overflow-hidden rounded-[2px] bg-[#111]"
           style={{
-aspectRatio: compact || facultyCompact ? '1/1' : '4/5',
+            aspectRatio: compact || facultyCompact ? '1/1' : '4/5',
             marginBottom: compact ? '10px' : facultyCompact ? '9px' : '16px',
             border: isActive ? '1px solid rgba(79,174,243,0.5)' : '1px solid rgba(255,255,255,0.1)',
             boxShadow: isActive ? '0 0 15px rgba(79,174,243,0.2)' : 'none',
@@ -474,6 +487,31 @@ function SectionTitle({
   );
 }
 
+function SubSectionTitle({
+  title,
+  accent,
+  eyebrow,
+}: {
+  title: string;
+  accent?: string;
+  eyebrow?: string;
+}) {
+  return (
+    <div className="rv-section-header mb-6 md:mb-8">
+      {eyebrow && (
+        <span className="rv-section-kicker sm:text-[10px]">
+          {eyebrow}
+        </span>
+      )}
+      <h3 className="text-xl md:text-2xl font-sans font-black tracking-widest uppercase text-white flex items-center gap-2">
+        <span>{title}</span>
+        {accent && <span style={{ color: '#4FAEF3' }}>{accent}</span>}
+      </h3>
+      <div className="w-16 h-[2px] bg-[#4FAEF3]/50 mt-2 rounded-full" />
+    </div>
+  );
+}
+
 function BoardSelector({
   selected,
   onSelect,
@@ -547,11 +585,10 @@ function BoardSelector({
                   onSelect(option.id);
                   setOpen(false);
                 }}
-                className={`flex w-full items-center justify-between rounded-[2px] px-3 py-2.5 text-left font-mono text-[10px] uppercase tracking-[0.12em] transition-colors ${
-                  isSelected
+                className={`flex w-full items-center justify-between rounded-[2px] px-3 py-2.5 text-left font-mono text-[10px] uppercase tracking-[0.12em] transition-colors ${isSelected
                     ? 'bg-[#4FAEF3]/10 text-[#4FAEF3]'
                     : 'text-white/60 hover:bg-white/[0.05] hover:text-white'
-                }`}
+                  }`}
               >
                 {option.label}
                 {isSelected && <span aria-hidden="true">●</span>}
@@ -569,7 +606,7 @@ function BoardSelector({
 // ----------------------------------------------------------------------
 export default function TeamRoster({ id = 'command-structure' }: { id?: string }) {
   const [selectedBoard, setSelectedBoard] = useState<BoardOptionId>('current');
-  const activeBoard = BOARD_OPTIONS.find((option) => option.id === selectedBoard) ?? BOARD_OPTIONS[0];
+  const activeOption = BOARD_OPTIONS.find((option) => option.id === selectedBoard) ?? BOARD_OPTIONS[0];
 
   return (
     <section id={id} className="relative w-full min-h-screen py-20 md:py-28 bg-[#0d0d0d] overflow-hidden">
@@ -603,7 +640,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
 
         {/* ── BOARD SECTION ── */}
         <div id="team-board" className="w-full max-w-7xl scroll-mt-28 flex flex-col items-center">
-          <div className="rv-section-header relative z-[100] mb-8 md:mb-10">
+          <div className="rv-section-header relative z-[100] mb-8 md:mb-12">
             <span className="rv-section-kicker sm:text-[10px]">
               ▶ ACCESS_LEVEL // {selectedBoard === 'current' ? 'BOARD' : `${selectedBoard}_BOARD`}
             </span>
@@ -618,13 +655,36 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
             <div className="rv-section-rule" />
           </div>
 
-          <RevealGrid
-            key={activeBoard.id}
-            people={activeBoard.people}
-            columns=""
-            compact
-            balanced
-          />
+          {/* Board Subsection */}
+          <div className="w-full flex flex-col items-center mb-12 md:mb-16">
+            <SubSectionTitle
+              eyebrow={`▶ ACCESS_LEVEL // ${activeOption.id === 'current' ? 'BOARD' : `${activeOption.id}_BOARD`}`}
+              title="BOARD"
+            />
+            <RevealGrid
+              key={`board-${activeOption.id}`}
+              people={activeOption.boardPeople}
+              columns=""
+              compact
+              balanced
+            />
+          </div>
+
+          {/* Senior Core Subsection (Directly below Board) */}
+          <div className="w-full flex flex-col items-center">
+            <SubSectionTitle
+              eyebrow={`▶ ACCESS_LEVEL // ${activeOption.id === 'current' ? 'SENIOR_CORE' : `${activeOption.id}_SENIOR_CORE`}`}
+              title="SENIOR"
+              accent="CORE"
+            />
+            <RevealGrid
+              key={`senior-core-${activeOption.id}`}
+              people={activeOption.seniorCorePeople}
+              columns=""
+              compact
+              balanced
+            />
+          </div>
         </div>
 
       </div>

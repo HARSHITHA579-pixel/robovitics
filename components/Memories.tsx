@@ -12,10 +12,10 @@ interface Memory {
 }
 
 const MEMORIES: Memory[] = [
-  { year: '2010', title: 'The Beginning', desc: 'RoboVITics was founded as <b>VIT Vellore\'s official robotics club and one of its first technical clubs</b>, creating a multidisciplinary community driven by robotics, innovation, and hands-on learning.', img: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=600&auto=format&fit=crop' },
-  { year: '2012', title: 'First Milestones', desc: 'The club launched its first workshops and competitions, including <b>AutoBOT, RoboCV, and IP Soccer</b>, marking its debut at graVITas.', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=600&auto=format&fit=crop' },
+  { year: '2010', title: 'The Beginning', desc: 'RoboVITics was founded as <b>VIT Vellore\'s official robotics club and one of its first technical clubs</b>, creating a multidisciplinary community driven by robotics, innovation, and hands-on learning.', img: '/roboviticsStart.jpg' },
+  { year: '2012', title: 'First Milestones', desc: 'The club launched its first workshops and competitions, including <b>AutoBOT, RoboCV, and IP Soccer</b>, marking its debut at graVITas.', img: '/eventStart.jpg' },
   { year: '2015', title: 'Hands-On Robotics (HOR)', desc: '<b>HOR</b> became RoboVITics signature workshop series, equipping freshers with practical skills in embedded systems, electronics, and robotics.', img: '/timeline pics/past_hor.jpeg' },
-  { year: '2016', title: 'Team Orcus', desc: '<b>Team Orcus</b> was established as the club\'s combat robotics division, designing and building battle robots for national-level competitions.', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop' },
+  { year: '2016', title: 'Team Orcus', desc: '<b>Team Orcus</b> was established as the club\'s combat robotics division, designing and building battle robots for national-level competitions.', img: '/orcusStart.jpg' },
   { year: '2017', title: 'RoboWars', desc: '<b>RoboWars</b> became RoboVITics flagship spectacle, bringing together powerful combat robots and top teams from across the country.', img: '/timeline pics/past_robowars.jpeg' },
   { year: '2018', title: 'Equinox', desc: '<b>Equinox</b> was launched as the club\'s flagship hackathon, empowering students to solve real-world challenges through engineering and innovation.', img: 'https://images.unsplash.com/photo-1555255707-c07966088b7b?q=80&w=600&auto=format&fit=crop' },
   { year: '2019', title: 'Vortex 360', desc: '<b>Vortex 360</b> introduced a platform for CAD and hardware design, encouraging participants to transform concepts into practical engineering solutions.', img: 'https://images.unsplash.com/photo-1615811361523-6bd03d7748e7?q=80&w=600&auto=format&fit=crop' },
@@ -113,10 +113,20 @@ const globalStyles = `
   .mwt-img-wrap {
     width: 100%; height: 166px; overflow: hidden; border-radius: 2px;
     margin-bottom: 20px; background: #000;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
   }
   .mwt-img-wrap img {
-    width: 100%; height: 100%; object-fit: cover;
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    filter: grayscale(80%) brightness(0.74) contrast(1.18) saturate(0.19);
+    transition: filter 0.5s ease, transform 0.5s ease;
+  }
+  .mwt-img-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.12) 100%), rgba(0, 0, 0, 0.06);
+    pointer-events: none;
+    z-index: 20;
   }
   .mwt-card-date {
     font-family: monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.18em;
@@ -170,28 +180,27 @@ export default function MemoryWarpTunnel() {
     const maxPixelRatio = isMobile ? 1.25 : 2;
 
     // ── Renderer ──────────────────────────────────────────────
-    let renderer: THREE.WebGLRenderer;
-    try {
-      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, failIfMajorPerformanceCaveat: false });
-    } catch (e) {
-      console.warn("WebGL context creation failed in Memories:", e);
-      return;
-    }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
-    renderer.autoClearColor = false;
-
+    let renderer: THREE.WebGLRenderer | null = null;
     let isContextLost = false;
+
     const handleContextLost = (e: Event) => {
       e.preventDefault();
       isContextLost = true;
-      if (rafId) cancelAnimationFrame(rafId);
     };
     const handleContextRestored = () => {
       isContextLost = false;
-      rafId = requestAnimationFrame(loop);
     };
     canvas.addEventListener('webglcontextlost', handleContextLost, false);
     canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, failIfMajorPerformanceCaveat: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
+      renderer.autoClearColor = false;
+    } catch (e) {
+      console.warn("WebGL context creation failed in Memories:", e);
+      renderer = null;
+    }
 
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x000000, 0.05);
@@ -324,7 +333,10 @@ export default function MemoryWarpTunnel() {
           <span class="mwt-corner bottom-right"></span>
           <span class="mwt-line top-line"></span>
           <span class="mwt-line bottom-line"></span>
-          <div class="mwt-img-wrap"><img src="${m.img}" alt="${m.title}" loading="lazy"/></div>
+          <div class="mwt-img-wrap" style="position: relative; width: 100%; height: 166px; overflow: hidden; border-radius: 2px; margin-bottom: 20px; background: #000; border: 1px solid rgba(255,255,255,0.08);">
+            <img src="${m.img}" alt="${m.title}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(80%) brightness(0.74) contrast(1.18) saturate(0.19);" />
+            <div class="mwt-img-overlay" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.12) 100%), rgba(0, 0, 0, 0.06); pointer-events: none; z-index: 20;"></div>
+          </div>
           <div class="mwt-card-date">${m.year}</div>
           <div class="mwt-card-title">${m.title}</div>
           <p class="mwt-card-desc">${m.desc}</p>
@@ -419,45 +431,48 @@ export default function MemoryWarpTunnel() {
       portalEl.style.transform = `translate3d(-50%, -50%, 0) scale(${lerp(0.9, 1, portalT)})`;
 
       const CW = Math.round(r.w), CH = Math.round(r.h);
-      if (renderer.domElement.width !== Math.round(CW * Math.min(devicePixelRatio, maxPixelRatio))) {
-        renderer.setSize(CW, CH, true);
-        camera.aspect = CW / CH;
-        camera.updateProjectionMatrix();
-      }
 
-      const tunnelSpeed = clamp(dt * 0.01 + Math.abs(targetT - displayT) * 0.5, 0.12, 4.0);
-
-      _dummy.position.set(0, 0, -9999);
-      _dummy.scale.setScalar(0.001);
-      _dummy.updateMatrix();
-      const hiddenMat = _dummy.matrix.clone();
-
-      for (const mesh of instancedMeshes)
-        for (let s = 0; s < SLOT_COUNT; s++) mesh.setMatrixAt(s, hiddenMat);
-      for (const mesh of instancedCores)
-        for (let s = 0; s < SLOT_COUNT; s++) mesh.setMatrixAt(s, hiddenMat);
-
-      for (let i = 0; i < activeDebrisCount; i++) {
-        debrisZ[i] += tunnelSpeed * debrisSpeed[i];
-        if (debrisZ[i] > camera.position.z - 0.5 || debrisZ[i] < FAR_Z) {
-          seedDebris(i);
-          continue;
+      if (renderer && !isContextLost) {
+        if (renderer.domElement.width !== Math.round(CW * Math.min(devicePixelRatio, maxPixelRatio))) {
+          renderer.setSize(CW, CH, true);
+          camera.aspect = CW / CH;
+          camera.updateProjectionMatrix();
         }
-        debrisAngle[i] += debrisAngV[i] * (dt / 1000);
-        _dummy.position.set(debrisX[i], debrisY[i], debrisZ[i]);
-        _axis.set(debrisAxisX[i], debrisAxisY[i], debrisAxisZ[i]);
-        _quat.setFromAxisAngle(_axis, debrisAngle[i]);
-        _dummy.quaternion.copy(_quat);
-        _dummy.scale.setScalar(0.98);
-        _dummy.updateMatrix();
-        instancedCores[debrisType[i]].setMatrixAt(debrisSlot[i], _dummy.matrix);
-        _dummy.scale.setScalar(1);
-        _dummy.updateMatrix();
-        instancedMeshes[debrisType[i]].setMatrixAt(debrisSlot[i], _dummy.matrix);
-      }
 
-      for (const mesh of instancedMeshes) mesh.instanceMatrix.needsUpdate = true;
-      for (const mesh of instancedCores) mesh.instanceMatrix.needsUpdate = true;
+        const tunnelSpeed = clamp(dt * 0.01 + Math.abs(targetT - displayT) * 0.5, 0.12, 4.0);
+
+        _dummy.position.set(0, 0, -9999);
+        _dummy.scale.setScalar(0.001);
+        _dummy.updateMatrix();
+        const hiddenMat = _dummy.matrix.clone();
+
+        for (const mesh of instancedMeshes)
+          for (let s = 0; s < SLOT_COUNT; s++) mesh.setMatrixAt(s, hiddenMat);
+        for (const mesh of instancedCores)
+          for (let s = 0; s < SLOT_COUNT; s++) mesh.setMatrixAt(s, hiddenMat);
+
+        for (let i = 0; i < activeDebrisCount; i++) {
+          debrisZ[i] += tunnelSpeed * debrisSpeed[i];
+          if (debrisZ[i] > camera.position.z - 0.5 || debrisZ[i] < FAR_Z) {
+            seedDebris(i);
+            continue;
+          }
+          debrisAngle[i] += debrisAngV[i] * (dt / 1000);
+          _dummy.position.set(debrisX[i], debrisY[i], debrisZ[i]);
+          _axis.set(debrisAxisX[i], debrisAxisY[i], debrisAxisZ[i]);
+          _quat.setFromAxisAngle(_axis, debrisAngle[i]);
+          _dummy.quaternion.copy(_quat);
+          _dummy.scale.setScalar(0.98);
+          _dummy.updateMatrix();
+          instancedCores[debrisType[i]].setMatrixAt(debrisSlot[i], _dummy.matrix);
+          _dummy.scale.setScalar(1);
+          _dummy.updateMatrix();
+          instancedMeshes[debrisType[i]].setMatrixAt(debrisSlot[i], _dummy.matrix);
+        }
+
+        for (const mesh of instancedMeshes) mesh.instanceMatrix.needsUpdate = true;
+        for (const mesh of instancedCores) mesh.instanceMatrix.needsUpdate = true;
+      }
 
       nodes.forEach((n, i) => {
         const diff = displayT - (i + 2.5);
@@ -489,12 +504,14 @@ export default function MemoryWarpTunnel() {
         n.el.style.setProperty('--mwt-card-glow', `${0.12 + opacity * 0.28}`);
       });
 
-      camera.position.x = 0;
-      camera.position.y = 0;
-      camera.lookAt(0, 0, FAR_Z);
+      if (renderer && !isContextLost) {
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.lookAt(0, 0, FAR_Z);
 
-      renderer.render(fadeScene, fadeCam);
-      renderer.render(scene, camera);
+        renderer.render(fadeScene, fadeCam);
+        renderer.render(scene, camera);
+      }
     }
 
     function onResize() { VW = window.innerWidth; VH = window.innerHeight; }
@@ -518,8 +535,7 @@ export default function MemoryWarpTunnel() {
       if (renderer) {
         try {
           renderer.dispose();
-          renderer.forceContextLoss();
-        } catch (_) {}
+        } catch (_) { }
       }
     };
   }, []);

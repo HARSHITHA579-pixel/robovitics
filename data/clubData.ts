@@ -136,7 +136,7 @@ export const teamsData: Team[] = [
         tagline: 'Humanoid Robotics Team',
         description: 'Team Avatar is VIT\'s first official humanoid robotics team, dedicated to developing intelligent humanoid robots capable of interacting with real-world environments. By integrating advanced mechanics, sensing, and artificial intelligence, the team is shaping the future of humanoid robotics through research and innovation.',
         teamPhotoPath: '/Avatar 2.png',
-        teamLogoPath: '/Avatar 1.png',
+        teamLogoPath: '/Avatar 1.jpeg',
         memberCount: 15,
         accentColor: 'rgba(79,174,243,0.9)',
     },

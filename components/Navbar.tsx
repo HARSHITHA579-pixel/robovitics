@@ -40,20 +40,20 @@ const mobileNavTargets: Record<string, string> = {
 // • More negative (e.g., -400) = Scrolls LESS (fixes stopping too late)
 const sectionOffsets: Record<string, number> = {
   // Moved from -50 to 20 (scrolls ~70px further down)
-  'technical-teams': 20,   
-  
-  'events': 2000,           
-  'events-mobile': 100,    
-  
+  'technical-teams': 20,
+
+  'events': 2000,
+  'events-mobile': 100,
+
   // Moved from -70 to 0 (scrolls ~70px further down)
-  'projects': 1300,  
+  'projects': 1300,
   'projects-mobile': 100,
-        
-  
+
+
   // Moved from -120 to -50 (scrolls ~70px further down)
-  'about': 0,            
+  'about': 0,
   'about-mobile': 0,
-  
+
   'domains-desktop': -120,
   'domains-mobile': 0,
 
@@ -68,6 +68,7 @@ export default function Navbar() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
+  const [isPastDivider, setIsPastDivider] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, top: 0, width: 0, height: 0, opacity: 0 });
   const navRefs = useRef<(HTMLElement | null)[]>([]);
@@ -75,15 +76,15 @@ export default function Navbar() {
   const scrollToSection = (e: React.MouseEvent<HTMLElement>, targetId: string, item: string) => {
     e.preventDefault();
     const target = document.getElementById(targetId);
-    
+
     if (target) {
       // 🛠️ Grab the custom offset for this specific ID, fallback to -120 if not found
       const yOffset = sectionOffsets[targetId] ?? -120;
-      
+
       const y = target.getBoundingClientRect().top + window.scrollY + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
-    
+
     setActiveSection(item);
     setMenuOpen(false);
     window.history.pushState(null, '', `#${targetId}`);
@@ -92,6 +93,13 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setIsExpanded(window.scrollY < 80);
+
+      const divider = document.getElementById('footer-divider');
+      if (divider) {
+        const rect = divider.getBoundingClientRect();
+        setIsPastDivider(rect.top <= 60);
+      }
+
       if (window.scrollY < window.innerHeight * 0.85) {
         setActiveSection('');
         return;
@@ -184,19 +192,22 @@ export default function Navbar() {
     gridTemplateColumns: isExpanded ? '1fr auto 1fr' : '0fr auto 0fr',
   };
 
-  const fadeClass = `transition-all duration-300 ease-out ${
-    isExpanded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
-  }`;
+  const fadeClass = `transition-all duration-300 ease-out ${isExpanded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+    }`;
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-[80] px-3 pt-3 sm:px-6 md:px-10">
+    <header
+      className={`fixed left-0 right-0 top-0 z-[80] px-3 pt-3 sm:px-6 md:px-10 transition-all duration-300 ease-out ${isPastDivider
+          ? 'opacity-0 -translate-y-full pointer-events-none'
+          : 'opacity-100 translate-y-0'
+        }`}
+    >
       <div
         style={navShellStyle}
-        className={`relative ml-auto flex md:grid justify-end w-fit items-center gap-3 overflow-visible border text-white transition-all duration-300 ease-out md:mx-auto md:backdrop-blur-2xl md:backdrop-saturate-150 md:border-white/[0.14] md:bg-black/65 md:shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] ${
-          isScrolled
+        className={`relative ml-auto flex md:grid justify-end w-fit items-center gap-3 overflow-visible border text-white transition-all duration-300 ease-out md:mx-auto md:backdrop-blur-2xl md:backdrop-saturate-150 md:border-white/[0.14] md:bg-black/65 md:shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] ${isScrolled
             ? 'max-md:mr-0 max-md:w-fit max-md:border-transparent max-md:bg-transparent max-md:p-0 max-md:shadow-none md:w-fit md:px-3 md:py-2'
             : 'border-transparent bg-transparent p-0 shadow-none md:w-auto md:px-4 md:py-2.5'
-        }`}
+          }`}
       >
         <span className={`max-md:hidden absolute left-0 top-0 h-3 w-3 border-l border-t border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] ${fadeClass}`} />
         <span className={`max-md:hidden absolute right-0 top-0 h-3 w-3 border-r border-t border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] ${fadeClass}`} />
@@ -269,17 +280,15 @@ export default function Navbar() {
                         setMoreOpen((open) => !open);
                       }
                     }}
-                    className={`relative flex items-center px-2.5 py-1.5 uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#4FAEF3] focus-visible:ring-offset-1 focus-visible:ring-offset-black xl:px-3 ${
-                      isActive ? 'text-white' : 'hover:text-white/80'
-                    }`}
+                    className={`relative flex items-center px-2.5 py-1.5 uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#4FAEF3] focus-visible:ring-offset-1 focus-visible:ring-offset-black xl:px-3 ${isActive ? 'text-white' : 'hover:text-white/80'
+                      }`}
                     aria-haspopup="true"
                     aria-expanded={moreOpen}
                   >
-                    <span className={`mr-2 transition-colors duration-200 ${
-                      isActive
+                    <span className={`mr-2 transition-colors duration-200 ${isActive
                         ? 'text-[#4FAEF3] drop-shadow-[0_0_6px_rgba(79,174,243,0.8)]'
                         : 'text-[#4FAEF3]/60 group-hover:text-[#4FAEF3]'
-                    }`}>
+                      }`}>
                       0{index + 1}
                     </span>
                     {item}
@@ -291,11 +300,10 @@ export default function Navbar() {
                     )}
                   </button>
 
-                  <div className={`absolute left-1/2 top-full -translate-x-1/2 pt-4 transition-all duration-300 ${
-                    moreOpen
+                  <div className={`absolute left-1/2 top-full -translate-x-1/2 pt-4 transition-all duration-300 ${moreOpen
                       ? 'visible pointer-events-auto translate-y-0 opacity-100'
                       : 'invisible pointer-events-none -translate-y-3 opacity-0'
-                  }`}>
+                    }`}>
                     <div className="relative flex min-w-[230px] flex-col border border-white/[0.14] bg-black/65 p-2 shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] backdrop-blur-md backdrop-saturate-150">
                       <span className="pointer-events-none absolute left-0 top-0 h-2.5 w-2.5 border-l border-t border-[#4FAEF3] shadow-[0_0_12px_rgba(79,174,243,0.85)]" />
                       <span className="pointer-events-none absolute right-0 top-0 h-2.5 w-2.5 border-r border-t border-[#4FAEF3] shadow-[0_0_12px_rgba(79,174,243,0.85)]" />
@@ -336,15 +344,13 @@ export default function Navbar() {
                 ref={(el) => { navRefs.current[index] = el; }}
                 href={`#${desktopNavTargets[item] ?? item.toLowerCase()}`}
                 onClick={(e) => scrollToSection(e, desktopNavTargets[item] ?? item.toLowerCase(), item)}
-                className={`group relative z-10 px-2.5 py-1.5 transition-colors duration-200 xl:px-3 ${
-                  isActive ? 'text-white' : 'hover:text-white/80'
-                }`}
+                className={`group relative z-10 px-2.5 py-1.5 transition-colors duration-200 xl:px-3 ${isActive ? 'text-white' : 'hover:text-white/80'
+                  }`}
               >
-                <span className={`mr-2 transition-colors duration-200 ${
-                  isActive
+                <span className={`mr-2 transition-colors duration-200 ${isActive
                     ? 'text-[#4FAEF3] drop-shadow-[0_0_6px_rgba(79,174,243,0.8)]'
                     : 'text-[#4FAEF3]/60 group-hover:text-[#4FAEF3]'
-                }`}>
+                  }`}>
                   0{index + 1}
                 </span>
                 {item}
@@ -359,9 +365,8 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setContactOpen(true)}
-          className={`hidden h-9 items-center justify-center justify-self-end self-center overflow-hidden whitespace-nowrap border bg-white/[0.035] font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-white/88 transition-all duration-300 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] md:inline-flex lg:h-10 lg:text-[10px] ${
-            isExpanded ? 'min-w-[132px] border-white/16 px-4 lg:min-w-[146px]' : 'w-0 min-w-0 border-transparent px-0'
-          } ${fadeClass}`}
+          className={`hidden h-9 items-center justify-center justify-self-end self-center overflow-hidden whitespace-nowrap border bg-white/[0.035] font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-white/88 transition-all duration-300 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] md:inline-flex lg:h-10 lg:text-[10px] ${isExpanded ? 'min-w-[132px] border-white/16 px-4 lg:min-w-[146px]' : 'w-0 min-w-0 border-transparent px-0'
+            } ${fadeClass}`}
         >
           Contact Us
         </button>
@@ -383,17 +388,15 @@ export default function Navbar() {
       </div>
 
       <div
-        className={`fixed inset-0 z-[-1] bg-black/50 backdrop-blur-[2px] transition-opacity duration-300 md:hidden ${
-          menuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
-        }`}
+        className={`fixed inset-0 z-[-1] bg-black/50 backdrop-blur-[2px] transition-opacity duration-300 md:hidden ${menuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+          }`}
         onClick={() => setMenuOpen(false)}
         aria-hidden="true"
       />
 
       <aside
-        className={`fixed bottom-0 right-0 top-0 z-[90] w-[min(82vw,340px)] border-l border-white/12 bg-[#070808]/95 text-white shadow-[-18px_0_60px_rgba(0,0,0,0.55)] backdrop-blur-2xl transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${
-          menuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`fixed bottom-0 right-0 top-0 z-[90] w-[min(82vw,340px)] border-l border-white/12 bg-[#070808]/95 text-white shadow-[-18px_0_60px_rgba(0,0,0,0.55)] backdrop-blur-2xl transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${menuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
         aria-hidden={!menuOpen}
       >
         <div
@@ -440,9 +443,8 @@ export default function Navbar() {
                   key={item}
                   href={`#${mobileNavTargets[item] ?? item.toLowerCase()}`}
                   onClick={(e) => scrollToSection(e, mobileNavTargets[item] ?? item.toLowerCase(), item)}
-                  className={`group relative border-b border-white/10 px-1 py-4 transition-colors ${
-                    isActive ? 'text-white' : 'text-white/62 hover:text-white'
-                  }`}
+                  className={`group relative border-b border-white/10 px-1 py-4 transition-colors ${isActive ? 'text-white' : 'text-white/62 hover:text-white'
+                    }`}
                 >
                   <span className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-3">
