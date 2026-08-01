@@ -15,6 +15,7 @@ import Memories from '@/components/Memories';
 import TeamRoster from '@/components/TeamRoster';
 import Footer from '@/components/Footer';
 import Achievements from '@/components/Achievements';
+import CursorTrail from '@/components/CursorTrail';
 
 export default function Page() {
   const [isLoaderFinished, setIsLoaderFinished] = useState(false);
@@ -56,6 +57,7 @@ export default function Page() {
     <main className="relative bg-black text-white flex flex-col font-sans selection:bg-gray-300 selection:text-black">
       <LoadingScreen onLoadingComplete={() => setIsLoaderFinished(true)} />
       <Navbar />
+      <CursorTrail />
 
       {/* GLOBAL BACKGROUND GRID */}
       <motion.div
