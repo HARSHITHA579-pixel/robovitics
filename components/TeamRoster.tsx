@@ -115,6 +115,28 @@ const SENIOR_BOARD = [
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=senior-board${i}&backgroundColor=transparent`,
 }));
 
+function createPlaceholderBoard(year: '2024' | '2023') {
+  return Array.from({ length: 20 }, (_, i) => ({
+    id: `${year}-board-${i + 1}`,
+    name: `Member ${String(i + 1).padStart(2, '0')}`,
+    role: `${year} Board · Placeholder`,
+    photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=${year}-board${i}&backgroundColor=b6e3f4`,
+    robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${year}-board${i}&backgroundColor=transparent`,
+  }));
+}
+
+const BOARD_2024 = createPlaceholderBoard('2024');
+const BOARD_2023 = createPlaceholderBoard('2023');
+
+const BOARD_OPTIONS = [
+  { id: 'current', label: 'Board', shortLabel: 'Board', people: BOARD },
+  { id: '2025', label: '2025 Board', shortLabel: '2025', people: SENIOR_BOARD },
+  { id: '2024', label: '2024 Board', shortLabel: '2024', people: BOARD_2024 },
+  { id: '2023', label: '2023 Board', shortLabel: '2023', people: BOARD_2023 },
+] as const;
+
+type BoardOptionId = (typeof BOARD_OPTIONS)[number]['id'];
+
 // ----------------------------------------------------------------------
 // PROFILE CARD
 // ----------------------------------------------------------------------
@@ -409,10 +431,103 @@ function SectionTitle({
   );
 }
 
+function BoardSelector({
+  selected,
+  onSelect,
+}: {
+  selected: BoardOptionId;
+  onSelect: (id: BoardOptionId) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const activeOption = BOARD_OPTIONS.find((option) => option.id === selected) ?? BOARD_OPTIONS[0];
+
+  useEffect(() => {
+    if (!open) return;
+
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+
+    document.addEventListener('mousedown', closeOnOutsideClick);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('mousedown', closeOnOutsideClick);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [open]);
+
+  return (
+    <div ref={menuRef} className="pointer-events-auto relative z-40 shrink-0">
+      <button
+        type="button"
+        aria-label="Choose board year"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((current) => !current)}
+        className="group flex h-9 items-center gap-2 rounded-[3px] border border-white/15 bg-[#0a0a0a]/95 px-3 font-mono text-[9px] uppercase tracking-[0.13em] text-white/75 transition-all duration-200 hover:border-[#4FAEF3]/60 hover:text-white sm:h-10 sm:px-4 sm:text-[10px]"
+      >
+        <span className="hidden sm:inline">{activeOption.label}</span>
+        <span className="sm:hidden">{activeOption.shortLabel}</span>
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          aria-hidden="true"
+          className={`text-[#4FAEF3] transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+
+      {open && (
+        <div
+          role="listbox"
+          aria-label="Board year"
+          className="absolute right-0 top-[calc(100%+7px)] min-w-[176px] overflow-hidden rounded-[3px] border border-white/15 bg-[#090909]/[0.98] p-1 shadow-[0_16px_45px_rgba(0,0,0,0.65)] backdrop-blur-md"
+        >
+          {BOARD_OPTIONS.map((option) => {
+            const isSelected = option.id === selected;
+            return (
+              <button
+                key={option.id}
+                type="button"
+                role="option"
+                aria-selected={isSelected}
+                onClick={() => {
+                  onSelect(option.id);
+                  setOpen(false);
+                }}
+                className={`flex w-full items-center justify-between rounded-[2px] px-3 py-2.5 text-left font-mono text-[10px] uppercase tracking-[0.12em] transition-colors ${
+                  isSelected
+                    ? 'bg-[#4FAEF3]/10 text-[#4FAEF3]'
+                    : 'text-white/60 hover:bg-white/[0.05] hover:text-white'
+                }`}
+              >
+                {option.label}
+                {isSelected && <span aria-hidden="true">●</span>}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ----------------------------------------------------------------------
 // MAIN EXPORT
 // ----------------------------------------------------------------------
 export default function TeamRoster({ id = 'command-structure' }: { id?: string }) {
+  const [selectedBoard, setSelectedBoard] = useState<BoardOptionId>('current');
+  const activeBoard = BOARD_OPTIONS.find((option) => option.id === selectedBoard) ?? BOARD_OPTIONS[0];
+
   return (
     <section id={id} className="relative w-full min-h-screen py-20 md:py-28 bg-[#0d0d0d] overflow-hidden">
       <EventsBackground />
@@ -444,30 +559,25 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         </div>
 
         {/* ── BOARD SECTION ── */}
-        <div id="team-board" className="w-full max-w-7xl scroll-mt-28 flex flex-col items-center mb-14 md:mb-24">
-          <SectionTitle
-            eyebrow="▶ ACCESS_LEVEL // BOARD"
-            title="BOARD"
-          />
+        <div id="team-board" className="w-full max-w-7xl scroll-mt-28 flex flex-col items-center">
+          <div className="rv-section-header relative z-[100] mb-8 md:mb-10">
+            <span className="rv-section-kicker sm:text-[10px]">
+              ▶ ACCESS_LEVEL // {selectedBoard === 'current' ? 'BOARD' : `${selectedBoard}_BOARD`}
+            </span>
+            <div className="relative flex w-full flex-col items-center">
+              <h2 className="rv-section-title" style={{ '--rv-section-title-desktop': 'clamp(30px, 4.4vw, 58px)' } as React.CSSProperties}>
+                {selectedBoard === 'current' ? 'BOARD' : `${selectedBoard} BOARD`}
+              </h2>
+              <div className="mt-4 lg:absolute lg:right-4 lg:top-1/2 lg:mt-0 lg:-translate-y-1/2 xl:right-16">
+                <BoardSelector selected={selectedBoard} onSelect={setSelectedBoard} />
+              </div>
+            </div>
+            <div className="rv-section-rule" />
+          </div>
 
           <RevealGrid
-            people={BOARD}
-            columns=""
-            compact
-            balanced
-          />
-        </div>
-
-        {/* ── SENIOR BOARD SECTION ── */}
-        <div id="team-senior-board" className="w-full max-w-7xl scroll-mt-28 flex flex-col items-center">
-          <SectionTitle
-            eyebrow="▶ ACCESS_LEVEL // SENIOR_CORE"
-            title="SENIOR"
-            accent="CORE"
-          />
-
-          <RevealGrid
-            people={SENIOR_BOARD}
+            key={activeBoard.id}
+            people={activeBoard.people}
             columns=""
             compact
             balanced
