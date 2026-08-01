@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 // ─── TYPES & IK ─────────────────────────────────────────────────────────────
 interface Point { x: number; y: number; }
-interface Sponsor { id: string; name: string; logoUrl?: string; }
+interface Sponsor { id: string; name: string; logoUrl?: string; scale?: number; }
 
 function dist(a: Point, b: Point) { return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2); }
 function lv(a: number, b: number, t: number) { return a + (b - a) * t; }
@@ -34,17 +34,17 @@ function solveFABRIK(joints: Point[], target: Point, lens: number[]): Point[] {
 
 // ─── DATA ───────────────────────────────────────────────────────────────────
 const SPONSORS: Sponsor[] = [
-    { id: 'SP_001', name: 'Syolo Consulting', logoUrl: '/sponsor logoos/one.png' },
-    { id: 'SP_002', name: 'Texas Instruments', logoUrl: '/sponsor logoos/two.png' },
-    { id: 'SP_003', name: 'Persistence', logoUrl: '/sponsor logoos/three.png' },
-    { id: 'SP_004', name: 'Autodesk', logoUrl: '/sponsor logoos/four.png' },
-    { id: 'SP_005', name: 'Analog Devices GMSL Ecosystem', logoUrl: '/sponsor logoos/five.png' },
-    { id: 'SP_006', name: 'Schneider Electric', logoUrl: '/sponsor logoos/six.png' },
-    { id: 'SP_007', name: 'Siemens', logoUrl: '/sponsor logoos/seven.png' },
-    { id: 'SP_008', name: 'SagTaur Systems', logoUrl: '/sponsor logoos/eight.png' },
-    { id: 'SP_009', name: 'L&T', logoUrl: '/sponsor logoos/LNT.png' },
-    { id: 'SP_010', name: 'DigitalOcean', logoUrl: '/sponsor logoos/Digital Ocean_logo.png' },
-    { id: 'SP_011', name: 'Available sponsor slot' },
+    { id: 'SP_001', name: 'Syolo Consulting', logoUrl: '/sponsor logoos/syoloLogo.png', scale: 1.1 },
+    { id: 'SP_002', name: 'Texas Instruments', logoUrl: '/sponsor logoos/two.png', scale: 1.05 },
+    { id: 'SP_003', name: 'Persistence', logoUrl: '/sponsor logoos/three.png', scale: 1.15 },
+    { id: 'SP_004', name: 'Autodesk', logoUrl: '/sponsor logoos/four.png', scale: 1.25 },
+    { id: 'SP_005', name: 'Analog Devices GMSL Ecosystem', logoUrl: '/sponsor logoos/five.png', scale: 0.88 },
+    { id: 'SP_006', name: 'Schneider Electric', logoUrl: '/sponsor logoos/six.png', scale: 1.0 },
+    { id: 'SP_007', name: 'Siemens', logoUrl: '/sponsor logoos/seven.png', scale: 1.14 },
+    { id: 'SP_008', name: 'SagTaur Systems', logoUrl: '/sponsor logoos/eight.png', scale: 1.15 },
+    { id: 'SP_009', name: 'L&T', logoUrl: '/sponsor logoos/LNT.png', scale: 0.78 },
+    { id: 'SP_010', name: 'DigitalOcean', logoUrl: '/sponsor logoos/Digital Ocean_logo.png', scale: 0.88 },
+    { id: 'SP_011', name: 'Anchor', logoUrl: '/sponsor logoos/anchorLogo.png', scale: 1.03 },
 ];
 
 function SponsorMarquee() {
@@ -83,6 +83,8 @@ function SponsorCard({
         ref.current = node;
         registerCard?.(sponsor.id, node);
     }, [registerCard, sponsor.id]);
+
+    const baseScale = sponsor.scale ?? 1;
 
     return (
         <motion.div
@@ -126,20 +128,20 @@ function SponsorCard({
                     <span style={{ position: 'absolute', bottom: '-1px', right: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.35)' }} />
                 </div>
 
-                <div className="relative z-30 flex h-full items-center justify-center pointer-events-none">
+                <div className="relative z-30 flex h-full items-center justify-center pointer-events-none p-1">
                     {sponsor.logoUrl && (
                         <img
                             src={sponsor.logoUrl}
                             alt={`${sponsor.name} logo`}
                             style={{
-                                width: '100%',
-                                height: '100%',
+                                maxWidth: '85%',
+                                maxHeight: '70%',
                                 objectFit: 'contain',
                                 filter: isHovered
                                     ? 'drop-shadow(0 0 12px rgba(79,174,243,0.24))'
                                     : 'drop-shadow(0 2px 5px rgba(0,0,0,0.35))',
                                 transition: 'filter 0.4s ease, transform 0.4s ease',
-                                transform: isHovered ? 'scale(1.03)' : 'scale(1)'
+                                transform: isHovered ? `scale(${baseScale * 1.03})` : `scale(${baseScale})`
                             }}
                         />
                     )}
