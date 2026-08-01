@@ -57,6 +57,27 @@ const FACULTY = [
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=fac${i}&backgroundColor=transparent`,
 }));
 
+const BOARD_LINKS = [
+  'https://www.linkedin.com/in/shuktika-mallaya-b43529352/',
+  'https://www.linkedin.com/in/aarushi-jha-9250002bb/',
+  'https://www.linkedin.com/in/krrish-agrawal-84baa0320/',
+  'https://www.linkedin.com/in/shambhavi-1b7899370/',
+  'https://www.linkedin.com/in/iamtharunj/',
+  'https://www.linkedin.com/in/kashikaa-sivakumar-17986730a/',
+  'https://www.linkedin.com/in/arushi-mehrotra01/',
+  'https://www.linkedin.com/in/s-kesava-prasaath-15a82b313/',
+  'https://www.linkedin.com/in/azadalimohamed/',
+  'https://www.linkedin.com/in/avaram-mahmoodul-hasan-372764311/',
+  'https://www.linkedin.com/in/kriday-narula-642435321/',
+  'https://www.linkedin.com/in/k-harshitha08/',
+  'https://www.linkedin.com/in/jacinth-r/',
+  'https://www.linkedin.com/in/kiruba-b-18ab7b337/',
+  'https://www.linkedin.com/in/shravan-kumar-217a36322/',
+  'https://www.linkedin.com/in/ishan-bhosale/',
+  'https://www.linkedin.com/in/suyash-dabholkar/',
+  'https://www.linkedin.com/in/animeha-goutam-783350326/',
+];
+
 const BOARD = [
   { name: 'Shuktika', role: 'Chairperson' },
   { name: 'Aarushi', role: 'Vice-Chairperson' },
@@ -80,6 +101,7 @@ const BOARD = [
   id: `board-${i + 1}`,
   name: person.name,
   role: person.role,
+  link: BOARD_LINKS[i],
   // Replace photoUrl with real member photo. Robot shown on hover.
   photoUrl: person.name === 'Shuktika' ? '/shukthika.png' :
             person.name === 'Aarushi' ? '/aarushi.png' :
@@ -90,6 +112,21 @@ const BOARD = [
             `https://api.dicebear.com/7.x/personas/svg?seed=board${i}&backgroundColor=b6e3f4`,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=board${i}&backgroundColor=transparent`,
 }));
+
+const SENIOR_BOARD_LINKS = [
+  'https://www.linkedin.com/in/ryan-fernandes-120291327/',
+  'https://www.linkedin.com/in/shreyansh-choudhary-84b52232a/',
+  'https://www.linkedin.com/in/anjali-chougule-53bb23333/',
+  'https://www.linkedin.com/in/ankit-agrawal-139864372/',
+  'https://www.linkedin.com/in/bhavya-singla-2441b4338/',
+  'https://www.linkedin.com/in/naman-chauhan-3893b9385/',
+  'https://www.linkedin.com/in/sarvesh-m-283bb6334/',
+  'https://www.linkedin.com/in/vasabdatwa-patra-758702321/',
+  'https://www.linkedin.com/in/aaditya-chourasia-481178332/',
+  'https://www.linkedin.com/in/advay-gopalakrishnan/',
+  'https://www.linkedin.com/in/charvi-adhyam-389741351/',
+  '',
+];
 
 const SENIOR_BOARD = [
   'Ryan',
@@ -108,6 +145,7 @@ const SENIOR_BOARD = [
   id: `senior-board-${i + 1}`,
   name,
   role: '',
+  link: SENIOR_BOARD_LINKS[i] || undefined,
   // Replace photoUrl with real member photo. Robot shown on hover.
   photoUrl: name === 'Naman Chauhan' ? '/naman.png' :
             name === 'Ankith' ? '/ankith.png' :
@@ -146,6 +184,7 @@ interface PersonData {
   role: string;
   photoUrl: string;
   robotUrl: string;
+  link?: string;
 }
 
 function ProfileCard({
@@ -179,9 +218,13 @@ function ProfileCard({
     return () => query.removeEventListener('change', updateCanHover);
   }, []);
 
+  const CardTag = person.link ? 'a' : 'div';
+  const linkProps = person.link ? { href: person.link, target: '_blank', rel: 'noopener noreferrer' } : {};
+
   return (
-    <div
-      className="group relative w-full h-full"
+    <CardTag
+      {...linkProps}
+      className={`group relative w-full h-full ${person.link ? 'block cursor-pointer no-underline text-inherit' : ''}`}
       style={{
         opacity: revealed ? 1 : 0,
         transform: revealed ? 'translateY(0)' : 'translateY(16px)',
@@ -349,7 +392,7 @@ aspectRatio: compact || facultyCompact ? '1/1' : '4/5',
           />
         </div>
       </div>
-    </div>
+    </CardTag>
   );
 }
 
