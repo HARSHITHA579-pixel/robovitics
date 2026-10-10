@@ -32,7 +32,7 @@ export default function Hero({ startAnimation = true }: HeroProps) {
     if (!logoAssembled) return;
 
     let subtitleIndex = 0;
-    // Brief pause (~0.3-0.5s) after the logo locks in before typing starts.
+    // Brief pause (~0.10s) after the logo locks in before typing starts.
     const typingDelay = setTimeout(() => {
       const typingInterval = setInterval(() => {
         setTypedSubtitle(fullSubtitleText.substring(0, subtitleIndex + 1));
@@ -42,7 +42,7 @@ export default function Hero({ startAnimation = true }: HeroProps) {
         }
       }, 40);
       return () => clearInterval(typingInterval);
-    }, 400);
+    }, 100);
     return () => clearTimeout(typingDelay);
   }, [logoAssembled, fullSubtitleText]);
 
@@ -90,6 +90,7 @@ export default function Hero({ startAnimation = true }: HeroProps) {
             src="/bot.png"
             alt="roboVITics Bot Mascot"
             fill
+            sizes="(max-width: 1024px) 100vw, 40vw"
             className="object-contain object-center drop-shadow-[0_0_30px_rgba(209,213,219,0.15)] opacity-85 lg:object-right lg:opacity-80"
             priority
           />

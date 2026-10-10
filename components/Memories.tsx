@@ -17,11 +17,11 @@ const MEMORIES: Memory[] = [
   { year: '2015', title: 'Hands-On Robotics (HOR)', desc: '<b>HOR</b> became RoboVITics signature workshop series, equipping freshers with practical skills in embedded systems, electronics, and robotics.', img: '/timeline pics/past_hor.jpeg' },
   { year: '2016', title: 'Team Orcus', desc: '<b>Team Orcus</b> was established as the club\'s combat robotics division, designing and building battle robots for national-level competitions.', img: '/orcusStart.jpg' },
   { year: '2017', title: 'RoboWars', desc: '<b>RoboWars</b> became RoboVITics flagship spectacle, bringing together powerful combat robots and top teams from across the country.', img: '/timeline pics/past_robowars.jpeg' },
-  { year: '2018', title: 'Equinox', desc: '<b>Equinox</b> was launched as the club\'s flagship hackathon, empowering students to solve real-world challenges through engineering and innovation.', img: 'https://images.unsplash.com/photo-1555255707-c07966088b7b?q=80&w=600&auto=format&fit=crop' },
-  { year: '2019', title: 'Vortex 360', desc: '<b>Vortex 360</b> introduced a platform for CAD and hardware design, encouraging participants to transform concepts into practical engineering solutions.', img: 'https://images.unsplash.com/photo-1615811361523-6bd03d7748e7?q=80&w=600&auto=format&fit=crop' },
+  { year: '2018', title: 'Equinox', desc: '<b>Equinox</b> was launched as the club\'s flagship hackathon, empowering students to solve real-world challenges through engineering and innovation.', img: '/timeline pics/equinox.png' },
+  { year: '2019', title: 'Vortex 360', desc: '<b>Vortex 360</b> introduced a platform for CAD and hardware design, encouraging participants to transform concepts into practical engineering solutions.', img: '/timeline pics/vortex360.jpeg' },
   { year: '2019', title: 'Machine Design', desc: 'Originally launched as <b>Cosmos 360</b>, the event evolved into <b>Machine Design</b>, continuing annually to help students master Fusion 360, CAD modeling, simulations, and practical engineering design.', img: '/timeline pics/past_md.jpeg' },
-  { year: '2024', title: 'Avatar & Artemis', desc: 'RoboVITics expanded into next generation robotics with <b>Team Avatar</b> for humanoid systems and <b>Team Artemis</b> to advance legged robotics through intelligent quadrupeds, autonomous navigation, AI, and ROS 2 technologies.', img: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=600&auto=format&fit=crop' },
-  { year: '2024', title: 'Elite Club Recognition', desc: 'RoboVITics was honored with VIT\'s prestigious <b>Elite Club Award</b>, earning the recognition for <b>two consecutive years</b> through excellence in innovation, technical achievements, and student impact.', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=600&auto=format&fit=crop' },
+  { year: '2024', title: 'Avatar & Artemis', desc: 'RoboVITics expanded into next generation robotics with <b>Team Avatar</b> for humanoid systems and <b>Team Artemis</b> to advance legged robotics through intelligent quadrupeds, autonomous navigation, AI, and ROS 2 technologies.', img: '/timeline pics/artemis.png' },
+  { year: '2024', title: 'Elite Club Recognition', desc: 'RoboVITics was honored with VIT\'s prestigious <b>Elite Club Award</b>, earning the recognition for <b>two consecutive years</b> through excellence in innovation, technical achievements, and student impact.', img: '/timeline pics/award.png.jpeg' },
   { year: '2026', title: 'RoboVITics Today', desc: 'Today, RoboVITics continues to lead innovation through cutting-edge robotics, flagship events, and student driven research, inspiring the next generation of engineers.', img: '/timeline pics/todayRobovitics.png' },
 ];
 
@@ -183,24 +183,46 @@ export default function MemoryWarpTunnel() {
     let renderer: THREE.WebGLRenderer | null = null;
     let isContextLost = false;
 
+    function initRenderer(targetCanvas: HTMLCanvasElement): THREE.WebGLRenderer | null {
+      try {
+        const gl = targetCanvas.getContext('webgl2', { alpha: true, powerPreference: 'default' }) ||
+                   targetCanvas.getContext('webgl', { alpha: true, powerPreference: 'default' }) ||
+                   (targetCanvas.getContext('experimental-webgl', { alpha: true }) as WebGLRenderingContext | null);
+
+        if (!gl || ('isContextLost' in gl && gl.isContextLost())) {
+          return null;
+        }
+
+        const r = new THREE.WebGLRenderer({
+          canvas: targetCanvas,
+          context: gl as WebGLRenderingContext,
+          antialias: !isMobile,
+          alpha: true,
+          failIfMajorPerformanceCaveat: false,
+          powerPreference: 'default',
+        });
+        r.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxPixelRatio));
+        r.autoClearColor = false;
+        return r;
+      } catch {
+        return null;
+      }
+    }
+
     const handleContextLost = (e: Event) => {
       e.preventDefault();
       isContextLost = true;
     };
     const handleContextRestored = () => {
       isContextLost = false;
+      if (canvas) {
+        renderer = initRenderer(canvas);
+      }
     };
     canvas.addEventListener('webglcontextlost', handleContextLost, false);
     canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
 
-    try {
-      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, failIfMajorPerformanceCaveat: false });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
-      renderer.autoClearColor = false;
-    } catch (e) {
-      console.warn("WebGL context creation failed in Memories:", e);
-      renderer = null;
-    }
+    renderer = initRenderer(canvas);
 
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x000000, 0.05);
@@ -430,13 +452,13 @@ export default function MemoryWarpTunnel() {
       portalEl.style.opacity = `${clamp((portalProgress - 0.12) / 0.42, 0, 1)}`;
       portalEl.style.transform = `translate3d(-50%, -50%, 0) scale(${lerp(0.9, 1, portalT)})`;
 
-      const CW = Math.round(r.w), CH = Math.round(r.h);
+      const CW = Math.max(1, Math.round(r.w)), CH = Math.max(1, Math.round(r.h));
+      camera.aspect = CW / CH;
+      camera.updateProjectionMatrix();
 
       if (renderer && !isContextLost) {
-        if (renderer.domElement.width !== Math.round(CW * Math.min(devicePixelRatio, maxPixelRatio))) {
+        if (renderer.domElement.width !== Math.round(CW * Math.min(window.devicePixelRatio || 1, maxPixelRatio))) {
           renderer.setSize(CW, CH, true);
-          camera.aspect = CW / CH;
-          camera.updateProjectionMatrix();
         }
 
         const tunnelSpeed = clamp(dt * 0.01 + Math.abs(targetT - displayT) * 0.5, 0.12, 4.0);
@@ -535,7 +557,14 @@ export default function MemoryWarpTunnel() {
       if (renderer) {
         try {
           renderer.dispose();
+          renderer.forceContextLoss();
+          const gl = renderer.getContext();
+          if (gl && 'getExtension' in gl) {
+            const ext = gl.getExtension('WEBGL_lose_context');
+            if (ext) ext.loseContext();
+          }
         } catch (_) { }
+        renderer = null;
       }
     };
   }, []);

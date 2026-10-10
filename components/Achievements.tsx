@@ -191,17 +191,17 @@ interface IndividualAchievement {
 }
 
 const INDIVIDUAL_ACHIEVEMENTS: IndividualAchievement[] = [
-  { id: '01', name: 'Ryan Fernandes', achievement: "Synapse'26 // Second Place", year: '2026', level: 'NATIONAL', description: "Secured Second Place at Synapse'26, Scaler School of Technology, Bengaluru.", imageSrc: '/a1.jpeg' },
-  { id: '02', name: 'Team NeuroVITics', achievement: 'Neurohack Shaastra 2026 // 1st Place', year: '2026', level: 'NATIONAL', description: 'Won 1st Place at Neurohack Shaastra 2026, IIT Madras.', imageSrc: '/a2.jpeg' },
-  { id: '03', name: 'Ujaini DE & Aarushi Jha', achievement: "Vinhack'25 // 2nd Place", year: '2025', level: 'NATIONAL', description: "Secured 2nd Place at Vinhack'25." },
-  { id: '04', name: 'Mahmood', achievement: "Hackelite'25 // 3rd Place", year: '2025', level: 'NATIONAL', description: "Secured 3rd Place at Hackelite'25, SRM Vadapalani." },
-  { id: '05', name: 'Team Sphnix', achievement: "Cosmo Clemch - TechSolctice'26 // 1st Place", year: '2026', level: 'NATIONAL', description: "Won 1st Place in Cosmo Clemch, TechSolctice'26, MIT Bangalore.", imageSrc: '/a5.jpeg' },
-  { id: '06', name: 'Team Sphnix', achievement: "RoboRace - TechSolctice'26 // 1st Runner-Up", year: '2026', level: 'NATIONAL', description: "Secured 1st Runner-Up in RoboRace at TechSolctice'26, MIT Bangalore.", imageSrc: '/a6.jpeg' },
-  { id: '07', name: 'Team CyberVITics', achievement: "Null OWASP CTF - TechSolctice'26 // 2nd Place", year: '2026', level: 'NATIONAL', description: "Secured 2nd Place in Null OWASP CTF at TechSolctice'26, MIT Bangalore.", imageSrc: '/a7.jpeg' },
-  { id: '08', name: 'Member Name 08', achievement: 'Quantum Computing Hack // Finalist', year: '2025', level: 'INTERNATIONAL', description: 'Optimized a quantum circuit for simulating molecular dynamics.' },
-  { id: '09', name: 'Member Name 09', achievement: 'Open Source Contribution Award // Winner', year: '2024', level: 'GLOBAL', description: 'Significant contributions to the Linux kernel regarding memory management.' },
-  { id: '10', name: 'Member Name 10', achievement: 'RoboWars Alpha // Grand Champion', year: '2024', level: 'NATIONAL', description: 'Dominated the heavyweight combat robotics arena with a pneumatic flipper.' },
-  { id: '11', name: 'Member Name 11', achievement: 'NextGen AI Conference // Best Paper', year: '2024', level: 'INTERNATIONAL', description: 'Published groundbreaking research on efficient transformers for mobile devices.' },
+  { id: '01', name: 'Ryan Fernandes', achievement: "Synapse'26 // Second Place", year: '2026', level: 'HACK', description: "Secured Second Place at Synapse'26, Scaler School of Technology, Bengaluru.", imageSrc: '/a1.jpeg' },
+  { id: '02', name: 'Team NeuroVITics', achievement: 'Neurohack Shaastra 2026 // 1st Place', year: '2026', level: 'HACK', description: 'Won 1st Place at Neurohack Shaastra 2026, IIT Madras.', imageSrc: '/a2.jpeg' },
+  { id: '03', name: 'Tharun', achievement: 'ACEI Midterm Hackathon // 2nd Prize', year: '2026', level: 'HACK', description: 'Secured 2nd Prize among 840+ participants at the ACEI Midterm Hackathon, held from 21–23 August 2026, winning a cash prize of ₹30,000.', imageSrc: '/a3.png' },
+  { id: '04', name: 'Mahmood, Aarushi', achievement: 'Samsung EnnovateX AX Hackathon // 1st Place', year: '2026', level: 'HACK', description: 'Secured 1st Place at the Samsung EnnovateX AX Hackathon 2026, hosted at the Samsung R&D Institute, competing against over 1,000 participants across multiple stages. Won flagship laptops and direct internship offers at Samsung.' },
+  { id: '05', name: 'Team Sphnix', achievement: "Cosmo Clemch - TechSolctice'26 // 1st Place", year: '2026', level: 'HACK', description: "Won 1st Place in Cosmo Clemch, TechSolctice'26, MIT Bangalore.", imageSrc: '/a5.jpeg' },
+  { id: '06', name: 'Team Sphnix', achievement: "RoboRace - TechSolctice'26 // 1st Runner-Up", year: '2026', level: 'HACK', description: "Secured 1st Runner-Up in RoboRace at TechSolctice'26, MIT Bangalore.", imageSrc: '/a6.jpeg' },
+  { id: '07', name: 'Team CyberVITics', achievement: "Null OWASP CTF - TechSolctice'26 // 2nd Place", year: '2026', level: 'HACK', description: "Secured 2nd Place in Null OWASP CTF at TechSolctice'26, MIT Bangalore.", imageSrc: '/a7.jpeg' },
+  { id: '08', name: 'Tharun, Ishan, Kiruba', achievement: 'Designathon – IIC // 2nd Place', year: '2026', level: 'HACK', description: 'Secured 2nd Place at the Designathon organized by IIC.' },
+  { id: '09', name: 'Arunabh, Aarushi, Shambhavi, Mahmood', achievement: 'Road Safety Hack // 3rd Place', year: '2026', level: 'HACK', description: 'Secured 3rd Place at the Road Safety Hack conducted by the Office of Students’ Welfare.' },
+  { id: '10', name: 'Yash Phatak, Jatin Patil', achievement: 'Hack Story Yantra Hackathon // 2nd Place', year: '2025', level: 'HACK', description: 'Secured 2nd Place at the Hack Story Yantra Hackathon.' },
+  { id: '11', name: 'Yash Phatak, Prerit Tiwari', achievement: 'Johnson Controls Challenge Ideathon // 3rd Place', year: '2025', level: 'HACK', description: 'Secured 3rd Place at the Johnson Controls Challenge Ideathon.' },
 ];
 
 const DECK_VISIBLE_DEPTH = 3;
@@ -228,6 +228,7 @@ function DossierCard({
   const fanOutY = isHovered && depth > 0 && !offscreen && !isBack ? depth * 12 : 0;
   const fanOutX = isHovered && depth > 0 && !offscreen && !isBack ? (depth % 2 === 0 ? 15 : -15) : 0;
   const [title, position = 'Winner'] = log.achievement.split('//').map((part) => part.trim());
+  const categoryLabel = log.level.replace('NATIONAL', 'HACK');
 
   return (
     <motion.div
@@ -244,7 +245,11 @@ function DossierCard({
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
     >
       <div
-        className="relative flex h-full w-full flex-col items-center justify-between gap-5 overflow-hidden rounded-[4px] border p-5 transition-colors duration-500 sm:p-8 md:flex-row md:items-start md:gap-8"
+        className={`relative flex h-full w-full flex-col overflow-hidden rounded-[4px] border p-5 transition-colors duration-500 sm:p-8 ${
+          log.imageSrc
+            ? 'items-center justify-between gap-5 md:flex-row md:items-start md:gap-8'
+            : 'items-center justify-center text-center'
+        }`}
         style={{
           background: '#0a0a0a',
           borderColor: isFront ? 'rgba(79,174,243,0.42)' : isHovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.1)',
@@ -273,19 +278,20 @@ function DossierCard({
         <span className="absolute bottom-3 left-3 h-3 w-3 border-b border-l border-[#4FAEF3]/50" />
         <span className="absolute bottom-3 right-3 h-3 w-3 border-b border-r border-[#4FAEF3]/50" />
 
-        <div className="relative z-10 flex h-full min-w-0 flex-1 flex-col justify-center">
+        <div className={`relative z-10 flex h-full min-w-0 flex-1 flex-col justify-center ${log.imageSrc ? '' : 'items-center max-w-2xl'}`}>
           <span className="mb-2.5 font-mono text-[9.5px] uppercase tracking-[0.2em] text-[#4FAEF3] sm:text-[11px]">
-            {log.level} {'//'} {log.year}
+            {categoryLabel} {'//'} {log.year}
           </span>
           <h3 className="mb-4 font-sans text-lg font-bold uppercase leading-tight tracking-wide text-white sm:text-2xl lg:text-3xl">
             {title}
           </h3>
 
-          <div className="mb-4 flex items-center gap-4">
+          <div className={`mb-4 flex items-center gap-4 ${log.imageSrc ? '' : 'justify-center'}`}>
             <div className="h-px w-8 bg-white/20 sm:w-12" />
             <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-gray-300 sm:text-[12px]">
               {log.name}
             </span>
+            {!log.imageSrc && <div className="h-px w-8 bg-white/20 sm:w-12" />}
           </div>
 
           <div className="mb-4 w-fit rounded-[3px] border border-[#4FAEF3]/30 bg-[#4FAEF3]/10 px-3 py-1.5 sm:px-4 sm:py-2">
@@ -294,29 +300,20 @@ function DossierCard({
             </span>
           </div>
 
-          <p className="max-w-lg font-sans text-[11px] leading-relaxed text-gray-400 sm:text-[13.5px]">
+          <p className={`font-sans text-[11px] leading-relaxed text-gray-400 sm:text-[13.5px] ${log.imageSrc ? 'max-w-lg' : 'max-w-2xl'}`}>
             {log.description}
           </p>
         </div>
 
-        <div className="relative z-10 flex aspect-[4/3] w-full shrink-0 items-center justify-center overflow-hidden rounded-[4px] border border-white/10 bg-black/35 md:w-[36%]">
-          {log.imageSrc ? (
+        {log.imageSrc && (
+          <div className="relative z-10 flex aspect-[4/3] w-full shrink-0 items-center justify-center overflow-hidden rounded-[4px] border border-white/10 bg-black/35 md:w-[36%]">
             <Image src={log.imageSrc} alt={title} fill sizes="(min-width: 768px) 360px, 100vw" className="object-cover" />
-          ) : (
-            <div className="flex flex-col items-center gap-3">
-              <svg className="h-8 w-8 text-white/20 sm:h-11 sm:w-11" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-white/30 sm:text-[9px]">
-                NO ATTACHMENT
-              </span>
-            </div>
-          )}
-          <span className="absolute left-2 top-2 h-2 w-2 border-l border-t border-white/30" />
-          <span className="absolute right-2 top-2 h-2 w-2 border-r border-t border-white/30" />
-          <span className="absolute bottom-2 left-2 h-2 w-2 border-b border-l border-white/30" />
-          <span className="absolute bottom-2 right-2 h-2 w-2 border-b border-r border-white/30" />
-        </div>
+            <span className="absolute left-2 top-2 h-2 w-2 border-l border-t border-white/30" />
+            <span className="absolute right-2 top-2 h-2 w-2 border-r border-t border-white/30" />
+            <span className="absolute bottom-2 left-2 h-2 w-2 border-b border-l border-white/30" />
+            <span className="absolute bottom-2 right-2 h-2 w-2 border-b border-r border-white/30" />
+          </div>
+        )}
       </div>
     </motion.div>
   );

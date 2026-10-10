@@ -73,7 +73,7 @@ export default function About() {
               </a>
 
               <div className="mt-5 overflow-hidden rounded-[3px] border border-white/10 bg-black">
-                <img src="/AboutUs.png.jpeg" alt="About Us" className="h-48 w-full object-cover opacity-90" />
+                <img src="/aboutUs.png" alt="About Us" className="h-48 w-full object-cover object-bottom opacity-90" />
               </div>
             </div>
           </div>
@@ -183,9 +183,9 @@ export default function About() {
 
                     <div className="hidden md:flex flex-1 max-w-[390px] lg:max-w-[550px] xl:max-w-[650px] justify-center items-center">
                       <img 
-                        src="/AboutUs.png.jpeg" 
+                        src="/aboutUs.png" 
                         alt="About Us" 
-                        className="w-full h-auto object-contain rounded-2xl shadow-[0_0_60px_rgba(79,174,243,0.15)] ring-1 ring-white/10"
+                        className="aspect-[5/3] w-full object-cover object-bottom rounded-2xl shadow-[0_0_60px_rgba(79,174,243,0.15)] ring-1 ring-white/10"
                       />
                     </div>
                 </div>

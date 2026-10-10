@@ -196,8 +196,9 @@ export default function Navbar() {
     }`;
 
   return (
-    <header
-      className={`fixed left-0 right-0 top-0 z-[80] px-3 pt-3 sm:px-6 md:px-10 transition-all duration-300 ease-out ${isPastDivider
+    <>
+      <header
+        className={`fixed left-0 right-0 top-0 z-[80] px-3 pt-3 sm:px-6 md:px-10 transition-all duration-300 ease-out ${isPastDivider
           ? 'opacity-0 -translate-y-full pointer-events-none'
           : 'opacity-100 translate-y-0'
         }`}
@@ -477,7 +478,8 @@ export default function Navbar() {
           </div>
         </div>
       </aside>
-      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
     </header>
+    <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
+  </>
   );
 }

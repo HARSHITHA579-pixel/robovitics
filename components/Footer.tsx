@@ -120,17 +120,47 @@ function AnimatedDrones() {
     setIsMounted(true);
   }, []);
 
-  // Drone 1 Path (Left anchor, sweeping right then left)
-  const xPath1 = ["0vw", "15vw", "30vw", "15vw", "0vw", "-15vw", "-30vw", "-15vw", "0vw"];
-  const yPath1 = ["0vh", "-3vh", "0vh", "3vh", "0vh", "3vh", "0vh", "-3vh", "0vh"];
-  const rotatePath1 = [0, 3, 0, -3, 0, -3, 0, 3, 0];
+  // Smooth continuous closed harmonic flight path keyframes
+  const times16 = [
+    0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375,
+    0.5, 0.5625, 0.625, 0.6875, 0.75, 0.8125, 0.875, 0.9375, 1,
+  ];
 
-  // Drone 2 Path (Right anchor, sweeping left then right)
-  const xPath2 = ["0vw", "-15vw", "-30vw", "-15vw", "0vw", "15vw", "30vw", "15vw", "0vw"];
-  const yPath2 = ["0vh", "-4vh", "0vh", "-4vh", "0vh", "-4vh", "0vh", "4vh", "0vh"];
-  const rotatePath2 = [0, -3, 0, 3, 0, 3, 0, -3, 0];
+  // Drone 1 Path (Left anchor, continuous sweep with velocity-aligned banking)
+  const xPath1 = [
+    "0vw", "7.2vw", "14.1vw", "19.2vw", "21.5vw", "19.5vw", "13.6vw", "5.2vw",
+    "-4.2vw", "-13.2vw", "-19.5vw", "-21.8vw", "-19.2vw", "-13.5vw", "-6.8vw", "-0.8vw", "0vw",
+  ];
+  const yPath1 = [
+    "0vh", "-1.4vh", "-2.6vh", "-3.1vh", "-2.4vh", "-0.9vh", "0.8vh", "2.1vh",
+    "2.8vh", "2.5vh", "1.3vh", "-0.3vh", "-1.6vh", "-2.1vh", "-1.3vh", "-0.3vh", "0vh",
+  ];
+  const rotatePath1 = [
+    1.2, 3.2, 3.8, 2.4, 0.2, -2.2, -3.8, -3.5,
+    -2.8, -3.6, -2.4, -0.4, 1.8, 3.4, 3.2, 1.8, 1.2,
+  ];
+  const opacityPath1 = [
+    0.88, 0.94, 0.98, 1, 0.98, 0.94, 0.9, 0.86,
+    0.88, 0.93, 0.98, 1, 0.97, 0.93, 0.89, 0.87, 0.88,
+  ];
 
-  const opacityPath = [0.85, 1, 0.85, 1, 0.85, 1, 0.85, 1, 0.85];
+  // Drone 2 Path (Right anchor, continuous sweep with independent phase)
+  const xPath2 = [
+    "0vw", "-7.5vw", "-14.8vw", "-20.2vw", "-22.5vw", "-20.1vw", "-14.0vw", "-5.5vw",
+    "4.5vw", "13.8vw", "20.2vw", "22.6vw", "19.8vw", "14.1vw", "7.2vw", "1.0vw", "0vw",
+  ];
+  const yPath2 = [
+    "0vh", "-1.6vh", "-3.0vh", "-3.6vh", "-2.7vh", "-1.1vh", "0.9vh", "2.4vh",
+    "3.2vh", "2.8vh", "1.5vh", "-0.4vh", "-1.9vh", "-2.4vh", "-1.5vh", "-0.4vh", "0vh",
+  ];
+  const rotatePath2 = [
+    -1.4, -3.4, -4.0, -2.6, -0.2, 2.4, 4.0, 3.6,
+    3.0, 3.8, 2.6, 0.5, -2.0, -3.6, -3.4, -2.0, -1.4,
+  ];
+  const opacityPath2 = [
+    0.88, 0.94, 0.98, 1, 0.98, 0.94, 0.9, 0.86,
+    0.88, 0.93, 0.98, 1, 0.97, 0.93, 0.89, 0.87, 0.88,
+  ];
 
   if (isMounted && prefersReducedMotion) {
     return (
@@ -145,44 +175,66 @@ function AnimatedDrones() {
     <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
       {/* Drone 1 */}
       <motion.div
-        className="absolute left-[30%] bottom-[58%]"
-        initial={{ x: "0vw", y: "0vh", opacity: 0.85 }}
-        whileInView={{
+        className="absolute left-[30%] bottom-[58%] will-change-transform"
+        initial={{ x: "0vw", y: "0vh", opacity: 0.88, rotate: 1.2 }}
+        animate={{
           x: xPath1,
           y: yPath1,
           rotate: rotatePath1,
-          opacity: opacityPath,
+          opacity: opacityPath1,
         }}
         transition={{
-          duration: 18,
+          duration: 22,
           repeat: Infinity,
-          ease: 'easeInOut',
-          times: [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1]
+          ease: 'linear',
+          times: times16,
         }}
-        viewport={{ once: false, amount: 0 }}
       >
-        <img src="/drone.webp" alt="" className="w-[176px]" width={176} height={176} />
+        <motion.div
+          animate={{
+            y: [-4, 4, -4],
+            rotate: [-0.6, 0.6, -0.6],
+          }}
+          transition={{
+            duration: 4.6,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        >
+          <img src="/drone.webp" alt="" className="w-[176px]" width={176} height={176} />
+        </motion.div>
       </motion.div>
 
       {/* Drone 2 */}
       <motion.div
-        className="absolute right-[30%] bottom-[68%]"
-        initial={{ x: "0vw", y: "0vh", opacity: 0.85 }}
-        whileInView={{
+        className="absolute right-[30%] bottom-[68%] will-change-transform"
+        initial={{ x: "0vw", y: "0vh", opacity: 0.88, rotate: -1.4 }}
+        animate={{
           x: xPath2,
           y: yPath2,
           rotate: rotatePath2,
-          opacity: opacityPath,
+          opacity: opacityPath2,
         }}
         transition={{
-          duration: 20,
+          duration: 26,
           repeat: Infinity,
-          ease: 'easeInOut',
-          times: [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1]
+          ease: 'linear',
+          times: times16,
         }}
-        viewport={{ once: false, amount: 0 }}
       >
-        <img src="/drone.webp" alt="" className="w-[176px]" width={176} height={176} />
+        <motion.div
+          animate={{
+            y: [5, -5, 5],
+            rotate: [0.7, -0.7, 0.7],
+          }}
+          transition={{
+            duration: 5.8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        >
+          <img src="/drone.webp" alt="" className="w-[176px]" width={176} height={176} />
+        </motion.div>
       </motion.div>
     </div>
   );

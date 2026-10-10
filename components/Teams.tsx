@@ -118,7 +118,7 @@ function TeamSlide({
             className="absolute inset-0 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] flex items-center justify-center"
             style={{
                 opacity: isActive ? 1 : 0,
-                transform: isActive ? 'translateX(0) scale(1) translateZ(0)' : 'translateX(3%) scale(0.98) translateZ(0)',
+                transform: isActive ? 'translateX(0) scale(1)' : 'translateX(3%) scale(0.98)',
                 pointerEvents: isActive ? 'auto' : 'none',
                 zIndex: isActive ? 2 : 1,
             }}
@@ -189,14 +189,21 @@ function TeamSlide({
                 {/* Photo pane (3D Flip Card) */}
                 <div
                     className="group relative h-48 sm:h-64 md:h-auto md:w-[45%] flex-shrink-0 cursor-pointer border-b md:border-b-0 md:border-r border-white/10"
-                    style={{ perspective: '1200px', background: 'rgba(5,5,5,0.5)' }}
+                    style={{ perspective: '1200px', WebkitPerspective: '1200px', background: 'rgba(5,5,5,0.5)' }}
                 >
                     <div
-                        className="absolute inset-4 transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:[transform:rotateY(180deg)]"
-                        style={{ transformStyle: 'preserve-3d' }}
+                        className="absolute inset-4 transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:[transform:rotateY(180deg)] [transform-style:preserve-3d] [-webkit-transform-style:preserve-3d] will-change-transform"
+                        style={{ transformStyle: 'preserve-3d', WebkitTransformStyle: 'preserve-3d' }}
                     >
                         {/* Front face (Logo) */}
-                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/5 bg-black" style={{ backfaceVisibility: 'hidden', transform: 'translateZ(1px)' }}>
+                        <div
+                            className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/5 bg-black [backface-visibility:hidden] [-webkit-backface-visibility:hidden]"
+                            style={{
+                                backfaceVisibility: 'hidden',
+                                WebkitBackfaceVisibility: 'hidden',
+                                transform: 'rotateY(0deg)',
+                            }}
+                        >
                             <div className="absolute inset-0 w-full h-full" style={{ transform: team.teamLogoTransform }}>
                                 <Image
                                     src={team.teamLogoPath || team.teamPhotoPath}
@@ -212,7 +219,14 @@ function TeamSlide({
                         </div>
 
                         {/* Back face (Photo) */}
-                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/5 bg-black" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg) translateZ(1px)' }}>
+                        <div
+                            className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/5 bg-black [backface-visibility:hidden] [-webkit-backface-visibility:hidden]"
+                            style={{
+                                backfaceVisibility: 'hidden',
+                                WebkitBackfaceVisibility: 'hidden',
+                                transform: 'rotateY(180deg)',
+                            }}
+                        >
                             <div className="absolute inset-0 w-full h-full" style={{ transform: team.teamPhotoTransform }}>
                                 <Image
                                     src={team.teamPhotoPath}
@@ -344,13 +358,15 @@ export default function TechnicalTeams() {
         touchStartX.current = null;
     };
 
-    const isHovering = useRef(false);
+    const [isHovered, setIsHovered] = useState(false);
+
     useEffect(() => {
+        if (isHovered) return;
         const id = setInterval(() => {
-            if (!isHovering.current) goNext();
+            goNext();
         }, 6000);
         return () => clearInterval(id);
-    }, [goNext]);
+    }, [isHovered, goNext]);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -421,13 +437,19 @@ export default function TechnicalTeams() {
                 </div>
 
                 {/* Carousel */}
-<div
-    ref={carouselRef}
-    className="relative w-full overflow-hidden min-h-[460px] sm:min-h-[500px] md:h-[520px]"
-    onMouseEnter={() => { isHovering.current = true; }}
-                    onMouseLeave={() => { isHovering.current = false; }}
-                    onTouchStart={handleTouchStart}
-                    onTouchEnd={handleTouchEnd}
+                <div
+                    ref={carouselRef}
+                    className="relative w-full overflow-hidden min-h-[460px] sm:min-h-[500px] md:h-[520px]"
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                    onTouchStart={(e) => {
+                        setIsHovered(true);
+                        handleTouchStart(e);
+                    }}
+                    onTouchEnd={(e) => {
+                        setIsHovered(false);
+                        handleTouchEnd(e);
+                    }}
                 >
                     {teamsData.map((team, i) => (
                         <TeamSlide key={team.id} team={team} isActive={i === activeIndex} />
@@ -435,7 +457,12 @@ export default function TechnicalTeams() {
                 </div>
 
                 {/* Controls row */}
-                <div ref={controlsRef} className="mt-8 sm:mt-10 flex items-center justify-center gap-6 sm:gap-8">
+                <div
+                    ref={controlsRef}
+                    className="mt-8 sm:mt-10 flex items-center justify-center gap-6 sm:gap-8"
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                >
                     <ArrowBtn direction="left" onClick={goPrev} accentColor={activeAccent} />
                     <div className="flex items-center gap-2 sm:gap-3">
                         {teamsData.map((team, i) => {

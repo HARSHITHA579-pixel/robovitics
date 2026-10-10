@@ -62,7 +62,6 @@ const BOARD_LINKS = [
   'https://www.linkedin.com/in/krrish-agrawal-84baa0320/',
   'https://www.linkedin.com/in/shambhavi-1b7899370/',
   'https://www.linkedin.com/in/iamtharunj/',
-  'https://www.linkedin.com/in/kashikaa-sivakumar-17986730a/',
   'https://www.linkedin.com/in/arushi-mehrotra01/',
   'https://www.linkedin.com/in/s-kesava-prasaath-15a82b313/',
   'https://www.linkedin.com/in/azadalimohamed/',
@@ -77,13 +76,32 @@ const BOARD_LINKS = [
   'https://www.linkedin.com/in/animeha-goutam-783350326/',
 ];
 
+const BOARD_PHOTOS: Record<string, string> = {
+  Shuktika: '/board pics/shukthika.png',
+  Aarushi: '/board pics/aarushiJha.png',
+  Krrish: '/board pics/krrish.png',
+  Shambhavi: '/board pics/shambhavi.png',
+  Tharun: '/board pics/tharun.png',
+  Arushi: '/board pics/aarushi.png',
+  'Kesava Prasaath': '/board pics/kesava.png',
+  Azad: '/board pics/azad.png',
+  Mahmood: '/board pics/mahmoood.png',
+  Kriday: '/board pics/kriday.png',
+  'K.Harshitha': '/board pics/harshitha.png',
+  Jacinth: '/board pics/jacinth.png',
+  Kiruba: '/board pics/kiruba.png',
+  Shravan: '/board pics/shravan.png',
+  Ishan: '/board pics/ishan.png',
+  Suyash: '/board pics/suyash.png',
+  Animeha: '/board pics/animeha.png',
+};
+
 const BOARD = [
   { name: 'Shuktika', role: 'Chairperson' },
   { name: 'Aarushi', role: 'Vice-Chairperson' },
   { name: 'Krrish', role: 'Secretary' },
   { name: 'Shambhavi', role: 'Co-Secretary' },
   { name: 'Tharun', role: 'Events Head' },
-  { name: 'Kashikaa', role: 'PR Head' },
   { name: 'Arushi', role: 'Tech Lead' },
   { name: 'Kesava Prasaath', role: 'R&D Head' },
   { name: 'Azad', role: 'Design Head' },
@@ -101,13 +119,7 @@ const BOARD = [
   name: person.name,
   role: person.role,
   link: BOARD_LINKS[i],
-  photoUrl: person.name === 'Shuktika' ? '/shukthika.png' :
-    person.name === 'Aarushi' ? '/aarushi.png' :
-      person.name === 'Kashikaa' ? '/kashikaa.png' :
-        person.name === 'Arushi' ? '/arushi.png' :
-          person.name === 'Azad' ? '/azad.png' :
-            person.name === 'Suyash' ? '/suyash.png' :
-              `https://api.dicebear.com/7.x/personas/svg?seed=board${i}&backgroundColor=b6e3f4`,
+  photoUrl: BOARD_PHOTOS[person.name] || '/board pics/dp.png',
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=board${i}&backgroundColor=transparent`,
 }));
 
@@ -125,6 +137,18 @@ const SENIOR_CORE_LINKS = [
   'https://www.linkedin.com/in/charvi-adhyam-389741351/',
   '',
 ];
+
+const SENIOR_CORE_PHOTOS: Record<string, string> = {
+  Ryan: '/board pics/ryan.png',
+  Sheyansh: '/board pics/shreyansh.png',
+  'Anjali Chougule': '/board pics/anjali.png',
+  Ankith: '/board pics/ankith.png',
+  'Naman Chauhan': '/board pics/naman.png',
+  Sarvesh: '/board pics/sarvesh.png',
+  Vasabdatwa: '/board pics/vasab.png',
+  'Aadithya Chourasia': '/board pics/aadithyaChourasya.png',
+  Charvi: '/board pics/charvi.png',
+};
 
 const SENIOR_CORE = [
   'Ryan',
@@ -144,24 +168,122 @@ const SENIOR_CORE = [
   name,
   role: '',
   link: SENIOR_CORE_LINKS[i] || undefined,
-  photoUrl: name === 'Naman Chauhan' ? '/naman.png' :
-    name === 'Ankith' ? '/ankith.png' :
-      `https://api.dicebear.com/7.x/personas/svg?seed=senior-board${i}&backgroundColor=b6e3f4`,
+  photoUrl: SENIOR_CORE_PHOTOS[name] || '/board pics/dp.png',
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=senior-board${i}&backgroundColor=transparent`,
 }));
 
-function createPlaceholderBoard(year: '2025' | '2024') {
-  return Array.from({ length: 20 }, (_, i) => ({
-    id: `${year}-board-${i + 1}`,
-    name: `Member ${String(i + 1).padStart(2, '0')}`,
-    role: `${year} Board · Member ${i + 1}`,
-    photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=${year}-board${i}&backgroundColor=b6e3f4`,
-    robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${year}-board${i}&backgroundColor=transparent`,
-  }));
-}
+const BOARD_2025_DATA = [
+  {
+    name: 'Yash Pathak',
+    role: 'Chairperson',
+    link: 'https://www.linkedin.com/in/yash-pathak-65b11a283/',
+    photoUrl: '/board pics/yash.png',
+  },
+  {
+    name: 'Navaneeth',
+    role: 'Vice Chairperson',
+    link: 'https://www.linkedin.com/in/navaneeth-h-k/',
+    photoUrl: '/board pics/navneeth.png',
+  },
+  {
+    name: 'Dhruv',
+    role: 'Secretary',
+  },
+  {
+    name: 'Harsh',
+    role: 'Co-secretary',
+  },
+  {
+    name: 'Ayan',
+    role: 'Head of Finance & Logistics',
+    link: 'https://www.linkedin.com/in/ayan-gattani/',
+    photoUrl: '/board pics/ayan.png',
+  },
+  {
+    name: 'Aakash Gurumurthi',
+    role: 'Events Head',
+    link: 'https://www.linkedin.com/in/aakash-gurumurthi-231587291/',
+  },
+  {
+    name: 'Aakashdip Dey',
+    role: 'Marketing Lead & Editorial Lead',
+    link: 'https://www.linkedin.com/in/aakashdip-dey/',
+    photoUrl: '/board pics/akashdip.png',
+  },
+  {
+    name: 'Ujjawal Jha',
+    role: 'Tech Lead',
+    link: 'https://www.linkedin.com/in/ujjwal-jha26/',
+    photoUrl: '/board pics/ujjwal.png',
+  },
+  {
+    name: 'Rishabh Paul',
+    role: 'R&D Head',
+    link: 'https://www.linkedin.com/in/rishabh-paul-506ab0289/',
+    photoUrl: '/board pics/rishab.png',
+  },
+  {
+    name: 'Pradnya Sharma',
+    role: 'Design Head',
+    link: 'https://www.linkedin.com/in/pradnya-sharma-80237228b/',
+    photoUrl: '/board pics/pradnya.png',
+  },
+  {
+    name: 'Paridhi Pawaiya',
+    role: 'AI/ML Lead',
+    link: 'https://www.linkedin.com/in/paridhi-pawaiya-88a68928b/',
+    photoUrl: '/board pics/paridhi.png',
+  },
+  {
+    name: 'Arjun',
+    role: 'Cybersecurity Lead',
+    link: 'https://www.linkedin.com/in/arjun-venkatesh-028bab28a/',
+    photoUrl: '/board pics/arjun.png',
+  },
+  {
+    name: 'Arunabh Guptha',
+    role: 'CSE Lead & AppDev Lead',
+    link: 'https://www.linkedin.com/in/arunabh-s-gupta/',
+    photoUrl: '/board pics/arunabh.png',
+  },
+  {
+    name: 'Arnav Srivastava',
+    role: 'Robowars Head',
+    link: 'https://www.linkedin.com/in/arnav-srivastava-16825b290/',
+    photoUrl: '/board pics/arnavSrivastava.png',
+  },
+  {
+    name: 'Vivek Chohan',
+    role: 'MD Lead',
+    link: 'https://www.linkedin.com/in/vivekchohan2808/',
+    photoUrl: '/board pics/vivek.png',
+  },
+  {
+    name: 'Aditya Kale',
+    role: 'HOR Head',
+    link: 'https://www.linkedin.com/in/aditya-kale-52906b281/',
+    photoUrl: '/board pics/adithyaKale.png',
+  },
+  {
+    name: 'Arnav Oberoi',
+    role: 'Hacks Lead',
+    link: 'https://www.linkedin.com/in/arnav-oberoi/',
+    photoUrl: '/board pics/arnavOberoi.png',
+  },
+  {
+    name: 'Anirban',
+    role: 'Creative Head',
+  },
+];
 
-const ALL_BOARD_2025 = createPlaceholderBoard('2025');
-const ALL_BOARD_2024 = createPlaceholderBoard('2024');
+const BOARD_2025_PEOPLE = BOARD_2025_DATA.map((person, i) => ({
+  id: `2025-board-${i + 1}`,
+  name: person.name,
+  role: person.role,
+  link: person.link || undefined,
+  photoUrl: person.photoUrl || '/board pics/dp.png',
+  robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=2025-p${i + 1}&backgroundColor=transparent`,
+}));
 
 const BOARD_OPTIONS = [
   {
@@ -175,15 +297,8 @@ const BOARD_OPTIONS = [
     id: '2025',
     label: '2025 Board',
     shortLabel: '2025',
-    boardPeople: ALL_BOARD_2025.slice(0, -5),
-    seniorCorePeople: ALL_BOARD_2025.slice(-5),
-  },
-  {
-    id: '2024',
-    label: '2024 Board',
-    shortLabel: '2024',
-    boardPeople: ALL_BOARD_2024.slice(0, -5),
-    seniorCorePeople: ALL_BOARD_2024.slice(-5),
+    boardPeople: BOARD_2025_PEOPLE,
+    seniorCorePeople: [] as typeof SENIOR_CORE,
   },
 ] as const;
 
@@ -313,10 +428,12 @@ function ProfileCard({
 
         {/* Image area */}
         <div
-          className="team-image relative w-full mb-4 overflow-hidden rounded-[2px] bg-[#111]"
+          className="team-image relative mx-auto mb-4 overflow-hidden rounded-[2px] bg-[#111]"
           style={{
+            width: '88%',
             aspectRatio: compact || facultyCompact ? '1/1' : '4/5',
-            marginBottom: compact ? '10px' : facultyCompact ? '9px' : '16px',
+            marginTop: '2px',
+            marginBottom: compact ? '10px' : facultyCompact ? '9px' : '14px',
             border: isActive ? '1px solid rgba(79,174,243,0.5)' : '1px solid rgba(255,255,255,0.1)',
             boxShadow: isActive ? '0 0 15px rgba(79,174,243,0.2)' : 'none',
             transition: 'all 0.4s ease',
@@ -331,8 +448,14 @@ function ProfileCard({
             }}
           >
             <img
-              src={person.photoUrl}
+              src={person.photoUrl || '/board pics/dp.png'}
               alt={person.name}
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.src.includes('dp.png') && !target.src.includes('DP.png')) {
+                  target.src = '/board pics/dp.png';
+                }
+              }}
               style={{
                 width: '100%', height: '100%', objectFit: 'cover',
                 opacity: 0.85,
@@ -671,20 +794,22 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
           </div>
 
           {/* Senior Core Subsection (Directly below Board) */}
-          <div className="w-full flex flex-col items-center">
-            <SubSectionTitle
-              eyebrow={`▶ ACCESS_LEVEL // ${activeOption.id === 'current' ? 'SENIOR_CORE' : `${activeOption.id}_SENIOR_CORE`}`}
-              title="SENIOR"
-              accent="CORE"
-            />
-            <RevealGrid
-              key={`senior-core-${activeOption.id}`}
-              people={activeOption.seniorCorePeople}
-              columns=""
-              compact
-              balanced
-            />
-          </div>
+          {activeOption.seniorCorePeople && activeOption.seniorCorePeople.length > 0 && (
+            <div className="w-full flex flex-col items-center">
+              <SubSectionTitle
+                eyebrow={`▶ ACCESS_LEVEL // ${activeOption.id === 'current' ? 'SENIOR_CORE' : `${activeOption.id}_SENIOR_CORE`}`}
+                title="SENIOR"
+                accent="CORE"
+              />
+              <RevealGrid
+                key={`senior-core-${activeOption.id}`}
+                people={activeOption.seniorCorePeople}
+                columns=""
+                compact
+                balanced
+              />
+            </div>
+          )}
         </div>
 
       </div>
@@ -779,6 +904,9 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
             container-type: inline-size;
           }
           :global(.team-image) {
+            width: 88% !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
             aspect-ratio: 1 / 1 !important;
             margin-bottom: 10px !important;
           }

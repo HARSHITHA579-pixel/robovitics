@@ -47,7 +47,7 @@ export const projectsData: Project[] = [
         tagline: 'Covert channel identification',
         description:
             'A network analysis tool that exposes covert data-exfiltration tunnels in live DNS traffic. Uses a trained random-forest classifier to achieve >96% accuracy.',
-        imagePath: '/project3.png',
+        imagePath: '/p3.png',
         readMoreLink: '#',
         domain: 'CYBERSECURITY',
         status: 'COMPLETED',
@@ -116,7 +116,6 @@ export const teamsData: Team[] = [
         description: 'Team Orcus is the combat robotics wing of RoboVITics, specializing in designing and building powerful combat robots entirely from scratch. From concept to fabrication and competitive testing, the team combines precision engineering with strategic design to create battle-ready machines that excel in national competitions.',
         teamPhotoPath: '/Orcus 2.png',
         teamLogoPath: '/Orcus 1.png',
-        teamLogoTransform: 'rotate(-5deg) scale(1.15)',
         memberCount: 20,
         accentColor: 'rgba(79,174,243,0.9)',
     },
