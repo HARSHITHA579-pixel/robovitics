@@ -18,6 +18,7 @@ type DeckItem = {
   details: string;
   imgTransform?: string;
   imgPosition?: string;
+  imgPositionModal?: string;
   imgFit?: "cover" | "contain";
 };
 
@@ -30,8 +31,8 @@ const events: DeckItem[] = [
   { id: "MODULE_02", name: "HANDS ON ROBOTICS", type: "WORKSHOP · HARDWARE + SOFTWARE", date: "PRE-GRAVITAS 2025 · 240+ ATTENDEES", desc: "Two days, zero prior experience needed. Sensors, microcontrollers, MicroPython, and live WebSocket-controlled robots.", status: "OPEN", img: "/hands-on.png", imgTransform: "rotate(-4deg) scale(1.12)", details: "Sponsored by Module143, this two-day workshop took ~240 students from zero to building functional robotic systems. Sessions covered sensors, microcontrollers, and IoT-enabled devices, alongside MicroPython for efficient firmware. Participants also built web-based control systems using real-time communication and WebSocket integration — bridging embedded hardware, firmware, and browser-based control in one working pipeline." },
   { id: "MODULE_01", name: "ROBOWARS", type: "COMBAT ROBOTICS", date: "FLAGSHIP · GRAVITAS 2025", desc: "3 weight classes. ₹3L prize pool. One of India's largest combat arenas. Team Orcus fought across all categories.", status: "FLAGSHIP", img: "/robowars1.png", details: "Held in Sept and sponsored by Siemens and Analog Devices, RoboWars brought elite teams from across the country into one of India's largest and safest combat robotics arenas. Matches spanned 8kg, 15kg, and 60kg weight categories, testing mechanical design, electronics, and strategy under pressure. Our own Team Orcus competed in every category. Winners: Team Dot Robotics (8kg), Team Black Diamonds (15kg), and Team Shadow (60kg)." },
   { id: "MODULE_04", name: "VORTEX 360", type: "72H CAD DESIGN-A-THON", date: "POWERED BY AUTODESK · FEB 2025", desc: "~1,300 participants. 3 days, real-world problem tracks, ₹1L prize pool, and direct access to Autodesk experts.", status: "FLAGSHIP", img: "/vortex1.png", details: "A 72-hour CAD modeling design-a-thon sponsored by Autodesk, drawing nearly 1,300 students in teams of 3–5. Day 1 focused on problem understanding and brainstorming, Day 2 on refining designs and prototyping in Fusion 360, and Day 3 on final pitches before judges and industry experts. Beyond the ₹1L prize pool, the event offered direct networking with Autodesk professionals and industry leaders." },
-  { id: "MODULE_05", name: "CRUISE THE WEB3VERSE", type: "WEB3 EVENT", date: "YANTRA EVENT · 2 DAYS", desc: "A two day dive into Web3 concepts and tooling, closing out with a live auction finale.", status: "UPCOMING", img: "/web3verse.png", details: "A two day Web3-focused event exploring decentralized concepts and tooling, designed for curious builders and newcomers alike. The event culminated in a live auction, turning theory into a tangible, competitive finale that brought the whole cohort together for one last high-energy session." },
-  { id: "MODULE_06", name: "EQUINOX", type: "60-HOUR HACKATHON", date: "SMART INFRASTRUCTURE · 100+ TEAMS", desc: "A flagship 60 hour hackathon bringing innovators together to build and solve problems around Smart Infrastructure.", status: "COMPLETED", img: "/equinox.jpeg", details: "Equinox challenged participants to transform ideas into impactful solutions through an intense multi-stage hackathon experience. From healthcare and cybersecurity to smart homes and road safety, teams developed innovative projects while competing through rigorous evaluation rounds. The event culminated in live final pitches by the top teams, celebrating creativity, technical excellence, and the spirit of innovation that defines RoboVITics." },
+  { id: "MODULE_05", name: "CRUISE THE WEB3VERSE", type: "WEB3 EVENT", date: "YANTRA EVENT · 2 DAYS", desc: "A two day dive into Web3 concepts and tooling, closing out with a live auction finale.", status: "UPCOMING", img: "/web3verse.JPG", imgPosition: "center 70%", imgPositionModal: "center 80%", details: "A two day Web3-focused event exploring decentralized concepts and tooling, designed for curious builders and newcomers alike. The event culminated in a live auction, turning theory into a tangible, competitive finale that brought the whole cohort together for one last high-energy session." },
+  { id: "MODULE_06", name: "EQUINOX", type: "60-HOUR HACKATHON", date: "SMART INFRASTRUCTURE · 100+ TEAMS", desc: "A flagship 60 hour hackathon bringing innovators together to build and solve problems around Smart Infrastructure.S", status: "COMPLETED", img: "/equinox.jpeg", details: "Equinox challenged participants to transform ideas into impactful solutions through an intense multi-stage hackathon experience. From healthcare and cybersecurity to smart homes and road safety, teams developed innovative projects while competing through rigorous evaluation rounds. The event culminated in live final pitches by the top teams, celebrating creativity, technical excellence, and the spirit of innovation that defines RoboVITics." },
 ];
 
 const outreach: DeckItem[] = [
@@ -547,7 +548,7 @@ export default function Events() {
         <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-[#0a0a0a] rounded-[4px] overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.08)", transform: "rotateY(180deg) translateZ(1px)" }}>
           <div className="relative w-full h-full flex flex-col">
             <div className="absolute inset-0 w-full h-full" style={{ transform: ev.imgTransform }}>
-              <img src={ev.img} alt={ev.name} className="absolute inset-0 w-full h-full" style={{ objectFit: ev.imgFit || "cover", objectPosition: ev.imgPosition || "center" }} onError={(e) => { e.currentTarget.style.display = "none"; }} />
+              <img src={ev.img} alt={ev.name} className="absolute inset-0 w-full h-full" style={{ objectFit: ev.imgFit || "cover", objectPosition: ev.imgPositionModal || ev.imgPosition || "center" }} onError={(e) => { e.currentTarget.style.display = "none"; }} />
             </div>
             <div className="absolute inset-0 flex items-center justify-center z-10">
               <span className="font-mono text-white text-[10px] tracking-[0.2em] border border-white/40 px-5 py-2.5 backdrop-blur-sm rounded bg-black/30">
@@ -840,7 +841,7 @@ export default function Events() {
                       }}
                     >
                       <div className="absolute inset-0 w-full h-full" style={{ transform: ev.imgTransform }}>
-                        <img src={ev.img} alt={ev.name} className="w-full h-full" style={{ objectFit: ev.imgFit || "cover", objectPosition: ev.imgPosition || "center" }} onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                        <img src={ev.img} alt={ev.name} className="w-full h-full" style={{ objectFit: ev.imgFit || "cover", objectPosition: ev.imgPositionModal || ev.imgPosition || "center" }} onError={(e) => { e.currentTarget.style.display = "none"; }} />
                       </div>
                     </div>
 

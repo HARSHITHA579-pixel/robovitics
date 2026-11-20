@@ -5,7 +5,7 @@ import { ReactNode, useState, useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 
 const contactEmail = 'robovitics@vit.ac.in';
-const contactPhone = '+91 98765 43210';
+const contactPhone = '+91 98188 48838';
 
 const socialLinks = [
   {
