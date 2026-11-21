@@ -387,19 +387,21 @@ export default function Navbar() {
           </span>
         </button>
       </div>
+    </header>
 
-      <div
-        className={`fixed inset-0 z-[-1] bg-black/50 backdrop-blur-[2px] transition-opacity duration-300 md:hidden ${menuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
-          }`}
-        onClick={() => setMenuOpen(false)}
-        aria-hidden="true"
-      />
+    <div
+      className={`fixed inset-0 z-[85] bg-black/60 backdrop-blur-sm transition-opacity duration-300 md:hidden ${menuOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+      onClick={() => setMenuOpen(false)}
+      aria-hidden="true"
+    />
 
-      <aside
-        className={`fixed bottom-0 right-0 top-0 z-[90] w-[min(82vw,340px)] border-l border-white/12 bg-[#070808]/95 text-white shadow-[-18px_0_60px_rgba(0,0,0,0.55)] backdrop-blur-2xl transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${menuOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
-        aria-hidden={!menuOpen}
-      >
+    <aside
+      className={`fixed bottom-0 right-0 top-0 z-[90] flex h-full h-dvh w-[min(82vw,340px)] flex-col overflow-y-auto border-l border-white/12 bg-[#070808] text-white shadow-[-18px_0_60px_rgba(0,0,0,0.7)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${menuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      style={{ backgroundColor: '#070808' }}
+      aria-hidden={!menuOpen}
+    >
         <div
           className="absolute inset-0 pointer-events-none opacity-35"
           style={{
@@ -478,8 +480,7 @@ export default function Navbar() {
           </div>
         </div>
       </aside>
-    </header>
-    <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
-  </>
+      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
+    </>
   );
 }

@@ -124,7 +124,7 @@ function TeamSlide({
             }}
         >
             <div
-                className="relative w-full h-full sm:h-auto sm:min-h-[460px] overflow-hidden rounded-[4px] flex flex-col md:flex-row transition-all duration-500 shadow-[0_0_25px_rgba(0,0,0,0.5)] hover:shadow-[0_0_35px_rgba(0,0,0,0.8)]"
+                className="relative w-full h-full sm:min-h-[460px] overflow-hidden rounded-[4px] flex flex-col md:flex-row transition-all duration-500 shadow-[0_0_25px_rgba(0,0,0,0.5)] hover:shadow-[0_0_35px_rgba(0,0,0,0.8)]"
                 style={{
                     background: '#0a0a0a',
                     border: '1px solid rgba(255,255,255,0.08)',
@@ -439,7 +439,7 @@ export default function TechnicalTeams() {
                 {/* Carousel */}
                 <div
                     ref={carouselRef}
-                    className="relative w-full overflow-hidden min-h-[460px] sm:min-h-[500px] md:h-[520px]"
+                    className="relative w-full overflow-visible min-h-[560px] sm:min-h-[500px] md:h-[520px] md:overflow-hidden"
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                     onTouchStart={(e) => {

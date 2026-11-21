@@ -62,10 +62,10 @@ function buildGearShape(outerR: number, innerR: number, teeth: number): THREE.Sh
 const globalStyles = `
   .mwt-card {
     position: absolute; top: 0; left: 0; width: min(365px, 76vw);
-    transform-origin: center center; will-change: transform, opacity, filter;
-    pointer-events: none; z-index: 6; transform-style: preserve-3d;
+    transform-origin: center center; will-change: transform, opacity;
+    pointer-events: none; z-index: 6;
     filter:
-      drop-shadow(0 0 10px rgba(79,174,243,var(--mwt-card-glow, 0.16)))
+      drop-shadow(0 0 10px rgba(79,174,243,0.24))
       drop-shadow(0 12px 34px rgba(0,0,0,0.5));
   }
   .mwt-card-inner {
@@ -531,7 +531,6 @@ export default function MemoryWarpTunnel() {
         const worldZ = 2 - depth * 1.25;
         const rotY = isMobile ? 0 : clamp(diff * -18, -38, 38);
         const rotX = isMobile ? 0 : clamp(-y * 8, -7, 7);
-        const drift = Math.sin((time * 0.001) + i) * 10;
 
         const absDiff = Math.abs(diff);
         let opacity = 0;
@@ -548,9 +547,8 @@ export default function MemoryWarpTunnel() {
         const sy = (1 - (v.y * 0.5 + 0.5)) * CH;
         const scale = (clamp(8 / (camera.position.z - worldZ), 0.05, 3.0) / sceneScale) * lerp(isMobile ? 0.58 : 0.9, isMobile ? 0.76 : 1.08, opacity) * lerp(1, isMobile ? 0.72 : 0.55, portalT);
 
-        n.el.style.transform = `translate(${sx + (isMobile ? 0 : drift)}px,${sy}px) translate(-50%,-50%) perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
+        n.el.style.transform = `translate(${sx}px,${sy}px) translate(-50%,-50%) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
         n.el.style.opacity = `${opacity * (1 - portalT)}`;
-        n.el.style.setProperty('--mwt-card-glow', `${0.12 + opacity * 0.28}`);
       });
 
       if (renderer && !isContextLost) {
