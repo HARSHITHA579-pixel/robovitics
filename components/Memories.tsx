@@ -10,6 +10,7 @@ interface Memory {
   desc: string;
   img: string;
   imgPosition?: string;
+  imgFilter?: string;
 }
 
 const MEMORIES: Memory[] = [
@@ -18,12 +19,12 @@ const MEMORIES: Memory[] = [
   { year: '2015', title: 'Hands-On Robotics (HOR)', desc: '<b>HOR</b> became RoboVITics signature workshop series, equipping freshers with practical skills in embedded systems, electronics, and robotics.', img: '/timeline pics/past_hor.jpeg' },
   { year: '2016', title: 'Team Orcus', desc: '<b>Team Orcus</b> was established as the club\'s combat robotics division, designing and building battle robots for national-level competitions.', img: '/orcusStart.jpg' },
   { year: '2017', title: 'RoboWars', desc: '<b>RoboWars</b> became RoboVITics flagship spectacle, bringing together powerful combat robots and top teams from across the country.', img: '/timeline pics/past_robowars.jpeg' },
-  { year: '2018', title: 'Equinox', desc: '<b>Equinox</b> was launched as the club\'s flagship hackathon, empowering students to solve real-world challenges through engineering and innovation.', img: '/timeline pics/equinox1.jpeg' },
+  { year: '2018', title: 'Equinox', desc: '<b>Equinox</b> was launched as the club\'s flagship hackathon, empowering students to solve real-world challenges through engineering and innovation.', img: '/timeline pics/equinox1.jpeg', imgFilter: 'grayscale(60%) brightness(1.05) contrast(1.08) saturate(0.28)' },
   { year: '2019', title: 'Vortex 360', desc: '<b>Vortex 360</b> introduced a platform for CAD and hardware design, encouraging participants to transform concepts into practical engineering solutions.', img: '/timeline pics/vortex360.png' },
   { year: '2019', title: 'Machine Design', desc: 'Originally launched as <b>Cosmos 360</b>, the event evolved into <b>Machine Design</b>, continuing annually to help students master Fusion 360, CAD modeling, simulations, and practical engineering design.', img: '/timeline pics/past_md.jpeg' },
   { year: '2024', title: 'Avatar & Artemis', desc: 'RoboVITics expanded into next generation robotics with <b>Team Avatar</b> for humanoid systems and <b>Team Artemis</b> to advance legged robotics through intelligent quadrupeds, autonomous navigation, AI, and ROS 2 technologies.', img: '/timeline pics/artemis.png' },
-  { year: '2024', title: 'Elite Club Recognition', desc: 'RoboVITics was honored with VIT\'s prestigious <b>Elite Club Award</b>, earning the recognition for <b>two consecutive years</b> through excellence in innovation, technical achievements, and student impact.', img: '/timeline pics/award.png.jpeg', imgPosition: 'center 75%' },
-  { year: '2026', title: 'RoboVITics Today', desc: 'Today, RoboVITics continues to lead innovation through cutting-edge robotics, flagship events, and student driven research, inspiring the next generation of engineers.', img: '/timeline pics/todayRobovitics.png' },
+  { year: '2024', title: 'Elite Club Recognition', desc: 'RoboVITics was honored with VIT\'s prestigious <b>Elite Club Award</b>, earning the recognition for <b>two consecutive years</b> through excellence in innovation, technical achievements, and student impact.', img: '/timeline pics/award.png.jpeg', imgPosition: 'center 75%', imgFilter: 'grayscale(60%) brightness(0.86) contrast(1.08) saturate(0.28)' },
+  { year: '2026', title: 'RoboVITics Today', desc: 'Today, RoboVITics continues to lead innovation through cutting-edge robotics, flagship events, and student driven research, inspiring the next generation of engineers.', img: '/timeline pics/todayRobovitics.png', imgFilter: 'grayscale(60%) brightness(0.92) contrast(1.08) saturate(0.28)' },
 ];
 
 const DEBRIS_COUNT = 16;
@@ -363,7 +364,7 @@ export default function MemoryWarpTunnel() {
           <span class="mwt-line top-line"></span>
           <span class="mwt-line bottom-line"></span>
           <div class="mwt-img-wrap" style="position: relative; width: 100%; height: 166px; overflow: hidden; border-radius: 2px; margin-bottom: 20px; background: #000; border: 1px solid rgba(255,255,255,0.08);">
-            <img src="${m.img}" alt="${m.title}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; object-position: ${m.imgPosition || 'center'}; display: block; filter: grayscale(80%) brightness(0.74) contrast(1.18) saturate(0.19);" />
+            <img src="${m.img}" alt="${m.title}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; object-position: ${m.imgPosition || 'center'}; display: block; filter: ${m.imgFilter || 'grayscale(80%) brightness(0.74) contrast(1.18) saturate(0.19)'};" />
             <div class="mwt-img-overlay" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.12) 100%), rgba(0, 0, 0, 0.06); pointer-events: none; z-index: 20;"></div>
           </div>
           <div class="mwt-card-date">${m.year}</div>
@@ -421,9 +422,13 @@ export default function MemoryWarpTunnel() {
       const targetZoom = clamp(p / 0.26, 0, 1);
       zoomProgress += (targetZoom - zoomProgress) * (dt * 0.004);
 
-      const seqP = clamp(p / 0.68, 0, 1);
-      const targetT = seqP * (MEMORIES.length + 0.5);
-      displayT += (targetT - displayT) * (dt * (isMobile ? 0.003 : 0.004));
+      // Cards wait until the box has started zooming (p > 0.14), then come in one after the other.
+      let targetT = 0;
+      if (p > 0.14) {
+        const seqP = clamp((p - 0.14) / 0.54, 0, 1);
+        targetT = seqP * (MEMORIES.length + 5.8);
+      }
+      displayT += (targetT - displayT) * (dt * (isMobile ? 0.0012 : 0.004));
       const targetPortalProgress = clamp((p - 0.72) / 0.2, 0, 1);
 
 
@@ -518,7 +523,8 @@ export default function MemoryWarpTunnel() {
       }
 
       nodes.forEach((n, i) => {
-        const diff = displayT - (i + 0.5);
+        // +2.5 offset: first card starts off-screen, so cards enter one by one instead of being crammed at the start.
+        const diff = displayT - (i + 2.5);
         const depth = clamp(Math.abs(diff), 0, 2.4);
         const x = isMobile ? 0 : -diff * 5.2;
         const y = isMobile ? diff * 5.2 : Math.sin(i * 1.7) * 0.6;

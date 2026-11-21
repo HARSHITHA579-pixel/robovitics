@@ -568,12 +568,6 @@ export default function Footer() {
           className="pointer-events-none relative z-0 flex w-full justify-center overflow-hidden leading-none"
           style={{ aspectRatio: '3072 / 1730' }}
         >
-          {/* Antenna integrated behind the footer image on the left-side building */}
-          <img
-            src="/antenna.webp"
-            alt=""
-            className="absolute left-[2.7%] top-[38.8%] z-0 w-[18%] object-contain"
-          />
           <Image
             src="/footer.webp"
             alt="RoboVITics Technical Landscape Foundation"
