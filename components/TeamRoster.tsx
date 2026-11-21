@@ -66,7 +66,7 @@ const BOARD = [
   { name: 'Arushi Mehrotra', role: 'Tech Lead', link: 'https://www.linkedin.com/in/arushi-mehrotra01/', photoUrl: '/board pics/aarushi.png' },
   { name: 'S Kesava Prasaath', role: 'R&D Head', link: 'https://www.linkedin.com/in/s-kesava-prasaath-15a82b313/', photoUrl: '/board pics/kesava.png' },
   { name: 'Azad Ali Mohamed', role: 'Design Head', link: 'https://www.linkedin.com/in/azadalimohamed/', photoUrl: '/board pics/azad.png' },
-  { name: 'Azad Ali Mohamed', role: 'AI/ML Lead & Project Lead', link: 'https://www.linkedin.com/in/avaram-mahmoodul-hasan-372764311/', photoUrl: '/board pics/mahmoood.png' },
+  { name: 'Avaram Mahmoodul Hasan', role: 'AI/ML Lead & Project Lead', link: 'https://www.linkedin.com/in/avaram-mahmoodul-hasan-372764311/', photoUrl: '/board pics/mahmoood.png' },
   { name: 'K.Harshitha', role: 'Web Development Lead', link: 'https://www.linkedin.com/in/k-harshitha08/', photoUrl: '/board pics/harshitha.png' },
   { name: 'Kriday Narula', role: 'Cyber Security Lead', link: 'https://www.linkedin.com/in/kriday-narula-642435321/', photoUrl: '/board pics/kriday.png' },
   { name: 'Jacinth R', role: 'App Development Lead & RoboWars Head', link: 'https://www.linkedin.com/in/jacinth-r/', photoUrl: '/board pics/jacinth.png' },
@@ -308,6 +308,7 @@ function ProfileCard({
   const isInteractive = interactive && canHover;
   const isActive = isInteractive && hovered;
   const isSmall = compact || facultyCompact;
+  const isMahmood = person.name === 'Avaram Mahmoodul Hasan';
 
   useEffect(() => {
     const query = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -467,8 +468,20 @@ function ProfileCard({
             className="team-name text-center font-sans font-black uppercase whitespace-nowrap overflow-hidden text-ellipsis w-full"
             style={{
               margin: '0 0 4px',
-              fontSize: compact ? 'clamp(9px, 8cqw, 12px)' : facultyCompact ? 'clamp(7.5px, 6.5cqw, 11px)' : 'clamp(10px, 9cqw, 15px)',
-              letterSpacing: compact ? '0.04em' : facultyCompact ? '0.01em' : '0.05em',
+              fontSize: isMahmood
+                ? (compact ? 'clamp(7px, 5.8cqw, 9.8px)' : facultyCompact ? 'clamp(6.5px, 5.2cqw, 9px)' : 'clamp(8px, 6.8cqw, 12px)')
+                : compact
+                  ? 'clamp(9px, 8cqw, 12px)'
+                  : facultyCompact
+                    ? 'clamp(7.5px, 6.5cqw, 11px)'
+                    : 'clamp(10px, 9cqw, 15px)',
+              letterSpacing: isMahmood
+                ? '0.01em'
+                : compact
+                  ? '0.04em'
+                  : facultyCompact
+                    ? '0.01em'
+                    : '0.05em',
               lineHeight: 1.15,
               color: isActive ? '#4FAEF3' : '#ffffff',
               textShadow: isActive ? '0 0 10px rgba(79,174,243,0.6)' : 'none',
@@ -722,9 +735,9 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         <div id="team-faculty" className="w-full max-w-4xl scroll-mt-28 flex flex-col items-center mb-14 md:mb-24">
 
           <SectionTitle
-            eyebrow="▶ ACCESS_LEVEL // FACULTY_ADVISORS"
+            eyebrow="▶ ACCESS_LEVEL // FACULTY_COORDINATORS"
             title="FACULTY"
-            accent="ADVISORS"
+            accent="COORDINATORS"
           />
 
           <RevealGrid

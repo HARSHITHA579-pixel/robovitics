@@ -5,7 +5,18 @@ import { ReactNode, useState, useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 
 const contactEmail = 'robovitics@vit.ac.in';
-const contactPhone = '+91 98188 48838';
+const phoneContacts = [
+  {
+    name: 'Shuktika Mallaya',
+    phone: '+91 93091 68579',
+    href: 'tel:+919309168579',
+  },
+  {
+    name: 'Krrish Agrawal',
+    phone: '+91 98188 48838',
+    href: 'tel:+919818848838',
+  },
+];
 
 const socialLinks = [
   {
@@ -471,8 +482,8 @@ export default function Footer() {
 
             {/* Row 1 - Contact Cards */}
             <div>
-              <div className="lg:ml-8 xl:ml-12">
-                <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 w-full lg:w-[70%]">
+              <div className="lg:ml-8 xl:ml-12 mr-0 sm:mr-6 lg:mr-10 xl:mr-12">
+                <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 w-full max-w-[560px] sm:ml-auto items-start">
                   <ContactChip
                     label="EMAIL"
                     value={contactEmail}
@@ -484,23 +495,28 @@ export default function Footer() {
                       </svg>
                     }
                   />
-                  <ContactChip
-                    label="PHONE"
-                    value={contactPhone}
-                    href={`tel:${contactPhone.replaceAll(' ', '')}`}
-                    icon={
-                      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
-                        <path
-                          d="M7.2 4.8 9.3 9c.2.5.1 1-.3 1.3l-1.1.9a10.5 10.5 0 0 0 4.9 4.9l.9-1.1c.3-.4.9-.5 1.3-.3l4.2 2.1c.5.2.7.7.6 1.2l-.5 2.1c-.1.5-.6.9-1.1.9C9.8 21 3 14.2 3 5.8c0-.5.4-1 .9-1.1L6 4.2c.5-.1 1 .1 1.2.6Z"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        />
-                      </svg>
-                    }
-                  />
+                  <div className="flex flex-col gap-3 sm:gap-4">
+                    {phoneContacts.map((contact) => (
+                      <ContactChip
+                        key={contact.name}
+                        label={contact.name}
+                        value={contact.phone}
+                        href={contact.href}
+                        icon={
+                          <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+                            <path
+                              d="M7.2 4.8 9.3 9c.2.5.1 1-.3 1.3l-1.1.9a10.5 10.5 0 0 0 4.9 4.9l.9-1.1c.3-.4.9-.5 1.3-.3l4.2 2.1c.5.2.7.7.6 1.2l-.5 2.1c-.1.5-.6.9-1.1.9C9.8 21 3 14.2 3 5.8c0-.5.4-1 .9-1.1L6 4.2c.5-.1 1 .1 1.2.6Z"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            />
+                          </svg>
+                        }
+                      />
+                    ))}
+                  </div>
                 </div>
-                <div className="mt-8 sm:mt-12 h-px w-full lg:w-[70%] bg-gradient-to-r from-white/20 to-transparent" />
+                <div className="mt-8 sm:mt-12 h-px w-full max-w-[560px] sm:ml-auto bg-gradient-to-r from-white/20 to-transparent" />
               </div>
             </div>
 
@@ -573,6 +589,7 @@ export default function Footer() {
             alt="RoboVITics Technical Landscape Foundation"
             width={3072}
             height={2035}
+            loading="eager"
             className="relative z-10 h-auto w-full object-cover object-top opacity-90"
           />
         </div>

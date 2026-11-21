@@ -116,7 +116,7 @@ function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: 
 
           <div className="relative border-l-2 border-[#4FAEF3]/20 pl-4 sm:pl-6 space-y-4 sm:space-y-5">
             <p className="max-w-xl text-[12px] leading-[1.6] sm:leading-[1.8] text-gray-300 md:text-[15px] font-light tracking-wide">
-              <span className="block font-medium text-white mb-2">2024 • Elite Club Recognition</span>
+              <span className="block font-medium text-white mb-2">2025 • Elite Club Recognition</span>
               Honoured with the Best Club – Elite Category award for two consecutive years, recognizing RoboVITics outstanding technical innovation, impactful initiatives, sustained contributions to the university community.
             </p>
             <p className="max-w-xl text-[12px] leading-[1.6] sm:leading-[1.8] text-gray-400 md:text-[15px] font-light tracking-wide">
@@ -413,7 +413,7 @@ function IndividualLogPanel() {
 }
 
 export default function Achievements({
-  clubCertificateImageSrc = '/achievements/elite-club-2024.jpeg',
+  clubCertificateImageSrc = '/achievements/elite-club-2025.jpeg',
 }: {
   clubCertificateImageSrc?: string;
 }) {

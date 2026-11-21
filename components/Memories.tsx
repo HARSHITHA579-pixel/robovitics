@@ -62,15 +62,20 @@ function buildGearShape(outerR: number, innerR: number, teeth: number): THREE.Sh
 const globalStyles = `
   .mwt-card {
     position: absolute; top: 0; left: 0; width: min(365px, 76vw);
-    transform-origin: center center; will-change: transform, opacity;
+    transform-origin: center center;
     pointer-events: none; z-index: 6;
-    filter:
-      drop-shadow(0 0 10px rgba(79,174,243,0.24))
-      drop-shadow(0 12px 34px rgba(0,0,0,0.5));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
   .mwt-card-inner {
     background: rgba(10, 10, 10, 0.92);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 0 10px rgba(79,174,243,0.24),
+      0 12px 34px rgba(0,0,0,0.5);
     padding: 24px 20px 20px;
     border-radius: 4px;
     position: relative;
@@ -96,7 +101,6 @@ const globalStyles = `
     inset: 0;
     background: repeating-linear-gradient(0deg, rgba(79,174,243,0.03) 0 1px, transparent 1px 8px);
     opacity: 0.22;
-    mix-blend-mode: screen;
   }
   .mwt-corner {
     position: absolute; width: 14px; height: 14px; z-index: 10;
@@ -120,6 +124,10 @@ const globalStyles = `
   }
   .mwt-img-wrap img {
     width: 100%; height: 100%; object-fit: cover; display: block;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: high-quality;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     filter: grayscale(80%) brightness(0.74) contrast(1.18) saturate(0.19);
     transition: filter 0.5s ease, transform 0.5s ease;
   }
@@ -364,7 +372,7 @@ export default function MemoryWarpTunnel() {
           <span class="mwt-line top-line"></span>
           <span class="mwt-line bottom-line"></span>
           <div class="mwt-img-wrap" style="position: relative; width: 100%; height: 166px; overflow: hidden; border-radius: 2px; margin-bottom: 20px; background: #000; border: 1px solid rgba(255,255,255,0.08);">
-            <img src="${m.img}" alt="${m.title}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; object-position: ${m.imgPosition || 'center'}; display: block; filter: ${m.imgFilter || 'grayscale(80%) brightness(0.74) contrast(1.18) saturate(0.19)'};" />
+            <img src="${m.img}" alt="${m.title}" loading="eager" decoding="async" style="width: 100%; height: 100%; object-fit: cover; object-position: ${m.imgPosition || 'center'}; display: block; image-rendering: -webkit-optimize-contrast; image-rendering: high-quality; filter: ${m.imgFilter || 'grayscale(80%) brightness(0.74) contrast(1.18) saturate(0.19)'};" />
             <div class="mwt-img-overlay" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.12) 100%), rgba(0, 0, 0, 0.06); pointer-events: none; z-index: 20;"></div>
           </div>
           <div class="mwt-card-date">${m.year}</div>
@@ -468,7 +476,6 @@ export default function MemoryWarpTunnel() {
       boxEl.style.left = `${r.l}px`;
       boxEl.style.top = `${r.t}px`;
       boxEl.style.borderRadius = `${lerp(r.r, 22, portalT)}px`;
-      boxEl.style.transform = 'translateZ(0)';
       boxEl.style.boxShadow = `0 0 ${lerp(50, 95, portalT)}px rgba(79,174,243,${lerp(0.2, 0.42, portalT)})`;
       boxEl.style.borderColor = `rgba(79,174,243,${lerp(0.2, 0.78, portalT)})`;
 
@@ -602,7 +609,6 @@ export default function MemoryWarpTunnel() {
         .mwt-scene {
           position: absolute; inset: 0;
           transform-origin: 0 0;
-          will-change: transform;
         }
         .mwt-grid {
           position: absolute; inset: 0; pointer-events: none; z-index: 1;
