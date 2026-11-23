@@ -72,10 +72,10 @@ const BOARD = [
   { name: 'Jacinth R', role: 'App Development Lead & RoboWars Head', link: 'https://www.linkedin.com/in/jacinth-r/', photoUrl: '/board pics/jacinth.png' },
   { name: 'Kiruba B', role: 'MD Head', link: 'https://www.linkedin.com/in/kiruba-b-18ab7b337/', photoUrl: '/board pics/kiruba.png' },
   { name: 'Shravan Kumar', role: 'HOR Head', link: 'https://www.linkedin.com/in/shravan-kumar-217a36322/', photoUrl: '/board pics/shravan.png' },
-  { name: 'Ishan Bhosale', role: 'Hacks', link: 'https://www.linkedin.com/in/ishan-bhosale/', photoUrl: '/board pics/ishan.png' },
+  { name: 'Ishan Bhosale', role: 'Hacks Lead', link: 'https://www.linkedin.com/in/ishan-bhosale/', photoUrl: '/board pics/ishan.png' },
   { name: 'Suyash Dabholkar', role: 'Editorial Head', link: 'https://www.linkedin.com/in/suyash-dabholkar/', photoUrl: '/board pics/suyash.png' },
   { name: 'Animeha Goutam', role: 'Creative Head', link: 'https://www.linkedin.com/in/animeha-goutam-783350326/', photoUrl: '/board pics/animeha.png' },
-  { name: 'Shreyansh Choudhary', role: '', link: 'https://www.linkedin.com/in/shreyansh-choudhary-84b52232a/', photoUrl: '/board pics/shreyansh.png' },
+  { name: 'Shreyansh Choudhary', role: 'RoboWars Head', link: 'https://www.linkedin.com/in/shreyansh-choudhary-84b52232a/', photoUrl: '/board pics/shreyansh.png' },
 ].map((person, i) => ({
   id: `board-${i + 1}`,
   name: person.name,
